@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+.env
+output/
+data/emoji_index.json
+data/heroicon_index.json

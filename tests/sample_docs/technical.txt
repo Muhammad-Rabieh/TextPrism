@@ -1,0 +1,13 @@
+# Introduction to Kubernetes
+
+Kubernetes (K8s) is an open-source system for automating deployment, scaling, and management of containerized applications.
+
+## Key Concepts
+- POD: The smallest deployable units of computing that you can create and manage in Kubernetes.
+- NODE: A worker machine in Kubernetes, previously known as a minion.
+- CLUSTER: A set of node machines for running containerized applications.
+
+## How it works
+1. You define your desired state in a YAML file.
+2. The control plane monitors the cluster.
+3. It makes changes to ensure the current state matches the desired state.

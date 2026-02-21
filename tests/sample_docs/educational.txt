@@ -1,0 +1,12 @@
+# The Solar System
+
+The Solar System consists of the Sun and everything that orbits around it, including eight planets, their moons, and millions of asteroids and comets.
+
+## The Sun
+The Sun is a star at the center of the Solar System. It provides light and heat to the planets.
+
+## The Planets
+- Mercury: The smallest planet and closest to the Sun.
+- Venus: The second planet and the hottest in the Solar System.
+- Earth: Our home planet, the only one known to support life.
+- Mars: The Red Planet, home to the largest volcano in the Solar System.

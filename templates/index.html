@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Text Explain — Visual Lexicon for Semantic Text Annotation using SHAPE_IT ASCII, OpenMoji, and Heroicons">
+    <title>Text Explain — Visual Document Explanation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=1.2">
+</head>
+
+<body>
+    <!-- Background Orbs -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- Header -->
+    <header class="header" id="main-header">
+        <div class="header-inner">
+            <div class="logo">
+                <img src="/openmoji-72x72-color/1F4D6.png" alt="book" class="logo-emoji" width="40" height="40">
+                <h1>Text<span class="accent">Explain</span></h1>
+            </div>
+            <p class="tagline">Visual Lexicon for Semantic Text Annotation</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Tools Panel -->
+        <section class="tools-panel glass-card" id="tools-panel">
+            <h2 class="panel-title">
+                <span class="step-num">1</span>
+                <img src="/heroicons_24x24/wrench-screwdriver.svg" alt="tools" class="hero-icon-inline">
+                Annotation Tools
+            </h2>
+
+            <!-- Methodology Tags -->
+            <div class="method-tags">
+                <span class="tag tag-icon">
+                    <img src="/heroicons_24x24/photo.svg" alt="" class="tag-icon-img">
+                    Iconographic Annotation
+                </span>
+                <span class="tag tag-lexicon">
+                    <img src="/heroicons_24x24/book-open.svg" alt="" class="tag-icon-img">
+                    Visual Lexicon
+                </span>
+                <span class="tag tag-semantic">
+                    <img src="/heroicons_24x24/cpu-chip.svg" alt="" class="tag-icon-img">
+                    Semantic Mapping
+                </span>
+            </div>
+
+            <!-- SHAPE_IT Panel -->
+            <div class="tool-group" id="shape-tool-group">
+                <h3>
+                    <img src="/heroicons_24x24/squares-2x2.svg" alt="" class="hero-icon-inline">
+                    Step 1a: Create ASCII Shapes
+                </h3>
+                <div class="shape-buttons" id="shape-buttons">
+                    <button class="shape-btn" data-shape="box" title="Bordered Box">
+                        <span class="shape-preview">┌─┐│ │└─┘</span>
+                        Box
+                    </button>
+                    <button class="shape-btn" data-shape="titled_box" title="Titled Box">
+                        <span class="shape-preview">┌─┐├─┤└─┘</span>
+                        Titled
+                    </button>
+                    <button class="shape-btn" data-shape="banner" title="Text Banner">
+                        <span class="shape-preview">╔═╗║A║╚═╝</span>
+                        Banner
+                    </button>
+                    <button class="shape-btn" data-shape="flowchart" title="Flowchart">
+                        <span class="shape-preview">□→□→□</span>
+                        Flow
+                    </button>
+                    <button class="shape-btn" data-shape="table" title="Table">
+                        <span class="shape-preview">┬─┬┼─┼┴─┴</span>
+                        Table
+                    </button>
+                    <button class="shape-btn" data-shape="callout" title="Callout Bubble">
+                        <span class="shape-preview">.──.( )★</span>
+                        Callout
+                    </button>
+                    <button class="shape-btn" data-shape="pyramid" title="Pyramid">
+                        <span class="shape-preview"> * *** *****</span>
+                        Pyramid
+                    </button>
+                    <button class="shape-btn" data-shape="separator" title="Separator">
+                        <span class="shape-preview">═══░░═══</span>
+                        Divider
+                    </button>
+                </div>
+                <div class="shape-input-row">
+                    <input type="text" id="shape-text-input" class="glass-input" placeholder="Enter text for shape...">
+                    <select id="shape-style-select" class="glass-select">
+                        <option value="double">Double ═</option>
+                        <option value="single">Single ─</option>
+                        <option value="rounded">Rounded ╭</option>
+                        <option value="heavy">Heavy ━</option>
+                        <option value="ascii">ASCII +</option>
+                    </select>
+                    <button id="generate-shape-btn" class="btn btn-accent" title="Preview Shape">Preview</button>
+                    <button id="quick-add-shape-btn" class="btn btn-primary"
+                        title="Add directly to Document below">Quick Add ↓</button>
+                </div>
+                <p class="tool-hint">Generated shapes are building blocks for your document in Step 2.</p>
+            </div>
+
+            <!-- Icon Lookup Panel -->
+            <div class="tool-group" id="icon-tool-group">
+                <h3>
+                    <img src="/heroicons_24x24/magnifying-glass.svg" alt="" class="hero-icon-inline">
+                    Step 1b: Find Visual Icons
+                </h3>
+                <div class="shape-input-row">
+                    <input type="text" id="icon-search-input" class="glass-input"
+                        placeholder="Search for an icon (e.g. happy, book, fire)...">
+                    <button id="icon-search-btn" class="btn btn-accent">Find Icon</button>
+                </div>
+                <div id="icon-search-result" class="icon-result"></div>
+            </div>
+        </section>
+
+        <!-- Input / Output Area -->
+        <section class="work-area">
+            <!-- Input Panel -->
+            <div class="input-panel glass-card" id="input-panel">
+                <h2 class="panel-title">
+                    <span class="step-num">2</span>
+                    <img src="/heroicons_24x24/document-text.svg" alt="" class="hero-icon-inline">
+                    Document Input
+                </h2>
+                <form id="explain-form" method="POST" action="/explain">
+                    <textarea id="text-input" name="text" class="glass-textarea"
+                        placeholder="Paste your document text here...&#10;&#10;The system will analyze it and generate a visual explanation using:&#10;• SHAPE_IT ASCII art (borders, flowcharts, banners)&#10;• OpenMoji emojis (4,292 colorful icons)&#10;• Heroicons (324 clean SVG icons)&#10;&#10;Try pasting an article, tutorial, or any text you want explained visually!"
+                        rows="15"></textarea>
+                    <div class="form-actions">
+                        <button type="submit" id="explain-btn" class="btn btn-primary">
+                            <img src="/heroicons_24x24/sparkles.svg" alt="" class="btn-icon">
+                            Explain Visually
+                        </button>
+                        <button type="button" id="magic-prompt-btn" class="btn btn-secondary">
+                            <img src="/heroicons_24x24/chat-bubble-left-right.svg" alt="" class="btn-icon">
+                            Magic Prompt (Free AI)
+                        </button>
+                        <button id="clear-btn" class="btn btn-ghost">
+                            <img src="/heroicons_24x24/trash.svg" alt="" class="btn-icon">
+                            Clear
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="output-panel glass-card" id="output-panel">
+                <div class="output-header">
+                    <h2 class="panel-title">
+                        <span class="step-num">3</span>
+                        <img src="/heroicons_24x24/eye.svg" alt="" class="hero-icon-inline">
+                        Visual Explanation
+                    </h2>
+                    <div class="output-actions">
+                        <button id="download-html-btn" class="btn btn-ghost btn-sm" disabled title="Download as HTML">
+                            <img src="/heroicons_24x24/code-bracket.svg" alt="" class="btn-icon">
+                            HTML
+                        </button>
+                        <button id="download-md-btn" class="btn btn-ghost btn-sm" disabled title="Download as Markdown">
+                            <img src="/heroicons_24x24/document.svg" alt="" class="btn-icon">
+                            MD
+                        </button>
+                        <button id="copy-btn" class="btn btn-ghost btn-sm" disabled title="Copy to Clipboard">
+                            <img src="/heroicons_24x24/clipboard.svg" alt="" class="btn-icon">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <div id="output-content" class="output-content">
+                    <div class="output-placeholder">
+                        <img src="/openmoji-72x72-color/1F3A8.png" alt="art" width="72" height="72"
+                            class="placeholder-emoji">
+                        <p>Your visual explanation will appear here</p>
+                        <p class="placeholder-sub">Paste text on the left and click "Explain Visually"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Magic Prompt Modal -->
+    <div id="magic-prompt-modal" class="modal" style="display:none;">
+        <div class="modal-content glass-card" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3>✨ Magic UI Workflow (2-Phase)</h3>
+                <button class="modal-close" id="magic-modal-close-btn">&times;</button>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="workflow-steps">
+                <div class="step active" id="step1-indicator"><span>1</span> Distill</div>
+                <div class="line"></div>
+                <div class="step" id="step2-indicator"><span>2</span> Map</div>
+                <div class="line"></div>
+                <div class="step" id="step3-indicator"><span>3</span> Build</div>
+            </div>
+
+            <div class="modal-body">
+                <!-- Phase 1: Distill -->
+                <div id="phase1-container">
+                    <p class="modal-hint"><strong>Phase 1: Simplify & Summarize.</strong> Copy this prompt to LLM to
+                        turn raw text into a clean outline.</p>
+                    <div class="prompt-box">
+                        <pre id="magic-prompt-phase1-text"></pre>
+                        <button id="copy-phase1-btn" class="btn btn-sm btn-accent">Copy Prompt</button>
+                    </div>
+
+                    <p class="modal-hint" style="margin-top: 20px;">Paste the LLM's distilled outline below:</p>
+                    <textarea id="distilled-text-input" class="glass-textarea" rows="4"
+                        placeholder="Paste the simplified outline here..."></textarea>
+
+                    <div class="modal-actions">
+                        <button id="goto-phase2-btn" class="btn btn-primary">Next: Semantic Mapping</button>
+                    </div>
+                </div>
+
+                <!-- Phase 2: Map -->
+                <div id="phase2-container" style="display:none;">
+                    <p class="modal-hint"><strong>Phase 2: Semantic Mapping.</strong> Copy this prompt to LLM to map the
+                        clean outline into visual JSON.</p>
+                    <div class="prompt-box">
+                        <pre id="magic-prompt-phase2-text"></pre>
+                        <button id="copy-phase2-btn" class="btn btn-sm btn-accent">Copy Prompt</button>
+                    </div>
+
+                    <p class="modal-hint" style="margin-top: 20px;">Paste the final JSON response below:</p>
+                    <textarea id="ai-response-input" class="glass-textarea" rows="4"
+                        placeholder="Paste the JSON mapping here..."></textarea>
+
+                    <div class="modal-actions">
+                        <button id="back-to-phase1-btn" class="btn btn-ghost">Back</button>
+                        <button id="process-ai-btn" class="btn btn-primary">Build Visual Explanation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHAPE_IT Preview Modal -->
+    <div id="shape-preview-modal" class="modal" style="display:none;">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>SHAPE_IT Preview</h3>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
+            </div>
+            <pre id="shape-preview-output" class="ascii-output"></pre>
+            <div class="modal-actions">
+                <button id="copy-shape-btn" class="btn btn-accent">Copy ASCII</button>
+                <button id="insert-shape-btn" class="btn btn-primary">Insert in Document</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Text Explain Project — <em>Building a visual lexicon of icons for semantic text annotation</em></p>
+        <div class="footer-badges">
+            <span class="badge">SHAPE_IT ASCII</span>
+            <span class="badge">OpenMoji 4,292</span>
+            <span class="badge">Heroicons 324</span>
+        </div>
+    </footer>
+
+    <script src="/static/script.js?v=1.2"></script>
+</body>
+
+</html>
