@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 11.0, SVG Export Plug-In . SVG Version: 6.0.0 Build 78)  --><svg enable-background="new 0 0 341.59 203.057" height="203.057" i:pageBounds="-1 595.2754 840.8896 0" i:rulerOrigin="1 0" i:viewOrigin="89.9375 501.7754" overflow="visible" space="preserve" viewBox="0 0 341.59 203.057" width="341.59" xmlns="http://www.w3.org/2000/svg" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xmlns:graph="http://ns.adobe.com/Graphs/1.0/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>British Flag</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>britain</rdf:li>
+            <rdf:li>flag</rdf:li>
+            <rdf:li>british</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>felipescu</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>felipescu</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <switch>
+    <foreignObject height="1" requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/" width="1" x="0" y="0">
+      <i:pgfRef xlink:href="#adobe_illustrator_pgf"></i:pgfRef>
+    </foreignObject>
+    <g i:extraneous="self">
+      <g i:dimmedPercent="50" i:layer="yes" i:rgbTrio="#4F008000FFFF" id="Layer_1">
+        <g>
+          <rect fill="#FFFFFF" height="202.167" i:knockout="Off" width="341.467" x="0.063"/>
+          <path d="M0.063,12" fill="#FFFFBD" i:knockout="Off"/>
+          <path d="M36.323,49.445" fill="#FF0000" i:knockout="Off"/>
+          <g>
+            <g>
+              <polygon fill="#13135F" points="0.063,20 0.063,76.5 96.063,76.5 "/>
+            </g>
+            <polygon fill="#FF0000" i:knockout="Off" points="109.911,76.5 129.563,76.5 0.063,0 0.063,12 "/>
+            <g>
+              <polygon fill="#12145B" points="37.916,0 147.563,67.486 147.563,0 "/>
+            </g>
+          </g>
+          <g>
+            <polygon fill="#13135F" points="341.563,182 341.563,126 246.563,126 "/>
+          </g>
+          <polygon fill="#FF0000" i:knockout="Off" points="232.715,126 213.063,126 341.563,202.125 341.563,190 "/>
+          <g>
+            <polygon fill="#12145B" points="304.681,203 195.035,135.514 195.035,203 "/>
+          </g>
+          <g>
+            <polygon fill="#13135F" points="341.563,20.513 341.563,76.5 246.563,76.432 "/>
+          </g>
+          <polygon fill="#FF0000" i:knockout="Off" points="195.063,76.5 217.361,76.5 341.563,0 319.009,0 "/>
+          <g>
+            <polygon fill="#12145B" points="303.75,0 195.063,66.986 195.063,0 "/>
+          </g>
+          <g>
+            <polygon fill="#13135F" points="0.071,182.481 0.071,125.981 96.071,125.981 "/>
+          </g>
+          <polygon fill="#FF0000" i:knockout="Off" points="147.517,125.969 125.218,125.969 0,203.057 22.572,203.057 "/>
+          <g>
+            <polygon fill="#12145B" points="37.87,202.969 147.517,135.483 147.517,202.969 "/>
+          </g>
+          <rect fill="#FF0000" height="203" i:knockout="Off" width="28.874" x="156.717"/>
+          <rect fill="#FF0000" height="32.672" i:knockout="Off" width="341.527" x="0.063" y="85.252"/>
+        </g>
+      </g>
+    </g>
+  </switch>
+</svg>

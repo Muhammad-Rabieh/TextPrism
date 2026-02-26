@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 10.0, SVG Export Plug-In . SVG Version: 3.0.0 Build 77)  --><svg enable-background="new 0 0 358.921 679.122" height="679.122" i:pageBounds="0 792 612 0" i:rulerOrigin="0 0" i:viewOrigin="126 735" overflow="visible" space="preserve" viewBox="0 0 358.921 679.122" width="358.921" xmlns="http://www.w3.org/2000/svg" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xmlns:graph="http://ns.adobe.com/Graphs/1.0/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Street Sign</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>symbol</rdf:li>
+            <rdf:li>transport</rdf:li>
+            <rdf:li>road</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Gerald G.</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Gerald G.</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <switch>
+    <foreignObject height="1" requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/" width="1" x="0" y="0">
+      <i:pgfRef xlink:href="#adobe_illustrator_pgf"></i:pgfRef>
+    </foreignObject>
+    <g i:extraneous="self">
+      <g i:dimmedPercent="50" i:layer="yes" i:rgbTrio="#4F008000FFFF" id="Layer_1">
+        <g>
+          <path clip-rule="evenodd" d="       M358.902,118.692l-1.801-46.908l-159.154-45.54l5.867,67.644L358.902,118.692z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M172.71,28.044l2.7,65.376L1.818,142.56l-1.8-47.34L172.71,28.044z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M192.078,6.876l50.508,672.229h-43.199L174.042,6.408c1.944-3.06,3.924-4.968,6.336-5.868c2.375-0.828,5.581-0.72,7.668,0.468       C190.027,2.088,191.322,3.996,192.078,6.876z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M171.342,30.78L2.718,97.056l1.368,41.904L173.61,91.188L171.342,30.78z" fill="#21A161" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M199.746,28.944l5.869,62.244l150.588,24.804l-1.801-42.84L199.746,28.944z" fill="#21A161" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M190.279,8.208l43.451,665.353h-26.568L176.311,8.676c-0.036-2.268,0.72-3.924,2.268-4.968       c1.512-1.116,4.679-2.124,6.732-1.368C187.326,3.096,188.803,5.004,190.279,8.208z" fill="#808080" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M174.69,43.848c0.108-1.728,0.72-3.348,1.836-5.004c1.044-1.692,2.556-3.816,4.681-4.716c2.016-0.936,5.76-1.332,7.883-0.756       c2.018,0.54,3.42,1.98,4.609,3.744c1.188,1.62,2.016,3.636,2.482,6.048l6.518,2.376c0.791,0.144,1.402-0.108,1.836-0.36       c0.395-0.36,0.504-1.044,0.467-1.62c-0.143-0.612-0.467-1.368-0.971-2.124l-6.877-2.7c-0.145-1.08-0.648-2.196-1.367-3.348       c-0.756-1.368-1.729-2.664-3.061-3.744c-1.404-1.044-3.096-1.836-5.076-2.088c-2.16-0.288-5.256-0.108-7.2,0.54       c-1.98,0.468-3.312,1.404-4.428,2.808c-1.152,1.44-1.944,3.132-2.376,5.472l-4.032,3.24c-0.396,0.324-0.828,0.72-1.152,1.332       c-0.504,0.576-1.008,1.512-0.972,2.232c0.072,0.648,0.72,1.44,1.368,1.8c0.468,0.288,1.116,0.288,1.8,0       C171.991,45.936,173.323,44.892,174.69,43.848z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M175.951,79.74c0.18-1.98,0.72-4.032,2.016-5.868c1.188-1.908,2.844-4.536,5.256-5.544c2.305-1.116,6.336-1.548,8.748-0.9       c2.268,0.576,3.779,2.376,5.111,4.428c1.297,1.98,2.268,4.212,2.773,7.092l7.234,2.844c0.938,0.036,1.621-0.072,2.053-0.468       c0.432-0.504,0.611-1.188,0.539-1.908c-0.107-0.756-0.467-1.584-1.08-2.484l-7.703-3.168c-0.252-1.224-0.611-2.592-1.477-3.96       c-0.898-1.512-1.908-3.312-3.42-4.428c-1.584-1.224-3.42-2.232-5.652-2.484c-2.375-0.324-5.832,0-7.99,0.684       c-2.125,0.576-3.709,1.62-4.897,3.276c-1.332,1.656-2.124,3.672-2.664,6.444l-4.5,3.852c-0.432,0.396-0.9,0.828-1.26,1.584       c-0.504,0.684-1.188,1.692-1.08,2.592c0.108,0.792,0.792,1.692,1.476,2.16c0.54,0.36,1.224,0.36,2.052,0       C172.962,82.26,174.438,81,175.951,79.74z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+        </g>
+      </g>
+    </g>
+  </switch>
+</svg>

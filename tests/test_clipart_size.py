@@ -42,9 +42,84 @@ candidates = [
         "notes": "700+ unique logistics/safety symbols not in other sets. (~4 MB)"
     },
     {
-        "name": "Module 5: Old Book Illustrations (SVG Subset)",
-        "url": "https://archive.org/download/old-book-illustrations-svg/old-book-illustrations-svg.zip",
-        "notes": "Highly unique historical aesthetic. No repetition with modern sets. (~100 MB)"
+        "name": "Module 5: Open Doodles (Sketchy People)",
+        "url": "https://github.com/fangpenlin/open-doodles/archive/refs/heads/master.zip",
+        "notes": "Premium 'sketchy' hand-drawn people. Adds a human touch. (~5 MB)"
+    },
+    {
+        "name": "Module 6: Humaaans (Mix-&-Match People)",
+        "url": "https://github.com/pablostanley/humaaans-design-library/archive/refs/heads/master.zip",
+        "notes": "Industry standard for people illustrations. Very high quality. (~15 MB)"
+    },
+    {
+        "name": "Module 8: Handy Arrows (Visual Connectors)",
+        "url": "https://github.com/Eronred/handy-arrows/archive/refs/heads/main.zip",
+        "notes": "Hand-drawn SVG arrows for flowcharts and structural highlights. (~2 MB)"
+    },
+    {
+        "name": "Module 9: Ira Design (Modular Gradient Scenes)",
+        "url": "https://github.com/ira-design/ira-illustrations/archive/refs/heads/master.zip",
+        "notes": "Gradient-style modular SVG scenes. Unique abstract/business aesthetic. (~10 MB)"
+    },
+    {
+        "name": "Module 10: Fluent Emoji SVG (Microsoft)",
+        "url": "https://github.com/cathrinew/microsoft-fluentui-emoji-svg-collection/archive/refs/heads/main.zip",
+        "notes": "7,500+ high-fidelity SVG emoji. Superior alternative to Noto for quality. (~80 MB)"
+    },
+    {
+        "name": "Module 11: 3D Icons (realvjy CC0)",
+        "url": "https://github.com/realvjy/3dicons/archive/refs/heads/main.zip",
+        "notes": "1,440+ premium rendered 3D icons. CC0 license. Adds depth/wow factor. (~50 MB)"
+    },
+    {
+        "name": "Module 12: Bottts (Robot Avatars)",
+        "url": "https://github.com/pablostanley/bottts/archive/refs/heads/master.zip",
+        "notes": "Mix-and-match robot illustrations. Perfect for AI/tech doc contexts. (~5 MB)"
+    },
+    {
+        "name": "Module 13: Debian OpenClipart (PNG Rendered)",
+        "url": "http://ftp.us.debian.org/debian/pool/main/o/openclipart/openclipart-png_0.18+dfsg-21_all.deb",
+        "notes": "Pre-rendered PNGs of the SVG core. Fast display, no rendering needed. (~117 MB)"
+    },
+    {
+        "name": "Module 14: Tabler Icons (UI Master Set)",
+        "url": "https://github.com/tabler/tabler-icons/archive/refs/heads/main.zip",
+        "notes": "6,000+ clean outline SVG icons. 24x24 grid, 2px stroke. MIT. (~11 MB)"
+    },
+    {
+        "name": "Module 15: Font Awesome Free (Industry Standard)",
+        "url": "https://github.com/FortAwesome/Font-Awesome/releases/download/6.7.2/fontawesome-free-6.7.2-web.zip",
+        "notes": "2,000+ icons in solid/regular/brands. The web standard. (~10 MB)"
+    },
+    {
+        "name": "Module 16: Phosphor Icons (Flexible Multi-Weight)",
+        "url": "https://github.com/phosphor-icons/core/archive/refs/heads/main.zip",
+        "notes": "9,072 icons in 6 weights (thin/light/regular/bold/fill/duotone). (~33 MB)"
+    },
+    {
+        "name": "Module 17: Heroicons Full (All Styles)",
+        "url": "https://github.com/tailwindlabs/heroicons/archive/refs/heads/master.zip",
+        "notes": "Full set: outline+solid+mini+micro. Expands our existing 324-icon set. (~5 MB)"
+    },
+    {
+        "name": "Module 18: Avataaars (SVG Character Generator)",
+        "url": "https://github.com/fangpenlin/avataaars/archive/refs/heads/master.zip",
+        "notes": "SVG-based avatar components. Mix-and-match faces/hair/clothes. (~3 MB)"
+    },
+    {
+        "name": "Module 19: Flowbite Illustrations (3D-Style SVGs)",
+        "url": "https://github.com/themesberg/flowbite-illustrations/archive/refs/heads/main.zip",
+        "notes": "54+ 3D-style SVG illustrations. MIT license. Light+dark mode. (~5 MB)"
+    },
+    {
+        "name": "Module 20: Mega Doodles Pack (Hand-Drawn Objects)",
+        "url": "https://github.com/MariaLetta/mega-doodles-pack/archive/refs/heads/master.zip",
+        "notes": "160+ hand-drawn SVG doodles (rockets, stars, food, etc). CC BY-SA 4.0. (~10 MB)"
+    },
+    {
+        "name": "Module 21: Bigheads (Character Avatar Generator)",
+        "url": "https://github.com/robertlinde/extended-bigheads/archive/refs/heads/main.zip",
+        "notes": "Extensible avatar components with many customization options. MIT. (~5 MB)"
     }
 ]
 

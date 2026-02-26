@@ -1,0 +1,16 @@
+openclipart-svg for Debian
+--------------------------
+
+If you need to create a PNG or a JPEG image with higher resolution, you
+can convert it from the SVG format, using rsvg (from the librsvg2-bin package) 
+as follow:
+
+  rsvg -d dpi_x -p dpi_y in.svg out.png
+
+or
+ 
+  rsvg -d dpi_x -p dpi_y in.svg out.jpeg
+
+Some options could be specified, please see rsvg(1) for more information.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Fri, 04 Jan 2005 23:07:12 +0100

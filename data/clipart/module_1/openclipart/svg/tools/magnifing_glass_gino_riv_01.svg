@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 10.0, SVG Export Plug-In . SVG Version: 3.0.0 Build 43)  --><svg enable-background="new 0 0 231.789 232.34" height="232.34" i:pageBounds="0 792 612 0" i:rulerOrigin="0 0" i:viewOrigin="193.0938 520.3906" overflow="visible" space="preserve" viewBox="0 0 231.789 232.34" width="231.789" xmlns="http://www.w3.org/2000/svg" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Magnifing Glass</dc:title>
+        <dc:description>Magnifing Glass</dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>magnifing</rdf:li>
+            <rdf:li>glass</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org">
+            <dc:title>Gino Rivera</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Gino Rivera</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Gino Rivera</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <switch>
+    <foreignObject height="1" requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/" width="1" x="0" y="0">
+      <i:pgfRef xlink:href="#adobe_illustrator_pgf"></i:pgfRef>
+    </foreignObject>
+    <g i:extraneous="self">
+      <g i:dimmedPercent="50" i:layer="yes" i:rgbTrio="#4F008000FFFF" id="Layer_1" stroke="#000000">
+        <g>
+          <path d="M228.273,200.852c4.687,4.686,4.687,12.284,0,16.971l-11.002,11.002       c-4.687,4.688-12.285,4.686-16.971,0L20.68,49.204c-4.686-4.687-4.686-12.285,0-16.971L31.683,21.23       c4.686-4.686,12.285-4.687,16.971,0L228.273,200.852z" i:knockout="Off" stroke="none"/>
+          <linearGradient gradientUnits="userSpaceOnUse" id="XMLID_1_" x1="74.478" x2="74.478" y1="146.4561" y2="2.5005">
+            <stop offset="0" style="stop-color:#FFFFFF"/>
+            <stop offset="1" style="stop-color:#8DB7C8"/>
+            <a:midPointStop offset="0" style="stop-color:#FFFFFF"/>
+            <a:midPointStop offset="0.5" style="stop-color:#FFFFFF"/>
+            <a:midPointStop offset="1" style="stop-color:#8DB7C8"/>
+          </linearGradient>
+          <path d="M146.456,74.478c0,39.752-32.226,71.978-71.978,71.978       S2.5,114.23,2.5,74.478S34.726,2.5,74.478,2.5S146.456,34.726,146.456,74.478z" fill="url(#XMLID_1_)" i:knockout="Off" stroke="none"/>
+          <path d="M0,74.478c0,41.067,33.411,74.478,74.478,74.478       c41.067,0,74.478-33.411,74.478-74.478S115.545,0,74.478,0C33.411,0,0,33.411,0,74.478z M5,74.478C5,36.167,36.167,5,74.478,5       s69.478,31.167,69.478,69.478s-31.167,69.478-69.478,69.478S5,112.789,5,74.478z" fill="#9F5B10" i:knockout="Off" stroke="none"/>
+          <linearGradient gradientUnits="userSpaceOnUse" id="XMLID_2_" x1="74.9761" x2="74.9761" y1="77.5239" y2="7.8955">
+            <stop offset="0" style="stop-color:#FFFFFF"/>
+            <stop offset="0.2414" style="stop-color:#FCFDFE"/>
+            <stop offset="0.4222" style="stop-color:#F2F7F9"/>
+            <stop offset="0.5833" style="stop-color:#E2EDF1"/>
+            <stop offset="0.7329" style="stop-color:#CCDEE6"/>
+            <stop offset="0.8733" style="stop-color:#AECCD8"/>
+            <stop offset="1" style="stop-color:#8DB7C8"/>
+            <a:midPointStop offset="0" style="stop-color:#FFFFFF"/>
+            <a:midPointStop offset="0.7627" style="stop-color:#FFFFFF"/>
+            <a:midPointStop offset="1" style="stop-color:#8DB7C8"/>
+          </linearGradient>
+          <path d="M76.604,68.038       c32.767-20.731,59.681-1.127,59.681-1.127c-1.217-32.799-28.191-59.015-61.288-59.015c-33.872,0-61.331,27.458-61.331,61.331       C13.667,69.226,43.837,88.769,76.604,68.038z" fill="url(#XMLID_2_)" i:knockout="Off" opacity="0.67" stroke="none"/>
+        </g>
+      </g>
+    </g>
+  </switch>
+</svg>

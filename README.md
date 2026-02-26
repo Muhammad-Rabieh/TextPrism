@@ -1,16 +1,22 @@
-# 📖 Text Explain — Visual Lexicon for Semantic Text Annotation
+# 💎 TextPrism — Visual Lexicon for LLM Explanations
 
-**"Building a visual lexicon of icons for semantic text annotation."**
+**"Providing the high-fidelity assets for LLMs to build expressive visual documents."**
 
-Text Explain is a visual annotation tool that transforms dense documents into beautiful, easy-to-understand explanations. It combines **LLM-inspired semantic icon mapping**, a curated **Visual Lexicon** of OpenMoji and Heroicons, and **SHAPE_IT ASCII art** for structural framing.
+TextPrism is a mapping engine that enables LLMs to transform dense text into rich, visual explanations. We focus on providing the **Visual Asset Layer**: a massive, localized **Visual Lexicon** (90,000+ icons/clipart) and a rendering engine that perfectly integrates high-resolution graphics into the LLM's freeform ASCII layouts.
 
 ## ✨ Features
 
-- 🎭 **Iconographic Annotation**: Automatically pairs concepts with visuals.
-- 📚 **Visual Lexicon**: Built-in library of 1,000+ keyword-to-icon mappings.
-- 🎨 **SHAPE_IT ASCII Engine**: Programmatic generation of 16+ shape types (Gantt, Flowcharts, Boxes).
-- 🔓 **Free & Accessible AI**: Support for Manual Copy-Paste flow, Free API Tiers, and Local Ollama.
-- 📥 **Export Options**: Download explanations as standalone HTML or Markdown.
+- 🎭 **LLM-Driven Artistic Freedom**: Simply tell your LLM to use the **"shape-it ascii art style"**. It handles all structure, ASCII art, and layout design, while we provide the "High-Res Ink" to make it pop.
+- 🗺️ **Premium Graphic Mapping**: Automatically identifies LLM icon tags and replaces them with high-fidelity local clipart and icons.
+- 📚 **90k+ Asset Lexicon**: A comprehensive, searchable library of Illustrations, Emojis, and Icons (1.3GB) that outclasses standard emoji support.
+- 🔓 **Universal AI Compatibility**: Designed for a seamless workflow with web-based LLMs (ChatGPT/Gemini), Local models (Ollama), or API-based mapping.
+- 📥 **Export-Ready**: Transform raw LLM output into standalone, premium Visual Explanations with a single click.
+
+The core magic of TextPrism is giving any LLM (ChatGPT, Gemini, Claude) a simple command to unleash its artistic mapping capabilities:
+
+> **"explain the following using shape-it ascii art style: [INSERT YOUR TEXT]"**
+
+The LLM then crafts a structured layout using its creative choice of ASCII boxes and flows. When you copy that result into TextPrism, we instantly upgrade every concept into a premium, high-res visual.
 
 ## 🤖 AI Strategy (Multi-Tier)
 
@@ -18,49 +24,40 @@ The project supports four ways to use AI, prioritized by accessibility:
 1. **Manual AI (Default)**: Free copy-paste prompts for web LLMs (ChatGPT/Gemini).
 2. **Free API Keys**: Automatic integration with free tiers like Gemini 1.5 Flash.
 3. **Local AI (Ollama)**: 100% private and offline usage via local LLMs.
-4. **Paid APIs**: Premium experience with GPT-4 or Claude 3.5 Sonnet.
+4. **Paid API**: Professional high-throughput usage.
 
-## 🏗️ Architecture
+---
 
-- **Backend**: FastAPI (Python)
-- **Frontend**: Vanilla JS + CSS (Glassmorphism)
-- **Visuals**: OpenMoji (4,292 PNGs) + Heroicons (324 SVGs)
-- **Structural**: SHAPE_IT ASCII Art Engine
+## 🏗️ Technical Architecture
+
+- **Backend**: FastAPI (Python 3.13)
+- **Visual Lexicon**: Curated keyword-to-asset mapping system (`emoji_engine.py`)
+- **Assets**: 
+    - 4,292 OpenMoji (PNG)
+    - 324 Heroicons (SVG)
+    - 90,000+ Clipart/Illustrations (PNG/SVG)
+- **Layouts**: LLM-generated ASCII structure (via `shape-it` style)
+
+## 📥 Prerequisites
+
+- Python 3.10+
+- 2GB Disk Space (for the full Visual Lexicon)
 
 ## 🚀 Getting Started
 
-### 1. Prerequisites
-- Python 3.8+
-- The asset folders `openmoji-72x72-color` and `heroicons_24x24` must be in the project root.
-
-### 2. Installation
 ```bash
-# Set up virtual environment
-python3 -m venv venv
+# 1. Clone & Setup
+git clone https://github.com/yourusername/TextPrism.git
+cd TextPrism
+python -m venv venv
 source venv/bin/activate
 
-# Install dependencies
-pip install -r requirements.txt
-```
+# 2. Install Dependencies
+pip install -r requirements.xml
 
-### 3. Build the Lexicon
-Run the index builder once to create the JSON lookup tables:
-```bash
-python build_index.py
-```
-
-### 4. Run the Application
-```bash
+# 3. Launch the Studio
 python app.py
 ```
-Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-## 🧠 Methodology
-
-1. **Semantic Mapping**: The system extracts key concepts from your text.
-2. **Icon Selection**: Concepts are matched against the Visual Lexicon using a 4-layer strategy (Exact → Partial → Category → Fallback).
-3. **Structural Framing**: SHAPE_IT ASCII art is used to create visual hierarchy and separators.
-4. **Rendering**: The final output combines all layers into a premium document.
-
----
-*Built for the Advanced Agentic Coding project at Google DeepMind.*
+## ⚖️ License
+Released under the MIT License. Built for the open-source community.

@@ -1,20 +1,16 @@
-# 📖 Text Explain Project — Implementation Plan
+# 💎 TextPrism — Implementation Plan
 
 ## 🎯 Project Vision
 
-**"Building a visual lexicon of icons for semantic text annotation."**
+**"Empowering LLMs with the visual palettes and style guides to create expressive explanations."**
 
-This project transforms dense, hard-to-read documents into beautiful, easy-to-understand
-visual explanations by combining three techniques:
+TextPrism is a mapping engine that enables LLMs to transform dense text into rich, visual summaries. Instead of forcing programmatic logic, we treat the LLM as the **Artist**. We provide the **Essential Tools**: a massive 1.3GB Visual Lexicon and a standardized **ASCII Style Manual**.
 
-| Technique                    | What It Does                                           | Tool Used        |
-|------------------------------|--------------------------------------------------------|------------------|
-| **Iconographic Annotation**  | Pairs icons/emojis with text concepts                  | OpenMoji + Heroicons |
-| **Visual Lexicon Mapping**   | Builds a reusable library of concept → icon pairings   | `emoji_engine.py`   |
-| **Semantic Icon Mapping**    | AI/LLM automatically selects icons from text meaning   | LLM (online)        |
+- 🗺️ **Visual Lexicon Mapping**: Upgraded to **Granular Sentence-Level Mapping**. Every thought is paired with a specific visual asset for maximum expressiveness.
+- 🎨 **LLM-Driven Artistic Freedom**: LLM handles all structure, ASCII art, and layout design.
+- 📥 **Export-Ready**: Premium Visual Documents generated from raw text or JSON mapping.
 
-Additionally, **SHAPE_IT ASCII Art** provides structural visual elements (borders, flowcharts,
-pyramids, separators) that organize and frame the annotated content.
+The user gives the LLM the command to use our **Shape-It ASCII style** and **Visual Lexicon tags**. The LLM then handles the creative heavy lifting—drawing the boxes and structuring the thoughts—while we provide the assets and the final render.
 
 ---
 
@@ -477,19 +473,43 @@ python-dotenv    # Environment variables (for API keys)
 | **OpenMoji**                 | Open-source emoji set (72×72 color PNGs, 4,292 icons)                   |
 | **Heroicons**                | Clean outline SVG icons by Tailwind Labs (24×24, 324 icons)             |
 
-### Phase 6: Visual Clipart Expansion (Open Source Clipart) ← NEW
-- [x] **Research Starter Packs**:
-    - [x] **OpenClipart 2.5**: 19.8 MB (Verified stable release).
-    - [x] **GNOME Adwaita**: 16.3 MB (Clean symbolic clipart).
-    - [x] **Tango Project**: ~5-10 MB (Classic open-source clipart).
-- [x] **Size Estimation**:
-    - [x] Total Estimated: **~45-55 MB** (Well within "Low Size" limits).
-- [ ] **Quality Test (Sample Download)**:
-    - [ ] Download 5 sample SVGs from each pack to verify "Clipart-only" status.
-- [ ] **Library Integration**:
-    - [ ] Download complete curated ZIPs.
-    - [ ] Update `build_index.py` to index the new clipart libraries.
-    - [ ] Update `emoji_engine.py` to prioritize Clipart for educational/structural concepts.
-- [ ] **Optimization**:
-    - [ ] Batch resize/optimize large PNGs to 128px or lower.
-    - [ ] Ensure all assets remain local and offline for Privacy.
+### Phase 6: Visual Clipart Expansion (Open Source Clipart) ← MEGA LIBRARY
+- [x] **Research & Planning**: 
+    - [x] Identify "one-link" official packages (Debian, UN, Google, Lucide).
+    - [x] **INTEGRATED**: `illlustrations.co 1.0.3` (130+ professional vector illustrations).
+    - [x] **ANALYZED**: `toools.design` — ALL 50+ libraries exhaustively audited.
+    - [x] **REMOVED**: `unDraw` — License prohibits bundling in packs & AI/ML use.
+- [x] **Size Estimation (20 Modules / ~585 MB / 1 GB Budget)**:
+    - [x] **Module 1 (Debian OpenClipart SVG)**: 23.7 MB (~26,000 SVGs). General objects.
+    - [x] **Module 2 (Lucide Icons)**: 42.5 MB (~5,300 SVGs). Technical actions.
+    - [x] **Module 3 (Google Noto Emoji)**: ~150 MB (~3,500 SVGs). Universal symbols.
+    - [x] **Module 4 (UN OCHA)**: ~4 MB (~700 SVGs). Safety/logistics.
+    - [x] **Module 5 (Open Doodles)**: ~5 MB. Sketchy hand-drawn characters.
+    - [x] **Module 6 (Humaaans)**: ~15 MB. Mix-&-match modern people.
+    - [x] **Module 7 (Handy Arrows)**: ~2 MB. Hand-drawn visual connectors.
+    - [x] **Module 8 (Ira Design)**: ~10 MB. Gradient modular scenes. MIT.
+    - [x] **Module 9 (Fluent Emoji SVG)**: ~80 MB (~7,500 SVGs). Microsoft emoji.
+    - [x] **Module 10 (3D Icons)**: ~50 MB (~1,440 PNGs). Premium CC0 3D icons.
+    - [x] **Module 11 (Bottts)**: ~5 MB. Robot/avatar illustrations.
+    - [x] **Module 12 (Debian OpenClipart PNG)**: ~114 MB. Fast-display PNGs.
+    - [x] **Module 13 (Tabler Icons)**: ~11 MB (6,000+ SVGs). Clean UI icons.
+    - [x] **Module 14 (Font Awesome Free)**: ~6 MB (2,000+ SVGs). Web standard.
+    - [x] **Module 15 (Phosphor Icons)**: ~33 MB (9,072 SVGs × 6 weights).
+    - [x] **Module 16 (Heroicons Full)**: ~5 MB. All styles.
+    - [x] **Module 17 (Avataaars)**: ~3 MB. SVG avatar components.
+    - [x] **Module 18 (Flowbite Illustrations)**: ~5 MB (54+ 3D-style SVGs). MIT.
+    - [x] **Module 19 (Mega Doodles Pack)**: ~10 MB (160+ hand-drawn SVGs). CC BY-SA.
+    - [x] **Module 20 (Bigheads)**: ~5 MB. Extensible avatar generator. MIT.
+    - [x] Total: **~585 MB** (Within 1 GB budget, ~415 MB remaining).
+- [x] **Library Integration**:
+    - [x] **Clipart Indexing**: Added `build_clipart_index` to `build_index.py`.
+    - [x] **Engine Support**: Updated `EmojiEngine` to prioritize Clipart.
+    - [x] **Frontend Rendering**: Updated `explanation.html` for high-impact Clipart headers.
+- [x] **Download & Index All Modules**:
+    - [x] Batch download all modules via verified ZIP/DEB links.
+        - *Note: 19 out of 20 modules successfully downloaded (~1.3 GB uncompressed on disk).*
+        - *Recovered OCHA, Humaaans, and 3D Icons.*
+    - [x] Build unified `clipart_index.json` across all modules.
+- [x] **Optimization**:
+    - [x] Batch resize/optimize assets to 128px or lower. Processed ~28000 PNG files successfully.
+    - [x] Ensure all assets remain local and offline for Privacy.

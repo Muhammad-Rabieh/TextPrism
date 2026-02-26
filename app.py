@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Text Explain Project — FastAPI Backend (app.py)
+TextPrism — FastAPI Backend (app.py)
 ================================================
 Web server that orchestrates the visual explanation pipeline:
 1. Serves the frontend UI
@@ -8,7 +8,7 @@ Web server that orchestrates the visual explanation pipeline:
 3. Uses SHAPE_IT + Visual Lexicon to generate annotated HTML
 4. Serves OpenMoji PNGs and Heroicon SVGs
 
-Part of the Text Explain Project.
+Part of TextPrism.
 """
 
 import os
@@ -19,6 +19,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
+import requests
 import google.generativeai as genai
 
 from shape_it import (
@@ -36,6 +37,9 @@ from emoji_engine import EmojiEngine
 load_dotenv()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral:7b-instruct-q4_K_M")
 
 if GEMINI_API_KEY:
     try:
@@ -58,8 +62,9 @@ app = FastAPI(
 
 # Mount static asset directories
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
-app.mount("/openmoji-72x72-color", StaticFiles(directory=os.path.join(BASE_DIR, "openmoji-72x72-color")), name="openmoji")
-app.mount("/heroicons_24x24", StaticFiles(directory=os.path.join(BASE_DIR, "heroicons_24x24")), name="heroicons")
+app.mount("/icons/openmoji", StaticFiles(directory=os.path.join(BASE_DIR, "data", "icons", "openmoji")), name="openmoji")
+app.mount("/icons/heroicons", StaticFiles(directory=os.path.join(BASE_DIR, "data", "icons", "heroicons")), name="heroicons")
+app.mount("/clipart", StaticFiles(directory=os.path.join(BASE_DIR, "data", "clipart")), name="clipart")
 app.mount("/output", StaticFiles(directory=os.path.join(BASE_DIR, "output")), name="output")
 
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
@@ -79,21 +84,21 @@ async def home(request: Request):
 
 
 @app.post("/explain", response_class=HTMLResponse)
-async def explain(request: Request, text: str = Form(...)):
+async def explain(request: Request, text: str = Form(...), ai_tier: str = Form("gemini")):
     """
     Accept document text and return a visual explanation HTML.
     """
     sections = parse_text_into_sections(text)
     visual_sections = []
     for section in sections:
-        visual = generate_visual_section(section)
+        visual = generate_visual_section(section, ai_tier=ai_tier)
         visual_sections.append(visual)
 
     title = sections[0].get('title', "Document Explanation") if sections else "Document Explanation"
     title_banner = draw_banner(title[:30], font='slant')
 
     summary_text = sections[0].get('content', text[:200]) if sections else text[:200]
-    summary_keywords = get_semantic_keywords_ai(summary_text, count=5)
+    summary_keywords = get_semantic_keywords_ai(summary_text, count=5, tier=ai_tier)
     summary_icons = engine.lookup_many(summary_keywords)
 
     return templates.TemplateResponse("explanation.html", {
@@ -223,17 +228,22 @@ async def shape_it_api(
     return {"ascii": result, "shape": shape}
 
 
-@app.get("/magic-prompt/distill", response_class=JSONResponse)
-async def get_magic_prompt_distill(text: str = ""):
+@app.post("/magic-prompt/distill", response_class=JSONResponse)
+async def get_magic_prompt_distill(request: Request):
     """Phase 1: Generate a prompt to distill/summarize raw text."""
+    data = await request.json()
+    text = data.get("text", "")
     prompt = f"""
-I want you to act as a Document Distiller. Analyze the complex text below and transform it into a high-level visual structure.
+I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact overview.
+
+COMMAND:
+Explain the following using shape-it ascii art style:
 
 RULES:
 1. Distill the text into 3-5 key sections.
-2. For each section, provide a short title and 1-2 sentences of clear, simple content.
+2. For each section, provide a short title and 1-2 sentences of clear content.
 3. Break down details into bullet points.
-4. Keep it visual-friendly: use simple language and high-impact concepts.
+4. Use your creative judgment to 'draw' the layout using the shape-it ASCII style (boxes, flows, separators).
 
 OUTPUT FORMAT:
 # [Catchy Main Title]
@@ -247,43 +257,61 @@ Bullets:
 [Repeat for other sections...]
 
 DOCUMENT TEXT:
-{text[:3000]}
+{text[:10000]}
 """
     return {"prompt": prompt.strip()}
 
 
-@app.get("/magic-prompt", response_class=JSONResponse)
-async def magic_prompt_fallback(text: str = ""):
+@app.post("/magic-prompt", response_class=JSONResponse)
+async def magic_prompt_fallback(request: Request):
     """Fallback alias for older frontend versions."""
-    return await get_magic_prompt_distill(text)
+    return await get_magic_prompt_distill(request)
 
 
-@app.get("/magic-prompt/map", response_class=JSONResponse)
-async def get_magic_prompt_map(distilled_text: str = ""):
+@app.post("/magic-prompt/map", response_class=JSONResponse)
+async def get_magic_prompt_map(request: Request):
     """Phase 2: Generate a prompt to map distilled text to our Visual Lexicon JSON."""
+    data = await request.json()
+    distilled_text = data.get("distilled_text", "")
     prompt = f"""
-I want you to map the distilled document structure below into a valid JSON object for a visual explanation tool.
+I want you to map the document structure below into a valid JSON object.
+Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence.
 
 RULES:
-1. For each section, identify 3-5 simple English keywords (nouns or verbs) that represent the content (e.g., 'growth', 'lock', 'idea').
-2. Ensure the output is a VALID JSON object ONLY. Do not include markdown code blocks or extra text.
+1. For each section, break the 'content' into individual sentences.
+2. For EVERY sentence, identify exactly ONE high-impact English keyword (noun) that represents that specific thought.
+3. Ensure the output is a VALID JSON object ONLY.
+4. **CRITICAL: NEVER use double quotes (") inside your strings or ASCII art.** If you need to quote something, use single quotes ('). 
+5. **CRITICAL: In 'raw_ascii', EVERY backslash (\) MUST be doubled (\\).**
 
 STRUCTURE TO FOLLOW:
 {{
   "title": "Document Title",
-  "summary": "1-2 sentence overall summary",
+  "summary": "Overall summary",
+  "summary_keywords": ["keyword1", "keyword2"],
   "sections": [
     {{
       "title": "Section Title",
-      "content": "Brief explanation",
-      "keywords": ["keyword1", "keyword2", "keyword3"],
+      "raw_ascii": "THE EXACT ASCII ART BLOCK FROM PHASE 1 (e.g. the boxes and drawings)",
+      "sentences": [
+        {{
+          "text": "The first sentence of the section.",
+          "keyword": "concept1"
+        }},
+        {{
+          "text": "The second sentence of the section.",
+          "keyword": "concept2"
+        }}
+      ],
       "bullets": ["Point 1", "Point 2"]
     }}
   ]
 }}
 
-DISTILLED TEXT TO MAP:
-{distilled_text[:3000]}
+CRITICAL: Do NOT invent new ASCII. Copy the EXACT shapes and layout the user provided in the distilled text into the "raw_ascii" field.
+
+TEXT TO MAP:
+{distilled_text[:10000]}
 """
     return {"prompt": prompt.strip()}
 
@@ -294,50 +322,89 @@ async def render_magic(request: Request, data: str = Form(...)):
     try:
         # Clean up JSON if LLM added markdown wrappers
         clean_data = data.strip()
-        if clean_data.startswith("```json"):
-            clean_data = clean_data.replace("```json", "").replace("```", "").strip()
-        elif clean_data.startswith("```"):
-             clean_data = clean_data.replace("```", "").strip()
-
-        ai_data = json.loads(clean_data)
+        # Remove markdown code blocks if present
+        clean_data = re.sub(r'^```json\s*', '', clean_data)
+        clean_data = re.sub(r'^```\s*', '', clean_data)
+        clean_data = re.sub(r'\s*```$', '', clean_data)
+        
+        try:
+            ai_data = json.loads(clean_data)
+        except json.JSONDecodeError as e:
+            # Common LLM issue: Raw backslashes or unescaped quotes in ASCII blocks
+            print(f"⚠️ JSON Decode Error: {e}. Attempting heuristic fix...")
+            
+            # Step 1: Escape lone backslashes that aren't followed by valid escape chars
+            # We look for \ not followed by [bfnrtv"\/]
+            fixed_data = re.sub(r'\\(?![bfnrtv"\\/])', r'\\\\', clean_data)
+            
+            # Step 2: Try to handle unescaped quotes inside string values
+            # This looks for quotes that aren't preceded by \ and aren't borders of keys/values
+            # Very basic approach: if we have "..." and there's a quote in the middle
+            # We try a few common replacements
+            try:
+                ai_data = json.loads(fixed_data)
+            except:
+                # If it still fails, try to replace internal quotes with single quotes
+                # This is aggressive but better than a crash
+                def fix_internal_quotes(match):
+                    content = match.group(2)
+                    fixed_content = content.replace('"', "'")
+                    return f'"{match.group(1)}": "{fixed_content}"'
+                
+                fixed_data = re.sub(r'"([^"]+)":\s*"(.+?)"(?=\s*[,}])', fix_internal_quotes, fixed_data, flags=re.DOTALL)
+                
+                try:
+                    ai_data = json.loads(fixed_data)
+                except Exception as final_e:
+                    print(f"❌ Heuristic fix failed: {final_e}")
+                    raise e # Return original error
         
         # Transform AI data into our visual_sections format
         visual_sections = []
         for idx, section in enumerate(ai_data.get('sections', [])):
             sec_title = section.get('title', '')
-            sec_content = section.get('content', '')
+            sec_sentences = section.get('sentences', [])
             sec_bullets = section.get('bullets', [])
-            sec_keywords = section.get('keywords', [])
+            
+            # Reconstruct content from sentences for ASCII art and legacy support
+            reconstructed_content = " ".join([s.get('text', '') for s in sec_sentences])
+            if not reconstructed_content:
+                reconstructed_content = section.get('content', '')
 
-            # Generate rich ASCII art for each section
-            ascii_separator = draw_separator(sec_title, width=55) if sec_title else ''
+            # Process sentence-level icons
+            processed_sentences = []
+            all_sec_keywords = []
+            for sent in sec_sentences:
+                kw = sent.get('keyword', '')
+                if kw:
+                    all_sec_keywords.append(kw)
+                    icon = engine.lookup(kw)
+                else:
+                    icon = None
+                processed_sentences.append({
+                    'text': sent.get('text', ''),
+                    'icon': icon
+                })
 
-            # Generate a titled box showing the section content
-            ascii_box = ''
-            if sec_content:
-                ascii_box = draw_titled_box(sec_title or f'Section {idx+1}', sec_content[:120], style='double', padding=1)
-
-            # Generate a flowchart from bullets if there are 2+
-            ascii_flow = ''
-            if len(sec_bullets) >= 2:
-                ascii_flow = draw_flowchart(sec_bullets[:5], style='single')
-
-            # Generate a callout for short important content
-            ascii_callout = ''
-            if sec_content and len(sec_content) < 80:
-                ascii_callout = draw_callout(sec_content)
+            # USE ORIGINAL ASCII FROM AI (Do not regenerate/change it)
+            raw_ai_ascii = section.get('raw_ascii', '')
+            
+            # Only fallback to app-generated if AI provided none
+            ascii_box = raw_ai_ascii
+            if not ascii_box and reconstructed_content:
+                 ascii_box = draw_titled_box(sec_title or f'Section {idx+1}', reconstructed_content[:120], style='double', padding=1)
 
             visual = {
                 'title': sec_title,
-                'content': sec_content,
+                'content': reconstructed_content,
+                'sentences': processed_sentences,
                 'bullets': sec_bullets,
                 'type': 'h2',
-                'ascii_separator': ascii_separator,
+                'ascii_separator': '',  # Removed: User wants no app-injected changes
                 'ascii_box': ascii_box,
-                'ascii_flow': ascii_flow,
-                'ascii_callout': ascii_callout,
-                'title_icons': engine.lookup_many(sec_keywords[:3]),
-                'content_icons': engine.lookup_many(sec_keywords[3:6]),
+                'ascii_flow': '',       # Removed: Prioritize LLM's own flow/art
+                'ascii_callout': '',    # Removed: Prioritize LLM's own callouts
+                'title_icons': engine.lookup_many(all_sec_keywords[:2]),
                 'bullet_icons': []
             }
             for bullet in visual['bullets']:
@@ -350,7 +417,9 @@ async def render_magic(request: Request, data: str = Form(...)):
         title_banner = draw_banner(title[:30], font='slant')
         
         summary_text = ai_data.get('summary', '')
-        summary_keywords = extract_keywords(summary_text, 5)
+        summary_keywords = ai_data.get('summary_keywords', [])
+        if not summary_keywords:
+            summary_keywords = extract_keywords(summary_text, 5)
         summary_icons = engine.lookup_many(summary_keywords)
 
         return templates.TemplateResponse("explanation.html", {
@@ -463,11 +532,16 @@ def parse_text_into_sections(text):
     return sections
 
 
-def get_semantic_keywords_ai(text, count=5):
+def get_semantic_keywords_ai(text, count=5, tier="gemini"):
     """
-    Use Gemini AI to choose the best iconographic keywords for a piece of text.
-    Returns a list of keywords that exist in our visual lexicon.
+    Use selected AI Strategy to choose the best iconographic keywords.
     """
+    if tier == "manual":
+        return extract_keywords(text, count)
+    
+    if tier == "ollama":
+        return get_semantic_keywords_ollama(text, count)
+
     if not llm_model:
         return extract_keywords(text, count)
 
@@ -497,6 +571,46 @@ def get_semantic_keywords_ai(text, count=5):
         return keywords[:count]
     except Exception as e:
         print(f"⚠️ AI mapping error: {e}")
+        return extract_keywords(text, count)
+
+
+def get_semantic_keywords_ollama(text, count=5):
+    """
+    Use local Ollama to choose concepts.
+    """
+    prompt = f"""
+    Analyze the following text and select the {count} most important concept keywords
+    that would best describe it visually using simple icons or emojis.
+
+    RULES:
+    - Return ONLY a JSON list of strings.
+    - Choose keywords that are common objects, actions, or simple concepts.
+    - Example: ["study", "computer", "code", "brain"].
+
+    TEXT:
+    {text}
+    """
+    
+    try:
+        payload = {
+            "model": OLLAMA_MODEL,
+            "prompt": prompt,
+            "stream": False,
+            "format": "json"
+        }
+        response = requests.post(f"{OLLAMA_HOST}/api/generate", json=payload, timeout=30)
+        data = response.json()
+        content = data.get("response", "").strip()
+        keywords = json.loads(content)
+        # handle different JSON formats LLMs might return
+        if isinstance(keywords, dict):
+            # look for a list in any key
+            for val in keywords.values():
+                if isinstance(val, list):
+                    return val[:count]
+        return keywords[:count] if isinstance(keywords, list) else extract_keywords(text, count)
+    except Exception as e:
+        print(f"⚠️ Ollama mapping error: {e}")
         return extract_keywords(text, count)
 
 
@@ -536,7 +650,7 @@ def extract_keywords(text, max_keywords=10):
     return keywords
 
 
-def generate_visual_section(section):
+def generate_visual_section(section, ai_tier="gemini"):
     """
     Generate visual elements for a section.
     Returns a dict with ASCII art and icon data.
@@ -560,7 +674,7 @@ def generate_visual_section(section):
         visual['ascii_separator'] = draw_separator(visual['title'], width=55)
 
         # Look up icons for the title
-        title_keywords = get_semantic_keywords_ai(visual['title'], count=3)
+        title_keywords = get_semantic_keywords_ai(visual['title'], count=3, tier=ai_tier)
         visual['title_icons'] = engine.lookup_many(title_keywords)
 
     # Generate a titled box showing the section content
@@ -571,7 +685,7 @@ def generate_visual_section(section):
         if len(visual['content']) < 80:
             visual['ascii_callout'] = draw_callout(visual['content'])
 
-        content_keywords = get_semantic_keywords_ai(visual['content'], count=5)
+        content_keywords = get_semantic_keywords_ai(visual['content'], count=5, tier=ai_tier)
         visual['content_icons'] = engine.lookup_many(content_keywords)
 
     # Generate a flowchart from bullets if there are 2+
@@ -580,7 +694,7 @@ def generate_visual_section(section):
 
     # Generate icons for bullets
     for bullet in visual['bullets']:
-        bullet_keywords = get_semantic_keywords_ai(bullet, count=2)
+        bullet_keywords = get_semantic_keywords_ai(bullet, count=2, tier=ai_tier)
         icons = engine.lookup_many(bullet_keywords)
         visual['bullet_icons'].append(icons)
 

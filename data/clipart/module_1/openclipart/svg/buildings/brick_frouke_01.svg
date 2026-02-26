@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 11.0, SVG Export Plug-In . SVG Version: 6.0.0 Build 78)  --><svg enable-background="new 0 0 303.125 156.041" height="156.041" i:pageBounds="0 792 612 0" i:rulerOrigin="0 0" i:viewOrigin="118.522 495.5171" overflow="visible" space="preserve" viewBox="0 0 303.125 156.041" width="303.125" xmlns="http://www.w3.org/2000/svg" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xmlns:graph="http://ns.adobe.com/Graphs/1.0/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Brick</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>building</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Frouke</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Frouke</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <switch>
+    <foreignObject height="1" requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/" width="1" x="0" y="0">
+      <i:pgfRef xlink:href="#adobe_illustrator_pgf"></i:pgfRef>
+    </foreignObject>
+    <g i:extraneous="self">
+      <g i:dimmedPercent="50" i:layer="yes" i:rgbTrio="#4F008000FFFF" id="Layer_1">
+        <line fill="#FFFFFF" i:knockout="Off" stroke="#000000" x1="58.478" x2="65.478" y1="123.517" y2="19.517"/>
+        <polyline fill="#FFFFFF" i:knockout="Off" points="3.478,71.517 302.478,54.517 281.478,139.517        26.478,155.517 0.478,70.517 " stroke="#000000"/>
+        <polygon fill="#FFFFFF" i:knockout="Off" points="1.478,72.517 7.478,14.517 277.478,0.517 301.478,55.517        " stroke="#000000"/>
+        <ellipse cx="68.978" cy="111.517" fill="#FFFFFF" i:knockout="Off" rx="25.5" ry="14" stroke="#000000"/>
+        <ellipse cx="151.478" cy="105.017" fill="#FFFFFF" i:knockout="Off" rx="24" ry="15.5" stroke="#000000"/>
+        <ellipse cx="234.978" cy="100.517" fill="#FFFFFF" i:knockout="Off" rx="25.5" ry="15" stroke="#000000"/>
+        <line fill="#FFFFFF" i:knockout="Off" stroke="#000000" x1="166.478" x2="155.478" y1="117.517" y2="89.517"/>
+        <line fill="#FFFFFF" i:knockout="Off" stroke="#000000" x1="251.478" x2="237.478" y1="110.517" y2="84.517"/>
+        <line fill="#FFFFFF" i:knockout="Off" stroke="#000000" x1="58.478" x2="61.478" y1="123.517" y2="97.517"/>
+      </g>
+    </g>
+  </switch>
+</svg>

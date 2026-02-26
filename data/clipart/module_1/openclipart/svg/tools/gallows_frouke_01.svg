@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 11.0, SVG Export Plug-In . SVG Version: 6.0.0 Build 78)  --><svg enable-background="new 0 0 448.15 667.005" height="667.005" i:pageBounds="0 792 612 0" i:rulerOrigin="0 0" i:viewOrigin="83.4497 733.502" overflow="visible" space="preserve" viewBox="0 0 448.15 667.005" width="448.15" xmlns="http://www.w3.org/2000/svg" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xmlns:graph="http://ns.adobe.com/Graphs/1.0/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Gallows</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>tools</rdf:li>
+            <rdf:li>weapons</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Frouke</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Frouke</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <switch>
+    <foreignObject height="1" requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/" width="1" x="0" y="0">
+      <i:pgfRef xlink:href="#adobe_illustrator_pgf"></i:pgfRef>
+    </foreignObject>
+    <g i:extraneous="self">
+      <g i:dimmedPercent="50" i:layer="yes" i:rgbTrio="#4F008000FFFF" id="Layer_1">
+        <polygon fill="#FFFFFF" i:knockout="Off" points="22.55,0.502 22.55,34.501 22.55,37.502 273.55,36.502        272.55,1.502 " stroke="#000000"/>
+        <polygon fill="#FFFFFF" i:knockout="Off" points="22.55,37.502 273.55,33.502 260.55,54.502 28.55,54.502 " stroke="#000000"/>
+        <polygon fill="#FFFFFF" i:knockout="Off" points="200.55,40.502 202.55,260.502 210.55,259.502        209.55,39.502 " stroke="#000000"/>
+        <path d="M210.55,259.502" fill="#FFFFFF" i:knockout="Off" stroke="#000000"/>
+        <path d="M205.55,251.002c-30.223,1.119-28.541,102.363,1,100       C221.536,349.803,232.55,250.002,205.55,251.002z" fill="#FFFFFF" i:knockout="Off" stroke="#000000"/>
+        <path d="M202.55,261.502c-16,1-11,83,1,83S220.543,260.378,202.55,261.502z" fill="#FFFFFF" i:knockout="Off" stroke="#000000"/>
+        <polygon fill="#FFFFFF" i:knockout="Off" points="75.55,154.502 134.55,53.502 157.55,51.502 74.55,199.502        " stroke="#000000"/>
+        <polygon fill="#FFFFFF" i:knockout="Off" points="46.55,53.502 49.55,545.502 2.55,645.502 0.55,666.502        446.55,664.502 447.629,637.577 362.55,535.502 75.55,539.502 75.55,54.502 " stroke="#000000"/>
+        <polyline fill="#FFFFFF" i:knockout="Off" points="0.55,666.502 446.55,664.502 447.629,637.577        3.652,639.077 0.652,663.076 " stroke="#000000"/>
+        <polyline fill="#FFFFFF" i:knockout="Off" points="75.55,539.502 75.648,603.079 50.149,603.079        49.55,545.502 " stroke="#000000"/>
+      </g>
+    </g>
+  </switch>
+</svg>

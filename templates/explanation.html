@@ -10,26 +10,26 @@
         rel="stylesheet">
     <style>
         :root {
-            --bg: #f4f6fb;
+            --bg: #ffffff;
             --card-bg: #ffffff;
-            --border: rgba(0, 0, 0, 0.06);
-            --text: #111827;
-            --text-sec: #4b5563;
-            --accent: #6366f1;
-            --accent2: #10b981;
-            --accent3: #f43f5e;
+            --border: #d0d7de;
+            --text: #1f2328;
+            --text-sec: #65717d;
+            --accent: #0969da;
+            --accent2: #1a7f37;
+            --accent3: #cf222e;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #0a0a1a;
-                --card-bg: rgba(20, 20, 50, 0.7);
-                --border: rgba(255, 255, 255, 0.08);
-                --text: #e8e6f0;
-                --text-sec: #a0a0c0;
-                --accent: #7c5cfc;
-                --accent2: #00d4aa;
-                --accent3: #ff6b9d;
+                --bg: #0d1117;
+                --card-bg: #161b22;
+                --border: #30363d;
+                --text: #c9d1d9;
+                --text-sec: #8b949e;
+                --accent: #58a6ff;
+                --accent2: #3fb950;
+                --accent3: #f85149;
             }
         }
 
@@ -62,9 +62,9 @@
             font-size: 0.6rem;
             line-height: 1.2;
             color: var(--accent);
-            background: rgba(0, 0, 0, 0.3);
+            background: #f6f8fa;
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 6px;
             padding: 16px;
             display: inline-block;
             white-space: pre;
@@ -126,13 +126,14 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.7rem;
             line-height: 1.2;
-            color: var(--accent2);
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
+            color: var(--text-sec);
+            background: #f6f8fa;
+            border-radius: 6px;
             padding: 8px 12px;
             white-space: pre;
             overflow-x: auto;
             margin-bottom: 12px;
+            border: 1px solid var(--border);
         }
 
         .section-header {
@@ -166,41 +167,69 @@
             margin-bottom: 8px;
         }
 
+        .sentence-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 12px 0;
+        }
+
+        .sentence-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .sentence-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(4px);
+        }
+
+        .sentence-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .sentence-text {
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0 !important;
+        }
+
         .ascii-box,
         .ascii-flow,
         .ascii-callout {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             line-height: 1.3;
-            color: var(--accent2);
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--accent2);
-            border-radius: 8px;
+            color: #1f2328;
+            background: #f6f8fa;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             padding: 16px;
             white-space: pre;
             overflow-x: auto;
             margin: 16px 0;
-            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.1);
-            font-weight: 500;
         }
 
         .ascii-box {
-            color: var(--accent2);
-            border-color: var(--accent2);
+            color: var(--text);
         }
 
         .ascii-callout {
-            color: var(--accent3);
-            border: 1px solid var(--accent3);
-            border-left: 5px solid var(--accent3);
-            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.1);
+            color: var(--text);
         }
 
         .ascii-flow {
-            color: #fff;
-            background: rgba(124, 92, 252, 0.1);
-            border-color: var(--accent);
-            box-shadow: 0 4px 15px rgba(124, 92, 252, 0.1);
+            color: var(--text);
         }
 
         .bullet-list {
@@ -296,7 +325,7 @@
             {% if section.title %}
             <div class="section-header">
                 {% for icon in section.title_icons %}
-                {% if icon.type == 'openmoji' %}
+                {% if icon.type == 'openmoji' or icon.type == 'clipart' %}
                 <img src="/{{ icon.path }}" alt="{{ icon.keyword }}">
                 {% elif icon.type == 'heroicon' %}
                 <img src="/{{ icon.path }}" alt="{{ icon.keyword }}" class="hero-section-icon">
@@ -316,7 +345,18 @@
             <pre class="ascii-box">{{ section.ascii_box }}</pre>
             {% endif %}
 
-            {% if section.content %}
+            {% if section.sentences %}
+            <div class="sentence-grid">
+                {% for sent in section.sentences %}
+                <div class="sentence-item">
+                    {% if sent.icon and sent.icon.type != 'none' %}
+                    <img src="/{{ sent.icon.path }}" alt="{{ sent.icon.keyword }}" class="sentence-icon">
+                    {% endif %}
+                    <p class="sentence-text">{{ sent.text }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% elif section.content %}
             <p class="section-text">{{ section.content }}</p>
             {% endif %}
 
@@ -360,7 +400,7 @@
         {% endfor %}
 
         <div class="footer-note">
-            Generated by Text Explain — Visual Lexicon for Semantic Text Annotation
+            Generated by TextPrism — Visual Lexicon for Semantic Text Annotation
         </div>
     </div>
 </body>

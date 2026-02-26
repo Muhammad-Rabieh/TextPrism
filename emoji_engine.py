@@ -6,14 +6,12 @@ Given a word or concept, find the best matching icon from the Visual Lexicon.
 This is the core of Iconographic Annotation — pairing concepts with visuals.
 
 Lookup Strategy:
-1. Exact match in emoji index
-2. Exact match in heroicon index
-3. Partial/substring match in emoji index
-4. Partial/substring match in heroicon index
-5. Category-based fallback
-6. Default icon
+1. Exact match in clipart index
+2. Exact match in emoji index
+3. Exact match in heroicon index
+... (and more)
 
-Part of the Text Explain Project.
+Part of TextPrism.
 """
 
 import json
@@ -27,6 +25,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 EMOJI_INDEX_PATH = os.path.join(DATA_DIR, 'emoji_index.json')
 HEROICON_INDEX_PATH = os.path.join(DATA_DIR, 'heroicon_index.json')
+CLIPART_INDEX_PATH = os.path.join(DATA_DIR, 'clipart_index.json')
 
 
 # ─────────────────────────────────────────────────────────────
@@ -77,6 +76,7 @@ class EmojiEngine:
     def __init__(self):
         self.emoji_index = {}
         self.heroicon_index = {}
+        self.clipart_index = {}
         self._load_indexes()
 
     def _load_indexes(self):
@@ -86,26 +86,30 @@ class EmojiEngine:
                 self.emoji_index = json.load(f)
         else:
             print(f"⚠️  Emoji index not found: {EMOJI_INDEX_PATH}")
-            print("   Run 'python build_index.py' first to build the visual lexicon.")
 
         if os.path.isfile(HEROICON_INDEX_PATH):
             with open(HEROICON_INDEX_PATH, 'r', encoding='utf-8') as f:
                 self.heroicon_index = json.load(f)
         else:
             print(f"⚠️  Heroicon index not found: {HEROICON_INDEX_PATH}")
-            print("   Run 'python build_index.py' first to build the visual lexicon.")
 
-    def lookup(self, word, prefer='emoji'):
+        if os.path.isfile(CLIPART_INDEX_PATH):
+            with open(CLIPART_INDEX_PATH, 'r', encoding='utf-8') as f:
+                self.clipart_index = json.load(f)
+        else:
+            print(f"⚠️  Clipart index not found: {CLIPART_INDEX_PATH}")
+
+    def lookup(self, word, prefer='clipart'):
         """
         Find the best matching icon for a word.
 
         Args:
             word: The word or concept to look up.
-            prefer: Which icon type to prefer - 'emoji' or 'heroicon'.
+            prefer: Which icon type to prefer - 'clipart', 'emoji', or 'heroicon'.
 
         Returns:
             dict with keys:
-                - type: 'openmoji' | 'heroicon' | 'none'
+                - type: 'clipart' | 'openmoji' | 'heroicon' | 'none'
                 - filename: The icon filename
                 - path: Relative path to the icon file
                 - match: 'exact' | 'partial' | 'category' | 'default'
@@ -113,20 +117,17 @@ class EmojiEngine:
         """
         word_lower = word.lower().strip()
 
-        if prefer == 'emoji':
-            # Try emoji first, then heroicon
-            result = self._lookup_emoji(word_lower)
-            if result['type'] != 'none':
-                return result
-            result = self._lookup_heroicon(word_lower)
-            if result['type'] != 'none':
-                return result
+        # Define priority based on preference
+        if prefer == 'clipart':
+            order = [self._lookup_clipart, self._lookup_emoji, self._lookup_heroicon]
+        elif prefer == 'emoji':
+            order = [self._lookup_emoji, self._lookup_clipart, self._lookup_heroicon]
         else:
-            # Try heroicon first, then emoji
-            result = self._lookup_heroicon(word_lower)
-            if result['type'] != 'none':
-                return result
-            result = self._lookup_emoji(word_lower)
+            order = [self._lookup_heroicon, self._lookup_clipart, self._lookup_emoji]
+
+        # Try in order
+        for lookup_func in order:
+            result = lookup_func(word_lower)
             if result['type'] != 'none':
                 return result
 
@@ -144,6 +145,32 @@ class EmojiEngine:
             'keyword': word_lower,
         }
 
+    def _lookup_clipart(self, word):
+        """Try to find a clipart match."""
+        # Exact match
+        if word in self.clipart_index:
+            rel_path = self.clipart_index[word]
+            return {
+                'type': 'clipart',
+                'filename': os.path.basename(rel_path),
+                'path': f'clipart/{rel_path}',
+                'match': 'exact',
+                'keyword': word,
+            }
+
+        # Partial match
+        for key, rel_path in self.clipart_index.items():
+            if len(key) >= 3 and (word in key or key in word):
+                return {
+                    'type': 'clipart',
+                    'filename': os.path.basename(rel_path),
+                    'path': f'clipart/{rel_path}',
+                    'match': 'partial',
+                    'keyword': key,
+                }
+
+        return {'type': 'none', 'filename': None, 'path': None, 'match': 'none', 'keyword': word}
+
     def _lookup_emoji(self, word):
         """Try to find an emoji match."""
         # Exact match
@@ -152,7 +179,7 @@ class EmojiEngine:
             return {
                 'type': 'openmoji',
                 'filename': filename,
-                'path': f'openmoji-72x72-color/{filename}',
+                'path': f'icons/openmoji/{filename}',
                 'match': 'exact',
                 'keyword': word,
             }
@@ -164,7 +191,7 @@ class EmojiEngine:
                 return {
                     'type': 'openmoji',
                     'filename': filename,
-                    'path': f'openmoji-72x72-color/{filename}',
+                    'path': f'icons/openmoji/{filename}',
                     'match': 'partial',
                     'keyword': key,
                 }
@@ -179,7 +206,7 @@ class EmojiEngine:
             return {
                 'type': 'heroicon',
                 'filename': filename,
-                'path': f'heroicons_24x24/{filename}',
+                'path': f'icons/heroicons/{filename}',
                 'match': 'exact',
                 'keyword': word,
             }
@@ -190,7 +217,7 @@ class EmojiEngine:
                 return {
                     'type': 'heroicon',
                     'filename': filename,
-                    'path': f'heroicons_24x24/{filename}',
+                    'path': f'icons/heroicons/{filename}',
                     'match': 'partial',
                     'keyword': key,
                 }
@@ -210,7 +237,7 @@ class EmojiEngine:
                     return {
                         'type': 'openmoji',
                         'filename': filename,
-                        'path': f'openmoji-72x72-color/{filename}',
+                        'path': f'icons/openmoji/{filename}',
                         'match': 'category',
                         'keyword': fallback_word,
                     }
@@ -241,13 +268,13 @@ class EmojiEngine:
             dict with type, filename, path, or None if not found.
         """
         filename = f'{codepoint}.png'
-        filepath = os.path.join(BASE_DIR, 'openmoji-72x72-color', filename)
+        filepath = os.path.join(BASE_DIR, 'data', 'icons', 'openmoji', filename)
 
         if os.path.isfile(filepath):
             return {
                 'type': 'openmoji',
                 'filename': filename,
-                'path': f'openmoji-72x72-color/{filename}',
+                'path': f'icons/openmoji/{filename}',
                 'match': 'codepoint',
                 'keyword': codepoint,
             }
@@ -264,13 +291,13 @@ class EmojiEngine:
             dict with type, filename, path, or None if not found.
         """
         filename = f'{name}.svg'
-        filepath = os.path.join(BASE_DIR, 'heroicons_24x24', filename)
+        filepath = os.path.join(BASE_DIR, 'data', 'icons', 'heroicons', filename)
 
         if os.path.isfile(filepath):
             return {
                 'type': 'heroicon',
                 'filename': filename,
-                'path': f'heroicons_24x24/{filename}',
+                'path': f'icons/heroicons/{filename}',
                 'match': 'direct',
                 'keyword': name,
             }
@@ -281,7 +308,8 @@ class EmojiEngine:
         return {
             'emoji_keywords': len(self.emoji_index),
             'heroicon_keywords': len(self.heroicon_index),
-            'total_vocabulary': len(self.emoji_index) + len(self.heroicon_index),
+            'clipart_keywords': len(self.clipart_index),
+            'total_vocabulary': len(self.emoji_index) + len(self.heroicon_index) + len(self.clipart_index),
             'categories': len(CATEGORY_MAP),
             'category_keywords': len(CATEGORY_KEYWORDS),
         }
@@ -307,7 +335,7 @@ if __name__ == '__main__':
     # Test lookups
     test_words = [
         'happy', 'book', 'computer', 'fire', 'idea',
-        'document', 'star', 'rocket', 'pizza', 'brain',
+        'ipod', 'robot', 'programming', 'rocket', 'canvas',
         'learning', 'technology', 'conversation',
         'xyznonexistent',
     ]

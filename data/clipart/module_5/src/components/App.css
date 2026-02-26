@@ -1,0 +1,86 @@
+.App {
+}
+
+.App-doodle-collection {
+  padding-top: 24px;
+  display: -ms-grid;
+  display: grid;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  grid-auto-columns: 1fr;
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
+  grid-template-areas:
+    "."
+    "Area";
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  -ms-grid-rows: auto;
+  grid-template-rows: auto;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.App-section {
+  margin-left: 264px;
+}
+
+@media (max-width: 991px) {
+  .App-section {
+    margin-left: 256px;
+  }
+}
+
+@media (max-width: 767px) {
+  .App-section {
+    margin-left: 0;
+    padding-bottom: 200px;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.App-author-block {
+  flex-direction: column;
+  display: none;
+}
+
+.App-author-block a {
+  padding-bottom: 8px;
+}
+
+@media (max-width: 767px) {
+  .App-author-block {
+    display: flex;
+  }
+}
+
+.App-author-block a {
+  display: inline-block;
+}

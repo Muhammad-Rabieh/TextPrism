@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 10.0, SVG Export Plug-In . SVG Version: 3.0.0 Build 77)  --><svg enable-background="new 0 0 495.684 495.684" height="495.684" i:pageBounds="0 792 612 0" i:rulerOrigin="0 0" i:viewOrigin="58 643" overflow="visible" space="preserve" viewBox="0 0 495.684 495.684" width="495.684" xmlns="http://www.w3.org/2000/svg" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xmlns:graph="http://ns.adobe.com/Graphs/1.0/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Celtic Solomons Knot</dc:title>
+        <dc:description>Celtic Solomons Knot</dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>celtic</rdf:li>
+            <rdf:li>knot</rdf:li>
+            <rdf:li>symbol</rdf:li>
+            <rdf:li>decoration</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Project</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent rdf:about="http://web.resource.org/cc/PublicDomain">
+            <dc:title>Gerald G.</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent rdf:about="http://web.resource.org/cc/PublicDomain">
+            <dc:title>Public Domain</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date>2005/06/21</dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <switch>
+    <foreignObject height="1" requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/" width="1" x="0" y="0">
+      <i:pgfRef xlink:href="#adobe_illustrator_pgf"></i:pgfRef>
+    </foreignObject>
+    <g i:extraneous="self">
+      <g i:dimmedPercent="50" i:knockout="Off" i:layer="yes" i:rgbTrio="#4F008000FFFF" id="Layer_1">
+        <g i:knockout="Off">
+          <path d="M0,0l30.96,30.96h154.908V0H0z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M185.868,30.96V0l185.868,185.868l-15.479,15.48L185.868,30.96z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M0,0v185.868h30.96V30.96L0,0z" fill="#D58A2B" i:knockout="Off"/>
+          <path d="M0,185.868l61.956,61.956l15.48-15.48L30.96,185.868H0z" fill="#D58A2B" i:knockout="Off"/>
+          <path d="M30.96,30.96l30.996,30.996v123.912H30.96V30.96z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M61.956,185.868l30.96,30.996l-15.48,15.479L30.96,185.868H61.956z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M30.96,30.96l30.996,30.996h123.912l154.908,154.908l15.479-15.516L185.868,30.96       H30.96z" fill="#D58A2B" i:knockout="Off"/>
+          <path d="M61.956,61.956l30.96,30.996h92.952l139.428,139.392l15.479-15.48L185.868,61.956       H61.956z" fill="#7FC0DB" i:knockout="Off"/>
+          <path d="M92.916,92.952l-30.96-30.996v123.912l30.96,30.996l15.516-15.516l-15.516-15.48       V92.952z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M92.916,92.952l30.996,30.96v61.956l-15.48,15.48l-15.516-15.48v-77.436V92.952z" fill="#7FC0DB" i:knockout="Off"/>
+          <path d="M92.916,92.952h92.952l139.428,139.392l-15.516,15.48L185.868,123.912h-61.956       L92.916,92.952z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M0,495.684l30.96-30.995V309.779H0V495.684z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M30.96,309.779H0l185.868-185.868l15.48,15.48L30.96,309.779z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M0,495.684h185.868v-30.995H30.96L0,495.684z" fill="#D18836" i:knockout="Off"/>
+          <path d="M185.868,495.684l61.956-61.991l-15.48-15.48l-46.476,46.478V495.684z" fill="#D18836" i:knockout="Off"/>
+          <path d="M30.96,464.688l30.996-30.996h123.912v30.996H30.96z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M185.868,433.691l30.996-30.959l15.479,15.479l-46.476,46.477V433.691z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M30.96,464.688l30.996-30.996V309.779l154.908-154.872l-15.516-15.516L30.96,309.779       V464.688z" fill="#D18836" i:knockout="Off"/>
+          <path d="M61.956,433.691l30.96-30.959v-92.953l139.428-139.393l-15.479-15.479L61.956,309.779       V433.691z" fill="#7FC0DB" i:knockout="Off"/>
+          <path d="M92.916,402.732l-30.96,30.959h123.912l30.996-30.959l-15.516-15.48l-15.48,15.48       H92.916z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M92.916,402.732l30.996-30.996h61.956l15.48,15.516l-15.48,15.48h-77.436H92.916z" fill="#7FC0DB" i:knockout="Off"/>
+          <path d="M92.916,402.732v-92.953l139.428-139.392l15.48,15.48L123.912,309.779v61.957       L92.916,402.732z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M495.684,495.684l-30.996-30.995H309.78v30.995H495.684z" fill="#D58A2B" i:knockout="Off"/>
+          <path d="M309.78,464.688v30.995L123.912,309.779l15.48-15.479L309.78,464.688z" fill="#D58A2B" i:knockout="Off"/>
+          <path d="M495.684,495.684V309.779h-30.996v154.908L495.684,495.684z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M495.684,309.779l-61.991-61.956l-15.479,15.48l46.477,46.476H495.684z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M464.688,464.688l-30.995-30.996V309.779h30.995V464.688z" fill="#D58A2B" i:knockout="Off"/>
+          <path d="M433.691,309.779l-30.96-30.959l15.479-15.517l46.477,46.476H433.691z" fill="#D58A2B" i:knockout="Off"/>
+          <path d="M464.688,464.688l-30.995-30.996H309.78L154.908,278.82L139.392,294.3L309.78,464.688       L464.688,464.688z" fill="#F5A13B" i:knockout="Off"/>
+          <path d="M433.691,433.691l-30.96-30.959H309.78L170.388,263.305l-15.48,15.517l154.872,154.87       H433.691z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M402.731,402.732l30.96,30.959V309.779l-30.96-30.959L387.252,294.3l15.479,15.479       V402.732z" fill="#7FC0DB" i:knockout="Off"/>
+          <path d="M402.731,402.732l-30.996-30.996v-61.957l15.517-15.479l15.479,15.479v77.473V402.732       z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M402.731,402.732H309.78L170.388,263.305l15.48-15.48L309.78,371.736h61.955       L402.731,402.732z" fill="#7FC0DB" i:knockout="Off"/>
+          <path d="M495.684,0l-30.996,30.96v154.908h30.996V0z" fill="#D18836" i:knockout="Off"/>
+          <path d="M464.688,185.868h30.996L309.78,371.736l-15.48-15.48L464.688,185.868z" fill="#D18836" i:knockout="Off"/>
+          <path d="M495.684,0H309.78v30.96h154.907L495.684,0z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M309.78,0l-61.957,61.956l15.479,15.48L309.78,30.96V0z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M464.688,30.96l-30.995,30.996H309.78V30.96H464.688z" fill="#D18836" i:knockout="Off"/>
+          <path d="M309.78,61.956l-30.961,30.996l-15.517-15.516L309.78,30.96V61.956z" fill="#D18836" i:knockout="Off"/>
+          <path d="M464.688,30.96l-30.995,30.996v123.912L278.819,340.775l15.479,15.479       l170.389-170.388V30.96z" fill="#F0A04A" i:knockout="Off"/>
+          <path d="M433.691,61.956l-30.96,30.996v92.916L263.304,325.295l15.517,15.48l154.872-154.908       L433.691,61.956z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M402.731,92.952l30.96-30.996H309.78l-30.961,30.996l15.479,15.48l15.48-15.48       H402.731z" fill="#7FC0DB" i:knockout="Off"/>
+          <path d="M402.731,92.952l-30.996,30.96H309.78l-15.48-15.48l15.48-15.48h77.472H402.731z" fill="#1C7AB5" i:knockout="Off"/>
+          <path d="M402.731,92.952v92.916L263.304,325.295l-15.479-15.516l123.912-123.912v-61.956       L402.731,92.952z" fill="#7FC0DB" i:knockout="Off"/>
+        </g>
+      </g>
+    </g>
+  </switch>
+</svg>

@@ -5,7 +5,7 @@ SHAPE_IT ASCII Art Engine
 Programmatic generation of geometric shapes, visual containers, borders,
 flowcharts, and decorative elements using ASCII and Unicode box-drawing characters.
 
-Part of the Text Explain Project — Visual Lexicon for Semantic Text Annotation.
+Part of TextPrism — Visual Lexicon for Semantic Text Annotation.
 """
 
 try:
