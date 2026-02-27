@@ -1,16 +1,17 @@
 # 💎 TextPrism — Implementation Plan
 
+> Last updated: 2026-02-27
+
 ## 🎯 Project Vision
 
 **"Empowering LLMs with the visual palettes and style guides to create expressive explanations."**
 
-TextPrism is a mapping engine that enables LLMs to transform dense text into rich, visual summaries. Instead of forcing programmatic logic, we treat the LLM as the **Artist**. We provide the **Essential Tools**: a massive 1.3GB Visual Lexicon and a standardized **ASCII Style Manual**.
+TextPrism is a **Visual Mapping Engine** that enables LLMs to transform dense text into rich, visual summaries. The LLM acts as the **Artist** — it handles all structure, ASCII art, and layout. TextPrism provides the **Essential Tools**: a massive 1.3 GB Visual Lexicon and a rendering engine that produces premium visual documents.
 
-- 🗺️ **Visual Lexicon Mapping**: Upgraded to **Granular Sentence-Level Mapping**. Every thought is paired with a specific visual asset for maximum expressiveness.
-- 🎨 **LLM-Driven Artistic Freedom**: LLM handles all structure, ASCII art, and layout design.
-- 📥 **Export-Ready**: Premium Visual Documents generated from raw text or JSON mapping.
-
-The user gives the LLM the command to use our **Shape-It ASCII style** and **Visual Lexicon tags**. The LLM then handles the creative heavy lifting—drawing the boxes and structuring the thoughts—while we provide the assets and the final render.
+- 🗺️ **Granular Sentence-Level Mapping**: Every thought is paired with a specific, vibrant visual asset.
+- 🎨 **LLM-Driven Artistic Freedom**: LLM designs all boxes, flows, and hierarchy using the "shape-it ASCII art style."
+- 📥 **Export-Ready**: Premium Visual Documents from raw text or structured JSON.
+- 🧪 **Offline Testable**: Test scripts generate full visual documents without any API key.
 
 ---
 
@@ -22,9 +23,9 @@ The user gives the LLM the command to use our **Shape-It ASCII style** and **Vis
 > *Enhances readability, memory retention, and comprehension.*
 
 **How we do it:**
-- Every key concept in the document gets paired with an **OpenMoji** emoji (72×72 PNG)
-- Every structural element (section type, category) gets a **Heroicon** SVG (24×24)
-- Examples: 🪑 Chair, 📖 Book, 🔬 Science, 💡 Idea
+- Every key concept gets paired with a **high-quality icon** from the 90k+ asset library
+- The **Vibrancy Ranking Engine** scores all candidate icons and picks the most colorful, relevant match
+- Priority order: OpenClipArt (score 100) → OpenMoji (score 90) → Lucide/3D (score 85) → Heroicons (score 10)
 
 ### Layer 2: Visual Lexicon (Reusable Vocabulary)
 
@@ -33,76 +34,75 @@ The user gives the LLM the command to use our **Shape-It ASCII style** and **Vis
 **How we do it:**
 - `emoji_index.json` — Maps 4,292 OpenMoji icons to English keywords
 - `heroicon_index.json` — Maps 324 Heroicons to category keywords
-- This vocabulary is **reusable** across any document the system processes
-- The lexicon grows as more mappings are added
+- `clipart_index.json` — Maps 85,000+ clipart assets across 20 modules
+- The lexicon is **reusable** across any document and continuously expandable
 
-### Layer 3: Semantic Icon Mapping (AI-Powered)
+### Layer 3: Semantic Icon Mapping (AI or Heuristic)
 
-> *Mapping text labels to semantically meaningful images automatically via LLM.*
+> *Mapping text labels to semantically meaningful images automatically.*
 
 **How we do it:**
-- The LLM (me) reads the input document
-- Extracts key concepts, sections, relationships
-- **Automatically selects** the best emoji/icon for each concept from the visual lexicon
-- No manual icon selection needed — the AI understands meaning
+- **With API**: Gemini 1.5 Flash or Ollama extracts concepts and selects keywords
+- **Without API**: Heuristic keyword mapping with semantic remapping (e.g., "safety" → "shield", "efficiency" → "rocket")
+- **Granular**: Keywords are assigned to *every sentence*, not just section titles
 
 ### Layer 4: SHAPE_IT ASCII Structural Art
 
 > *Programmatic generation of shapes using ASCII/Unicode characters for visual structure.*
 
 **How we do it:**
-- Title banners, section separators, bordered boxes frame the content
-- Flowchart diagrams show relationships between concepts
-- Pyramids/hierarchies show ranked information
-- Callout bubbles highlight critical points
-- All generated algorithmically, not hand-drawn
+- The LLM generates all ASCII art (boxes, flowcharts, hierarchies, separators)
+- TextPrism normalizes the art with `normalize_ascii()`:
+  - Tab expansion, common indent removal, uniform line padding
+  - Literal `\n` un-escaping for LLM JSON compatibility
+- CSS tuned for pixel-perfect rendering: `line-height: 1.0`, `letter-spacing: -0.2px`
 
 ---
 
 ## 📦 Available Assets (Offline)
 
-| Asset             | Location                        | Format       | Count  | Role                          |
-|-------------------|---------------------------------|--------------|--------|-------------------------------|
-| OpenMoji (color)  | `openmoji-72x72-color/`         | PNG 72×72    | 4,292  | Iconographic annotation       |
-| Heroicons         | `heroicons_24x24/`              | SVG 24×24    | 324    | Structural/category icons     |
-| SHAPE_IT ASCII    | Programmatically generated      | Text/Unicode | ∞      | Visual structure & framing    |
+| Asset | Location | Format | Count | Size |
+|-------|----------|--------|-------|------|
+| OpenMoji (color) | `data/icons/openmoji/` | PNG 72×72 | 4,292 | ~30 MB |
+| Heroicons | `data/icons/heroicons/` | SVG 24×24 | 324 | ~2 MB |
+| OpenClipArt (Debian) | `data/clipart/module_1/` | SVG | ~26,000 | ~24 MB |
+| Lucide Icons | `data/clipart/module_2/` | SVG | ~5,300 | ~43 MB |
+| Google Noto Emoji | `data/clipart/module_3/` | SVG | ~3,500 | ~150 MB |
+| UN OCHA | `data/clipart/module_4/` | SVG | ~700 | ~4 MB |
+| Open Doodles | `data/clipart/module_5/` | SVG | ~50 | ~5 MB |
+| Humaaans | `data/clipart/module_6/` | SVG | ~30 | ~15 MB |
+| Handy Arrows | `data/clipart/module_7/` | SVG | ~40 | ~2 MB |
+| Ira Design | `data/clipart/module_8/` | SVG | ~100 | ~10 MB |
+| Fluent Emoji | `data/clipart/module_9/` | SVG | ~7,500 | ~80 MB |
+| 3D Icons | `data/clipart/module_10/` | PNG | ~1,440 | ~50 MB |
+| + Modules 11-20 | `data/clipart/module_11-20/` | SVG/PNG | ~10,000+ | ~200 MB |
+| **Total** | | | **~90,000+** | **~1.3 GB** |
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                        USER WORKFLOW (AI-POWERED)                          │
-│                                                                            │
-│  1. INPUT: User pastes document text into the app.                         │
-│  2. PROCESSING: Choose AI Strategy (Free, API, or Local).                  │
-│  3. SEMANTIC MAPPING:                                                      │
-│     • PHASE 1: DISTILL - AI summarizes and structures raw text.             │
-│     • PHASE 2: MAP - AI maps distilled text to VISUAL LEXICON.             │
-│  4. RENDERING: App generates ICONOGRAPHICALLY ANNOTATED output.            │
-│     • Icons (Emojis/SVGs) + SHAPE_IT ASCII art + Formatted text.           │
-│  5. OUTPUT: User downloads beautiful HTML/Markdown explanation.             │
-└────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Data Flow
-
-```
-                         ┌──────────────────┐
-                         │  VISUAL LEXICON   │
-                         │  emoji_index.json │
-                         │  hero_index.json  │
-                         └────────┬─────────┘
-                                  │ lookup
-                                  ▼
-┌──────────┐     ┌───────────────────────────────┐     ┌──────────────┐
-│  Input   │────►│  LLM: Semantic Icon Mapping   │────►│   Output     │
-│  Text    │     │  • Extract concepts            │     │   HTML with: │
-└──────────┘     │  • Select icons per concept    │     │  • Emojis    │
-                 │  • Choose SHAPE_IT structures  │     │  • Heroicons │
-                 │  • Generate explanation text    │     │  • ASCII art │
-                 └───────────────────────────────┘     └──────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│                    TextPrism Rendering Pipeline                 │
+│                                                                │
+│  ┌──────────┐    ┌────────────────────┐    ┌────────────────┐  │
+│  │  INPUT   │───►│  Two-Phase Prompt  │───►│  RENDER ENGINE │  │
+│  │  (text)  │    │  1. Distill        │    │  • Vibrancy    │  │
+│  └──────────┘    │  2. Map to JSON    │    │    Ranking     │  │
+│                  └────────────────────┘    │  • ASCII Norm  │  │
+│                           │                │  • Template    │  │
+│                           ▼                └───────┬────────┘  │
+│                  ┌────────────────┐                │           │
+│                  │ VISUAL LEXICON │                ▼           │
+│                  │ 90k+ assets   │        ┌──────────────┐    │
+│                  │ 3 JSON indexes│        │   OUTPUT     │    │
+│                  └────────────────┘        │   HTML with: │    │
+│                                           │  • Icons     │    │
+│                                           │  • ASCII art │    │
+│                                           │  • Sentences │    │
+│                                           └──────────────┘    │
+└────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -110,341 +110,161 @@ The user gives the LLM the command to use our **Shape-It ASCII style** and **Vis
 ## 📂 Project Structure
 
 ```
-text_explain_project/
+TextPrism/
 │
-├── 📁 openmoji-72x72-color/          # 4,292 OpenMoji PNG icons (EXISTING)
-├── 📁 heroicons_24x24/               # 324 Heroicon SVGs (EXISTING)
+├── app.py                    # FastAPI backend (718 lines)
+├── emoji_engine.py           # Vibrancy Ranking Engine (407 lines)
+├── shape_it.py               # SHAPE_IT ASCII engine (635 lines)
+├── utils.py                  # Shared utilities (normalize_ascii)
 │
-├── 📁 data/                           # Visual Lexicon (generated once)
-│   ├── emoji_index.json              # keyword → OpenMoji filename mapping
-│   └── heroicon_index.json           # keyword → Heroicon filename mapping
+├── templates/
+│   ├── index.html            # Frontend UI (Magic Prompt workflow)
+│   └── explanation.html      # Output template (sentence grid + icons)
 │
-├── 📁 static/                         # Frontend UI
-│   ├── index.html                    # Main web UI (paste text input)
-│   ├── style.css                     # Premium dark glassmorphism theme
-│   └── script.js                     # Frontend logic & rendering
+├── static/
+│   ├── style.css             # Vibrant Slate & Cobalt theme
+│   └── script.js             # Frontend logic
 │
-├── 📁 templates/                      # Output templates
-│   └── explanation.html              # Jinja2 template for visual output
+├── data/
+│   ├── icons/
+│   │   ├── openmoji/         # 4,292 OpenMoji PNGs
+│   │   └── heroicons/        # 324 Heroicon SVGs
+│   ├── clipart/
+│   │   ├── module_1/         # OpenClipArt (~26k SVGs)
+│   │   ├── module_2/         # Lucide (~5.3k SVGs)
+│   │   └── module_3-20/      # 17 more icon packs
+│   ├── emoji_index.json      # OpenMoji keyword map
+│   ├── heroicon_index.json   # Heroicon keyword map
+│   └── clipart_index.json    # Unified clipart map (6.3 MB)
 │
-├── 📁 output/                         # Generated explanation files
-│   └── (generated HTML files go here)
+├── scripts/
+│   ├── build_index.py        # Build all JSON indexes
+│   ├── download_clipart.py   # Batch download modules
+│   ├── optimize_images.py    # PNG/SVG compression
+│   └── flatten_clipart.py    # Flatten nested dirs
 │
-├── app.py                             # FastAPI backend server
-├── shape_it.py                        # SHAPE_IT ASCII engine
-├── emoji_engine.py                    # Visual Lexicon lookup engine
-├── build_index.py                     # One-time script: build visual lexicon
-├── requirements.txt                   # Python dependencies
-├── README.md                          # Project documentation
-└── IMPLEMENTATION_PLAN.md             # This file
+├── tests/
+│   ├── sample_docs/          # Test documents
+│   ├── test_ai_render.py     # AI render test
+│   └── test_clipart_size.py  # Size estimation
+│
+├── test_cpp_templates.py     # ⭐ C++ tutorial offline test
+├── test_render.py            # Generic standalone render test
+│
+├── README.md                 # Project documentation
+├── IMPLEMENTATION_PLAN.md    # This file
+├── PROGRESS.md               # Progress tracker
+├── requirements.txt          # Python dependencies
+├── .env.example              # API key template
+└── .gitignore                # Git exclusions
 ```
 
 ---
 
-## 🔧 Components
+## 🔧 Key Components
 
-### 1. `build_index.py` — Visual Lexicon Builder (Run Once)
+### 1. `emoji_engine.py` — Vibrancy Ranking Engine
 
-**Purpose:** Scan the offline asset folders and create the **visual lexicon** —
-JSON lookup tables that map **English keywords** to **icon filenames**.
+The core of icon selection. Given any word, it finds the **most colorful and relevant** icon from the 90k+ asset library.
 
-**OpenMoji Indexing:**
-- File names are Unicode codepoints (e.g., `1F600.png` = 😀 grinning face)
-- We build a curated mapping of ~500+ common English words to their best emoji match
-- Categories: emotions, objects, nature, food, activities, symbols, flags, etc.
-- Example: `{ "happy": "1F600.png", "book": "1F4D6.png", "fire": "1F525.png" }`
+**Vibrancy Scoring (0-100+):**
 
-**Heroicon Indexing:**
-- File names are already descriptive (e.g., `light-bulb.svg`, `document-text.svg`)
-- We parse filenames into searchable keywords automatically
-- Example: `{ "document": "document-text.svg", "light": "light-bulb.svg", "star": "star.svg" }`
+| Source | Base Score | Why |
+|--------|-----------|-----|
+| OpenClipArt (module_1) | 100 | Multi-color, high-entropy SVGs |
+| OpenMoji | 90 | Consistently vibrant emoji PNGs |
+| Lucide / 3D | 85 | Clean colored SVGs |
+| Doodle | 65 | Sketchy but characterful |
+| Heroicons | 10 | Monochrome outlines (last resort) |
 
-**Output:** `data/emoji_index.json` + `data/heroicon_index.json`
-
----
-
-### 2. `shape_it.py` — SHAPE_IT ASCII Art Engine
-
-**Purpose:** Programmatically generate geometric shapes, visual containers, borders,
-flowcharts, and decorative elements using ASCII and Unicode box-drawing characters.
-
-**What SHAPE_IT ASCII means:**
-Creating shapes using text characters — both simple ASCII (/, \, *, |, _, -)
-and extended Unicode box-drawing characters (┌, ─, ┐, │, └, ┘, ═, ║, ╔, ╗, ╚, ╝).
-All shapes are generated **algorithmically**, not hand-drawn.
-
-**Features:**
-
-1.  **Geometric Shapes** — Pyramids, diamonds, triangles
-    ```
-        *           /\          ┌────────┐
-       ***         /  \         │  Title │
-      *****       /    \        └────────┘
-     *******     /______\
-    ```
-
-2.  **Box-Drawing Borders** — Frames around text (single, double, rounded)
-    ```
-    ╔═══════════════════════════╗       ┌───────────────────────────┐
-    ║   Important Concept!      ║       │   Light border style      │
-    ╠═══════════════════════════╣       ├───────────────────────────┤
-    ║  Explanation goes here    ║       │  Also looks great         │
-    ╚═══════════════════════════╝       └───────────────────────────┘
-    ```
-
-3.  **Flowchart Diagrams** — Process flows with boxes and arrows
-    ```
-    ┌──────────┐     ┌──────────┐     ┌──────────┐
-    │  Input   │────►│ Process  │────►│  Output  │
-    └──────────┘     └──────────┘     └──────────┘
-          │                                 │
-          └─────────── feedback ────────────┘
-    ```
-
-4.  **Decorative Separators** — Section dividers and banners
-    ```
-    ═══════════════════════════════════════
-    ░░░░░ Chapter 1: Introduction ░░░░░░░
-    ═══════════════════════════════════════
-    ```
-
-5.  **Callout Bubbles** — Thought/speech bubbles for highlights
-    ```
-       .──────────────────────.
-      ( This is a key point!   )
-       `──────────────────────'
-             \
-              ★
-    ```
-
-6.  **Text Banners** — Large stylized text (via `pyfiglet`)
-    ```
-     ____
-    / ___|  _   _  _ __ ___   _ __ ___    __ _  _ __ _   _
-    \___ \ | | | || '_ ` _ \ | '_ ` _ \  / _` || '__| | | |
-     ___) || |_| || | | | | || | | | | || (_| || |  | |_| |
-    |____/  \__,_||_| |_| |_||_| |_| |_| \__,_||_|   \__, |
-                                                       |___/
-    ```
-
-7.  **ASCII Tables** — Bordered data tables
-    ```
-    ┌──────────┬────────────┬──────────┐
-    │  Term    │  Meaning   │  Icon    │
-    ├──────────┼────────────┼──────────┤
-    │  API     │  Interface │   🔌     │
-    │  LLM     │  AI Model  │   🤖     │
-    └──────────┴────────────┴──────────┘
-    ```
-
-8.  **Hierarchy/Pyramid** — Layered information (top = most important)
-    ```
-          /\
-         /  \
-        / #1 \
-       /──────\
-      / #2     \
-     /──────────\
-    / #3         \
-   /──────────────\
-    ```
-
-**API Functions:**
-- `draw_box(text, style='double')` — Wrap text in a bordered box
-- `draw_pyramid(levels, char='*')` — Generate a pyramid with labels
-- `draw_diamond(height, char='*')` — Generate a diamond shape
-- `draw_flowchart(steps)` — Generate a horizontal/vertical flowchart
-- `draw_separator(text, width, style='double')` — Section dividers with text
-- `draw_banner(text, font='slant')` — pyfiglet text banner
-- `draw_callout(text)` — Speech/thought bubble around text
-- `draw_table(headers, rows)` — ASCII table with borders
-- `draw_arrow(direction, length)` — Directional arrows
-- `draw_hierarchy(items)` — Pyramid/hierarchy diagram
-
----
-
-### 3. `emoji_engine.py` — Visual Lexicon Lookup Engine
-
-**Purpose:** Given a word or concept, find the best matching icon from the visual lexicon.
-This is the core of **Iconographic Annotation** — pairing concepts with visuals.
+**Semantic Remapping** (for abstract terms):
+```python
+"safety"     → ["shield_color", "security", "safe_box"]
+"foundation" → ["pillar", "construction", "bricks"]
+"efficiency" → ["rocket", "speed", "bolt"]
+"power"      → ["lightning", "energy", "power_color"]
+"vibrant"    → ["rainbow", "sparkles", "paint"]
+```
 
 **Lookup Strategy (in order):**
-1.  **Exact match** — Word exists directly in the lexicon
-2.  **Partial match** — Word is a substring of a lexicon entry
-3.  **Category match** — Word belongs to a known category (emotion → face emoji)
-4.  **Heroicon fallback** — Use a structural Heroicon if no emoji fits
-5.  **Default** — Return a generic icon (e.g., ❓ or 📌)
+1. **Exact match** — Word exists directly in the lexicon
+2. **Partial match** — Word is a substring of a lexicon entry
+3. **Category fallback** — Word belongs to a known category
+4. **Semantic remapping** — Abstract term mapped to concrete visual
+5. **Default** — Generic fallback icon
 
-**Returns:** `{ "type": "openmoji"|"heroicon", "filename": "1F600.png", "path": "openmoji-72x72-color/1F600.png" }`
+### 2. `utils.py` — ASCII Normalization
 
----
+Extracted from `app.py` for testability. The `normalize_ascii()` function ensures pixel-perfect ASCII art:
 
-### 4. `app.py` — FastAPI Backend
-
-**Purpose:** Web server that orchestrates the entire pipeline.
-
-**API Endpoints:**
-| Method | Endpoint                         | Purpose                          |
-|--------|----------------------------------|----------------------------------|
-| GET    | `/`                              | Serve the main UI                |
-| POST   | `/explain`                       | Accept text → return visual HTML |
-| GET    | `/openmoji-72x72-color/{name}`   | Serve OpenMoji PNGs              |
-| GET    | `/heroicons_24x24/{name}`        | Serve Heroicon SVGs              |
-| POST   | `/shape-it`                      | Generate ASCII art for text      |
-| GET    | `/lexicon`                       | Return the visual lexicon (JSON) |
-
----
-
-### 5. Frontend (`static/index.html` + `style.css` + `script.js`)
-
-**Purpose:** Premium dark-themed UI where users paste text and see iconographically
-annotated explanations.
-
-**Design:**
-- Dark background with glassmorphism cards
-- Text input area (paste or type document text)
-- "Explain" button → sends text to backend/LLM
-- Result area renders: ASCII art + inline emojis + Heroicons + formatted text
-- Download as HTML or Markdown
-- Responsive layout
-
----
-
-## 🎨 Output Format — Visual Explanation Structure
-
-The generated explanation HTML combines all three annotation layers:
-
-| # | Element                  | Uses                        | Purpose                                |
-|---|--------------------------|-----------------------------|-----------------------------------------|
-| 1 | **Title Banner**         | SHAPE_IT (pyfiglet banner)  | Large eye-catching document title       |
-| 2 | **Summary Box**          | SHAPE_IT (bordered box) + OpenMoji | Key points with emoji annotations  |
-| 3 | **Section Separators**   | SHAPE_IT (decorative lines) | Visual separation between topics        |
-| 4 | **Concept Cards**        | OpenMoji + Heroicons        | Each concept gets icon + explanation    |
-| 5 | **Key Terms Table**      | SHAPE_IT (ASCII table) + OpenMoji | Glossary with icons per term       |
-| 6 | **Process Flows**        | SHAPE_IT (flowchart)        | Relationships and sequences             |
-| 7 | **Callout Highlights**   | SHAPE_IT (callout bubble)   | Critical points that stand out          |
-| 8 | **Hierarchy Pyramids**   | SHAPE_IT (pyramid)          | Ranked/layered information              |
-
-### Example Output Snippet
-
-```html
-<!-- SHAPE_IT: Title Banner -->
-<pre class="ascii-banner">
- _____         _     _____           _       _
-|_   _|____  _| |_  | ____|_  ___ __|  __ _(_)_ __
-  | |/ _ \ \/ / __| |  _| \ \/ / '_ \| / _` | | '_ \
-  | |  __/>  <| |_  | |___ >  <| |_) | | (_| | | | | |
-  |_|\___/_/\_\\__| |_____/_/\_\ .__/|_|\__,_|_|_| |_|
-                                |_|
-</pre>
-
-<!-- SHAPE_IT: Summary Box + OpenMoji Annotation -->
-<pre class="ascii-box">
-╔══════════════════════════════════════════════════════╗
-║  📖 This document explains the water cycle.         ║
-║  🌧️ Key topics: evaporation, condensation, rain    ║
-║  🔬 Level: Beginner-friendly                        ║
-╚══════════════════════════════════════════════════════╝
-</pre>
-
-<!-- Iconographic Annotation: Concept + Icon Pair -->
-<div class="concept-card">
-  <img src="/openmoji-72x72-color/2600.png" alt="sun" class="emoji-icon">
-  <img src="/heroicons_24x24/light-bulb.svg" alt="concept" class="hero-icon">
-  <p><strong>Evaporation</strong>: The sun heats water, turning it into vapor.</p>
-</div>
-
-<!-- SHAPE_IT: Flowchart -->
-<pre class="ascii-flow">
-┌──────────────┐     ┌────────────────┐     ┌──────────────┐
-│ ☀️ Evaporation│────►│ ☁️ Condensation│────►│ 🌧️ Rain      │
-└──────────────┘     └────────────────┘     └──────────────┘
-       ▲                                           │
-       └───────────── 🔄 Water Cycle ──────────────┘
-</pre>
+```python
+def normalize_ascii(text):
+    # 1. Un-escape literal '\n' from LLM JSON output
+    # 2. Expand tabs to 4 spaces
+    # 3. Trim leading/trailing empty lines
+    # 4. Remove common indentation (dedent)
+    # 5. Pad all lines to uniform length (fixes broken box borders)
 ```
 
----
+### 3. `app.py` — FastAPI Backend
 
-## 🚀 Implementation Phases
+**API Endpoints:**
 
-### Phase 1: Foundation ← START HERE
-- [x] Collect OpenMoji assets (4,292 PNGs)
-- [x] Collect Heroicons assets (324 SVGs)
-- [ ] Create `build_index.py` — build visual lexicon JSON files
-- [ ] Create `shape_it.py` — SHAPE_IT ASCII engine with all shape functions
-- [ ] Create `emoji_engine.py` — visual lexicon lookup engine
-- [ ] Set up virtual environment & install dependencies
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| GET | `/` | Serve main UI |
+| POST | `/explain` | Text → visual HTML (direct) |
+| POST | `/render-magic` | JSON → visual HTML (from Magic Prompt) |
+| GET | `/magic-prompt/distill` | Phase 1 prompt generator |
+| GET | `/magic-prompt/map` | Phase 2 prompt generator |
+| POST | `/shape-it` | Generate ASCII art |
+| GET | `/lookup/{word}` | Look up a word in the lexicon |
+| POST | `/lookup-many` | Look up multiple words |
+| GET | `/lexicon` | Visual Lexicon stats |
+| POST | `/export/markdown` | Generate Markdown export |
 
-### Phase 2: Backend
-- [ ] Create `app.py` — FastAPI server
-- [ ] Implement `/explain` endpoint (accepts text, returns annotated HTML)
-- [ ] Implement static file serving for OpenMoji and Heroicons
-- [ ] Create Jinja2 HTML template for visual explanations
+### 4. `shape_it.py` — SHAPE_IT ASCII Engine
 
-### Phase 3: Frontend
-- [ ] Design & build `index.html` with glassmorphism theme
-- [ ] Implement `style.css` — premium dark design
-- [ ] Build `script.js` — text submission, result display, download
+16+ programmatic shape functions:
 
-### Phase 4: Integration & Polish
-- [ ] Connect all components end-to-end
-- [ ] Test with various document types (technical, educational, legal)
-- [ ] Optimize icon loading & rendering performance
-- [ ] Add Markdown export option
-- [ ] Expand visual lexicon with more word → icon mappings
-
-### Phase 5: Multi-Tier AI & Multi-Stage Workflow ← IN PROGRESS
-- [x] Implement Basic "Magic Prompt" (Manual AI V1)
-- [ ] Implement **Two-Stage Manual AI Workflow**:
-  - Phase 1 Prompt: Raw Text → Structured Summary
-  - Phase 2 Prompt: Structured Summary → Mapping JSON
-- [ ] Integrate **Ollama Support** (Local/Offline LLM)
-- [ ] Implement **Multi-Tier AI Selection** in UI:
-  1. **Tier 1 (Default)**: Manual AI (Free for everyone)
-  2. **Tier 2**: Free API Tiers (Gemini, Groq, etc.)
-  3. **Tier 3**: Local AI (Ollama)
-  4. **Tier 4**: Paid APIs (OpenAI/Claude)
-- [x] Enhance SHAPE_IT rendering for AI-generated layouts
-- [ ] Add "One-Click PDF" export option
+| Function | Output |
+|----------|--------|
+| `draw_box(text, style)` | Bordered box (single/double/rounded) |
+| `draw_titled_box(title, text)` | Box with title header |
+| `draw_flowchart(steps)` | Horizontal flow with arrows |
+| `draw_vertical_flow(steps)` | Vertical flow with arrows |
+| `draw_pyramid(levels)` | Hierarchy pyramid |
+| `draw_diamond(height)` | Diamond shape |
+| `draw_triangle(height)` | Triangle shape |
+| `draw_separator(text)` | Section divider |
+| `draw_banner(text, font)` | Large pyfiglet banner |
+| `draw_callout(text)` | Speech/thought bubble |
+| `draw_table(headers, rows)` | ASCII table |
+| `draw_arrow(direction)` | Directional arrow |
+| `draw_hierarchy(items)` | Tree hierarchy |
 
 ---
 
-## 📝 Usage Flow
-
-2. **Open browser:** `http://localhost:8000`
-3. **Paste your document text** into the input area
-4. **Click "Explain"** → The system:
-   - LLM reads and understands the text (Semantic Icon Mapping)
-   - Extracts key concepts, sections, relationships
-   - Looks up the Visual Lexicon for matching icons (Iconographic Annotation)
-   - Generates SHAPE_IT ASCII structures (boxes, flowcharts, etc.)
-   - Renders a beautiful HTML explanation
-5. **View inline** or **download** the visual explanation (HTML/Markdown)
-
----
-
-## 🔑 AI Strategy (Multi-Tier)
-
-The project aims to be **Free & Accessible**. We support four tiers of "Intelligence":
+## 🤖 AI Strategy (Multi-Tier)
 
 ### Tier 1: Manual AI (Default & Free)
-*   **Method**: Copy-paste prompts into ChatGPT/Gemini web interfaces.
-*   **Workflow**: Two-stage distillation for high accuracy without API costs.
-*   **Pros**: 100% free, uses the smartest public models.
+- **Method**: Two-phase copy-paste prompts to any web LLM (ChatGPT/Gemini/Claude).
+- **Phase 1 (Distill)**: Raw text → structured sections with ASCII art.
+- **Phase 2 (Map)**: Structured text → Visual Lexicon JSON with per-sentence keywords.
+- **Pros**: 100% free, uses the smartest public models.
 
 ### Tier 2: Free API Keys
-*   **Method**: Uses free tiers of Gemini or Groq directly via API.
-*   **Setup**: Add `GEMINI_API_KEY` to `.env`.
-*   **Pros**: Automated, no copy-pasting.
+- **Method**: Gemini 1.5 Flash via API for automatic mapping.
+- **Setup**: Add `GEMINI_API_KEY` to `.env`.
+- **Pros**: Automated, no copy-pasting.
 
 ### Tier 3: Local AI (Ollama)
-*   **Method**: Connects to a locally running Ollama instance (e.g., Llama3 or Mistral).
-*   **Pros**: 100% private, offline, no costs.
+- **Method**: Connects to locally running Ollama (Mistral, Llama3, etc.).
+- **Pros**: 100% private, offline, no costs.
 
 ### Tier 4: Paid APIs
-*   **Method**: High-performance models (GPT-4, Claude 3.5 Sonnet).
-*   **Pros**: Maximum reliability and speed.
+- **Method**: GPT-4, Claude 3.5 Sonnet, etc.
+- **Pros**: Maximum reliability and speed.
 
 ---
 
@@ -453,63 +273,87 @@ The project aims to be **Free & Accessible**. We support four tiers of "Intellig
 ```
 fastapi          # Web framework
 uvicorn          # ASGI server
-pyfiglet         # Text banner generation (part of SHAPE_IT engine)
-python-multipart # File upload support
+pyfiglet         # Text banner generation
+python-multipart # Form data support
 jinja2           # HTML templating
 aiofiles         # Async file serving
-python-dotenv    # Environment variables (for API keys)
+python-dotenv    # Environment variables
+```
+
+**Optional:**
+```
+google-generativeai  # Gemini API (Tier 2)
+requests             # Ollama HTTP client (Tier 3)
 ```
 
 ---
 
 ## 📚 Terminology Reference
 
-| Term                         | Definition                                                              |
-|------------------------------|-------------------------------------------------------------------------|
-| **Iconographic Annotation**  | Pairing icons/emojis with text to enhance readability and comprehension |
-| **Visual Lexicon**           | A reusable library of concept → icon mappings                           |
-| **Semantic Icon Mapping**    | AI/LLM automatically selecting icons based on text meaning              |
-| **SHAPE_IT ASCII**           | Generating shapes (boxes, arrows, pyramids) with ASCII/Unicode chars    |
-| **OpenMoji**                 | Open-source emoji set (72×72 color PNGs, 4,292 icons)                   |
-| **Heroicons**                | Clean outline SVG icons by Tailwind Labs (24×24, 324 icons)             |
+| Term | Definition |
+|------|-----------|
+| **Iconographic Annotation** | Pairing icons/emojis with text to enhance readability |
+| **Visual Lexicon** | A reusable 90k+ library of concept → icon mappings |
+| **Semantic Icon Mapping** | AI/LLM automatically selecting icons based on text meaning |
+| **Vibrancy Ranking** | Scoring system that prioritizes colorful, high-quality icons |
+| **Granular Mapping** | Assigning a keyword to every individual sentence |
+| **SHAPE_IT ASCII** | Generating shapes (boxes, arrows, pyramids) with ASCII/Unicode |
+| **normalize_ascii()** | Function that cleans and pads ASCII art for perfect rendering |
+| **Magic Prompt** | Two-phase prompt system for manual AI workflow |
+| **OpenMoji** | Open-source emoji set (72×72 color PNGs, 4,292 icons) |
+| **Heroicons** | Clean outline SVG icons by Tailwind Labs (24×24, 324 icons) |
+| **OpenClipArt** | Debian's 26,000+ public domain SVG clipart collection |
 
-### Phase 6: Visual Clipart Expansion (Open Source Clipart) ← MEGA LIBRARY
-- [x] **Research & Planning**: 
-    - [x] Identify "one-link" official packages (Debian, UN, Google, Lucide).
-    - [x] **INTEGRATED**: `illlustrations.co 1.0.3` (130+ professional vector illustrations).
-    - [x] **ANALYZED**: `toools.design` — ALL 50+ libraries exhaustively audited.
-    - [x] **REMOVED**: `unDraw` — License prohibits bundling in packs & AI/ML use.
-- [x] **Size Estimation (20 Modules / ~585 MB / 1 GB Budget)**:
-    - [x] **Module 1 (Debian OpenClipart SVG)**: 23.7 MB (~26,000 SVGs). General objects.
-    - [x] **Module 2 (Lucide Icons)**: 42.5 MB (~5,300 SVGs). Technical actions.
-    - [x] **Module 3 (Google Noto Emoji)**: ~150 MB (~3,500 SVGs). Universal symbols.
-    - [x] **Module 4 (UN OCHA)**: ~4 MB (~700 SVGs). Safety/logistics.
-    - [x] **Module 5 (Open Doodles)**: ~5 MB. Sketchy hand-drawn characters.
-    - [x] **Module 6 (Humaaans)**: ~15 MB. Mix-&-match modern people.
-    - [x] **Module 7 (Handy Arrows)**: ~2 MB. Hand-drawn visual connectors.
-    - [x] **Module 8 (Ira Design)**: ~10 MB. Gradient modular scenes. MIT.
-    - [x] **Module 9 (Fluent Emoji SVG)**: ~80 MB (~7,500 SVGs). Microsoft emoji.
-    - [x] **Module 10 (3D Icons)**: ~50 MB (~1,440 PNGs). Premium CC0 3D icons.
-    - [x] **Module 11 (Bottts)**: ~5 MB. Robot/avatar illustrations.
-    - [x] **Module 12 (Debian OpenClipart PNG)**: ~114 MB. Fast-display PNGs.
-    - [x] **Module 13 (Tabler Icons)**: ~11 MB (6,000+ SVGs). Clean UI icons.
-    - [x] **Module 14 (Font Awesome Free)**: ~6 MB (2,000+ SVGs). Web standard.
-    - [x] **Module 15 (Phosphor Icons)**: ~33 MB (9,072 SVGs × 6 weights).
-    - [x] **Module 16 (Heroicons Full)**: ~5 MB. All styles.
-    - [x] **Module 17 (Avataaars)**: ~3 MB. SVG avatar components.
-    - [x] **Module 18 (Flowbite Illustrations)**: ~5 MB (54+ 3D-style SVGs). MIT.
-    - [x] **Module 19 (Mega Doodles Pack)**: ~10 MB (160+ hand-drawn SVGs). CC BY-SA.
-    - [x] **Module 20 (Bigheads)**: ~5 MB. Extensible avatar generator. MIT.
-    - [x] Total: **~585 MB** (Within 1 GB budget, ~415 MB remaining).
-- [x] **Library Integration**:
-    - [x] **Clipart Indexing**: Added `build_clipart_index` to `build_index.py`.
-    - [x] **Engine Support**: Updated `EmojiEngine` to prioritize Clipart.
-    - [x] **Frontend Rendering**: Updated `explanation.html` for high-impact Clipart headers.
-- [x] **Download & Index All Modules**:
-    - [x] Batch download all modules via verified ZIP/DEB links.
-        - *Note: 19 out of 20 modules successfully downloaded (~1.3 GB uncompressed on disk).*
-        - *Recovered OCHA, Humaaans, and 3D Icons.*
-    - [x] Build unified `clipart_index.json` across all modules.
-- [x] **Optimization**:
-    - [x] Batch resize/optimize assets to 128px or lower. Processed ~28000 PNG files successfully.
-    - [x] Ensure all assets remain local and offline for Privacy.
+---
+
+## 🚀 Implementation Phases
+
+### Phase 1: Foundation ✅
+- [x] Collect OpenMoji + Heroicons assets
+- [x] Build Visual Lexicon JSON indexes
+- [x] Create SHAPE_IT ASCII engine
+- [x] Create Visual Lexicon lookup engine
+
+### Phase 2: Backend ✅
+- [x] FastAPI server with all endpoints
+- [x] Static file serving for all asset types
+- [x] Jinja2 HTML template for visual output
+
+### Phase 3: Frontend ✅
+- [x] Magic Prompt workflow UI
+- [x] Vibrant CSS theme
+- [x] Frontend logic & download support
+
+### Phase 4: Integration & Polish ✅
+- [x] End-to-end testing with diverse documents
+- [x] Markdown export
+- [x] LLM API integration (Gemini + Ollama)
+
+### Phase 5: Multi-Tier AI ✅
+- [x] Two-stage manual workflow (Distill + Map)
+- [x] Ollama local LLM support
+- [x] AI tier selection UI
+
+### Phase 6: Clipart Expansion ✅
+- [x] 20-module clipart plan (~585 MB)
+- [x] Batch download, index, and optimization
+- [x] 90,000+ total local assets
+
+### Phase 7: Granular Mapping & Visual Polish ✅
+- [x] Sentence-level keyword extraction
+- [x] Vibrancy Ranking Engine
+- [x] ASCII normalization with normalize_ascii()
+- [x] CSS tuning for solid ASCII borders
+- [x] Vibrant color theme
+
+### Phase 8: Offline Testing & Modularization ✅
+- [x] Extract utils.py (decoupled from app.py)
+- [x] C++ Templates tutorial test (test_cpp_templates.py)
+- [x] Generic render test (test_render.py)
+- [x] Zero API key required for tests
+
+### Phase 9: Future ⏳
+- [ ] Migrate `google.generativeai` to `google.genai`
+- [ ] PDF export
+- [ ] Dark mode toggle in explanation output
+- [ ] Live preview in Magic Prompt workflow

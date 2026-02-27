@@ -10,26 +10,29 @@
         rel="stylesheet">
     <style>
         :root {
-            --bg: #ffffff;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
-            --border: #d0d7de;
-            --text: #1f2328;
-            --text-sec: #65717d;
-            --accent: #0969da;
-            --accent2: #1a7f37;
-            --accent3: #cf222e;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --text-sec: #475569;
+            --accent: #3b82f6;
+            --accent-vibrant: #7c3aed;
+            --accent2: #10b981;
+            --accent3: #ef4444;
+            --radius: 12px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #0d1117;
-                --card-bg: #161b22;
-                --border: #30363d;
-                --text: #c9d1d9;
-                --text-sec: #8b949e;
-                --accent: #58a6ff;
-                --accent2: #3fb950;
-                --accent3: #f85149;
+                --bg: #0f1218;
+                --card-bg: #1a1d23;
+                --border: #2d333b;
+                --text: #e2e8f0;
+                --text-sec: #94a3b8;
+                --accent: #60a5fa;
+                --accent-vibrant: #a78bfa;
+                --accent2: #34d399;
+                --accent3: #f87171;
             }
         }
 
@@ -91,12 +94,13 @@
         .summary-icons .icon-chip {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
+            justify-content: center;
+            padding: 6px;
             background: rgba(124, 92, 252, 0.1);
             border: 1px solid rgba(124, 92, 252, 0.2);
-            border-radius: 20px;
-            font-size: 0.75rem;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
             color: var(--accent);
         }
 
@@ -177,17 +181,20 @@
         .sentence-item {
             display: flex;
             align-items: flex-start;
-            gap: 14px;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.03);
+            gap: 16px;
+            padding: 14px 18px;
+            background: var(--card-bg);
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.2s ease, background 0.2s ease;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
         }
 
         .sentence-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateX(4px);
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            border-left-width: 8px;
         }
 
         .sentence-icon {
@@ -207,21 +214,23 @@
         .ascii-box,
         .ascii-flow,
         .ascii-callout {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            line-height: 1.3;
-            color: #1f2328;
-            background: #f6f8fa;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.0;
+            letter-spacing: -0.2px;
+            color: var(--text);
+            background: linear-gradient(to bottom, #fdfdfd, #f8fafc);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 16px;
+            border-top: 4px solid var(--accent-vibrant);
+            border-radius: 12px;
+            padding: 24px;
             white-space: pre;
             overflow-x: auto;
-            margin: 16px 0;
-        }
-
-        .ascii-box {
-            color: var(--text);
+            margin: 24px auto;
+            width: fit-content;
+            max-width: 100%;
+            display: block;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
         }
 
         .ascii-callout {
@@ -264,12 +273,13 @@
         .content-icons .mini-icon {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
+            justify-content: center;
+            padding: 4px;
             background: rgba(0, 212, 170, 0.08);
             border: 1px solid rgba(0, 212, 170, 0.15);
-            border-radius: 16px;
-            font-size: 0.7rem;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
             color: var(--accent2);
         }
 
@@ -306,8 +316,8 @@
                 {% for icon in summary_icons %}
                 {% if icon.type != 'none' %}
                 <span class="icon-chip">
-                    <img src="/{{ icon.path }}" alt="{{ icon.keyword }}">
-                    {{ icon.keyword }}
+                    <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
+                        alt="{{ icon.keyword }}" title="{{ icon.keyword }}">
                 </span>
                 {% endif %}
                 {% endfor %}
@@ -326,9 +336,11 @@
             <div class="section-header">
                 {% for icon in section.title_icons %}
                 {% if icon.type == 'openmoji' or icon.type == 'clipart' %}
-                <img src="/{{ icon.path }}" alt="{{ icon.keyword }}">
+                <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
+                    alt="{{ icon.keyword }}">
                 {% elif icon.type == 'heroicon' %}
-                <img src="/{{ icon.path }}" alt="{{ icon.keyword }}" class="hero-section-icon">
+                <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}" alt="{{ icon.keyword }}"
+                    class="hero-section-icon">
                 {% endif %}
                 {% endfor %}
                 {% if section.type == 'h1' %}
@@ -350,7 +362,8 @@
                 {% for sent in section.sentences %}
                 <div class="sentence-item">
                     {% if sent.icon and sent.icon.type != 'none' %}
-                    <img src="/{{ sent.icon.path }}" alt="{{ sent.icon.keyword }}" class="sentence-icon">
+                    <img src="{% if sent.icon.src %}{{ sent.icon.src }}{% else %}/{{ sent.icon.path }}{% endif %}"
+                        alt="{{ sent.icon.keyword }}" class="sentence-icon">
                     {% endif %}
                     <p class="sentence-text">{{ sent.text }}</p>
                 </div>
@@ -373,8 +386,7 @@
                 {% for icon in section.content_icons %}
                 {% if icon.type != 'none' %}
                 <span class="mini-icon">
-                    <img src="/{{ icon.path }}" alt="{{ icon.keyword }}">
-                    {{ icon.keyword }}
+                    <img src="/{{ icon.path }}" alt="{{ icon.keyword }}" title="{{ icon.keyword }}">
                 </span>
                 {% endif %}
                 {% endfor %}

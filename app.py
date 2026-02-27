@@ -29,6 +29,7 @@ from shape_it import (
     draw_hierarchy, draw_triangle, BOX_STYLES
 )
 from emoji_engine import EmojiEngine
+from utils import normalize_ascii
 
 # ─────────────────────────────────────────────────────────────
 # Config
@@ -273,42 +274,53 @@ async def get_magic_prompt_map(request: Request):
     """Phase 2: Generate a prompt to map distilled text to our Visual Lexicon JSON."""
     data = await request.json()
     distilled_text = data.get("distilled_text", "")
-    prompt = f"""
-I want you to map the document structure below into a valid JSON object.
+    prompt = fr"""
+I want you to map the document structure below into a Hybrid Format: a single JSON object followed by raw text ASCII blocks.
 Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence.
 
-RULES:
+RULES FOR JSON:
 1. For each section, break the 'content' into individual sentences.
 2. For EVERY sentence, identify exactly ONE high-impact English keyword (noun) that represents that specific thought.
-3. Ensure the output is a VALID JSON object ONLY.
-4. **CRITICAL: NEVER use double quotes (") inside your strings or ASCII art.** If you need to quote something, use single quotes ('). 
-5. **CRITICAL: In 'raw_ascii', EVERY backslash (\) MUST be doubled (\\).**
+3. Ensure the output begins with a VALID JSON block inside ```json ... ``` markers.
+4. **VISUAL TIP: We have a massive library of 90,000+ Clipart and Doodles. To get VIBRANT images, use descriptive keywords like 'doodle robot', 'sketched idea', 'colorful building', or 'vivid heart'. Use 'doodle' as a prefix for a high-impact hand-drawn look.**
+5. **SEMANTIC TIP: If a concept is abstract (like 'safety' or 'duplication'), choose a VIVID keyword that represents it (e.g., 'shield' for safety, 'copy' or 'stack' for duplication).**
 
-STRUCTURE TO FOLLOW:
+RULES FOR ASCII ART:
+6. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
+7. Instead, AFTER the JSON block, output each section's ASCII art. You MUST wrap EVERY ASCII block in ```text ... ``` code fences so the spaces are preserved. Separate them by `=== ASCII SECTION X ===` markers.
+8. Copy the ASCII blocks EXACTLY. Do NOT truncate lines, do NOT remove underscores, and do NOT 'summarize' the drawing. It must be a 1:1 character match.
+
+HYBRID STRUCTURE TO FOLLOW:
+
+```json
 {{
   "title": "Document Title",
   "summary": "Overall summary",
-  "summary_keywords": ["keyword1", "keyword2"],
+  "summary_keywords": ["vibrant1", "vibrant2"],
   "sections": [
     {{
       "title": "Section Title",
-      "raw_ascii": "THE EXACT ASCII ART BLOCK FROM PHASE 1 (e.g. the boxes and drawings)",
       "sentences": [
         {{
-          "text": "The first sentence of the section.",
-          "keyword": "concept1"
-        }},
-        {{
-          "text": "The second sentence of the section.",
-          "keyword": "concept2"
+          "text": "The first sentence.",
+          "keyword": "vivid_concept1"
         }}
       ],
       "bullets": ["Point 1", "Point 2"]
     }}
   ]
 }}
+```
 
-CRITICAL: Do NOT invent new ASCII. Copy the EXACT shapes and layout the user provided in the distilled text into the "raw_ascii" field.
+=== ASCII SECTION 1 ===
+```text
+THE EXACT ASCII ART BLOCK FROM PHASE 1 - DO NOT ALTER
+```
+
+=== ASCII SECTION 2 ===
+```text
+THE EXACT ASCII ART BLOCK FROM PHASE 1 - DO NOT ALTER
+```
 
 TEXT TO MAP:
 {distilled_text[:10000]}
@@ -318,46 +330,52 @@ TEXT TO MAP:
 
 @app.post("/render-magic", response_class=HTMLResponse)
 async def render_magic(request: Request, data: str = Form(...)):
-    """Render a visual explanation from AI-generated JSON data."""
+    """Render a visual explanation from AI-generated Hybrid format."""
     try:
-        # Clean up JSON if LLM added markdown wrappers
-        clean_data = data.strip()
-        # Remove markdown code blocks if present
-        clean_data = re.sub(r'^```json\s*', '', clean_data)
-        clean_data = re.sub(r'^```\s*', '', clean_data)
-        clean_data = re.sub(r'\s*```$', '', clean_data)
+        raw_text = data.strip()
+        
+        # 1. Extract JSON block using regex
+        json_match = re.search(r'```json\s*(.*?)\s*```', raw_text, re.DOTALL | re.IGNORECASE)
+        if json_match:
+            json_str = json_match.group(1)
+        else:
+            # Fallback: find first { and last }
+            start = raw_text.find('{')
+            end = raw_text.rfind('}')
+            if start != -1 and end != -1:
+                json_str = raw_text[start:end+1]
+            else:
+                raise ValueError("Could not find JSON block in output.")
         
         try:
-            ai_data = json.loads(clean_data)
+            ai_data = json.loads(json_str)
         except json.JSONDecodeError as e:
-            # Common LLM issue: Raw backslashes or unescaped quotes in ASCII blocks
-            print(f"⚠️ JSON Decode Error: {e}. Attempting heuristic fix...")
-            
-            # Step 1: Escape lone backslashes that aren't followed by valid escape chars
-            # We look for \ not followed by [bfnrtv"\/]
-            fixed_data = re.sub(r'\\(?![bfnrtv"\\/])', r'\\\\', clean_data)
-            
-            # Step 2: Try to handle unescaped quotes inside string values
-            # This looks for quotes that aren't preceded by \ and aren't borders of keys/values
-            # Very basic approach: if we have "..." and there's a quote in the middle
-            # We try a few common replacements
+            # Deep fallback for broken trailing commas or quotes
+            print(f"⚠️ JSON Decode Error: {e}. Attempting basic fix...")
+            json_str = json_str.replace("'", '"')
+            ai_data = json.loads(json_str)
+        
+        # 2. Extract ASCII Blocks
+        ascii_blocks = {}
+        # Highly resilient regex: matches == ASCII SECTION 1 ==, ### ASCII SECTION 1 ###, etc.
+        pattern = re.compile(r'(?:=+|-+|#+|\*\*)\s*ASCII SECTION\s+(\d+)\s*(?:=+|-+|#+|\*\*)', flags=re.IGNORECASE)
+        parts = pattern.split(raw_text)
+        
+        # parts will be: [preamble, '1', block_1_text, '2', block_2_text, ...]
+        for i in range(1, len(parts) - 1, 2):
             try:
-                ai_data = json.loads(fixed_data)
-            except:
-                # If it still fails, try to replace internal quotes with single quotes
-                # This is aggressive but better than a crash
-                def fix_internal_quotes(match):
-                    content = match.group(2)
-                    fixed_content = content.replace('"', "'")
-                    return f'"{match.group(1)}": "{fixed_content}"'
+                sec_num = int(parts[i].strip())
+                # CRITICAL FIX: Use .strip('\r\n') instead of .strip() to preserve leading spaces on the first line!
+                block = parts[i+1].strip('\r\n')
                 
-                fixed_data = re.sub(r'"([^"]+)":\s*"(.+?)"(?=\s*[,}])', fix_internal_quotes, fixed_data, flags=re.DOTALL)
+                # Remove markdown code block wrappers if the LLM added them around the ASCII art
+                block = re.sub(r'^```[\w]*\s*\n', '', block)
+                block = re.sub(r'\n```\s*$', '', block)
                 
-                try:
-                    ai_data = json.loads(fixed_data)
-                except Exception as final_e:
-                    print(f"❌ Heuristic fix failed: {final_e}")
-                    raise e # Return original error
+                # 0-indexed internally
+                ascii_blocks[sec_num - 1] = block
+            except ValueError:
+                pass
         
         # Transform AI data into our visual_sections format
         visual_sections = []
@@ -386,8 +404,10 @@ async def render_magic(request: Request, data: str = Form(...)):
                     'icon': icon
                 })
 
-            # USE ORIGINAL ASCII FROM AI (Do not regenerate/change it)
-            raw_ai_ascii = section.get('raw_ascii', '')
+            # USE ORIGINAL RAW ASCII FROM HYBRID OUTPUT
+            # Get the block from the parsed ascii_blocks (0-indexed) or fallback to 'raw_ascii' from old JSON
+            raw_ai_ascii = ascii_blocks.get(idx, section.get('raw_ascii', ''))
+            raw_ai_ascii = normalize_ascii(raw_ai_ascii)
             
             # Only fallback to app-generated if AI provided none
             ascii_box = raw_ai_ascii
