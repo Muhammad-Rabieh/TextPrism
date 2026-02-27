@@ -20,7 +20,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import requests
-import google.generativeai as genai
 
 from shape_it import (
     draw_box, draw_titled_box, draw_pyramid, draw_diamond,
@@ -37,23 +36,23 @@ from utils import normalize_ascii
 
 load_dotenv()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") # Removed
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral:7b-instruct-q4_K_M")
 
-if GEMINI_API_KEY:
-    try:
-        genai.configure(api_key=GEMINI_API_KEY)
-        # Using flash for speed/cost effectiveness for mapping tasks
-        llm_model = genai.GenerativeModel('gemini-1.5-flash')
-        print("✅ Gemini AI initialized for semantic mapping")
-    except Exception as e:
-        print(f"⚠️ Failed to initialize Gemini: {e}")
-        llm_model = None
-else:
-    llm_model = None
-    print("ℹ️ GEMINI_API_KEY not found. Using heuristic mapping.")
+# if GEMINI_API_KEY: # Removed
+#     try: # Removed
+#         genai.configure(api_key=GEMINI_API_KEY) # Removed
+#         # Using flash for speed/cost effectiveness for mapping tasks # Removed
+#         llm_model = genai.GenerativeModel('gemini-1.5-flash') # Removed
+#         print("✅ Gemini AI initialized for semantic mapping") # Removed
+#     except Exception as e: # Removed
+#         print(f"⚠️ Failed to initialize Gemini: {e}") # Removed
+#         llm_model = None # Removed
+# else: # Removed
+#     llm_model = None # Removed
+#     print("ℹ️ GEMINI_API_KEY not found. Using heuristic mapping.") # Removed
 
 app = FastAPI(
     title="Text Explain — Visual Lexicon for Semantic Text Annotation",
@@ -85,7 +84,7 @@ async def home(request: Request):
 
 
 @app.post("/explain", response_class=HTMLResponse)
-async def explain(request: Request, text: str = Form(...), ai_tier: str = Form("gemini")):
+async def explain(request: Request, text: str = Form(...), ai_tier: str = Form("heuristic")):
     """
     Accept document text and return a visual explanation HTML.
     """
@@ -96,7 +95,6 @@ async def explain(request: Request, text: str = Form(...), ai_tier: str = Form("
         visual_sections.append(visual)
 
     title = sections[0].get('title', "Document Explanation") if sections else "Document Explanation"
-    title_banner = draw_banner(title[:30], font='slant')
 
     summary_text = sections[0].get('content', text[:200]) if sections else text[:200]
     summary_keywords = get_semantic_keywords_ai(summary_text, count=5, tier=ai_tier)
@@ -105,7 +103,6 @@ async def explain(request: Request, text: str = Form(...), ai_tier: str = Form("
     return templates.TemplateResponse("explanation.html", {
         "request": request,
         "title": title,
-        "title_banner": title_banner,
         "summary_text": summary_text,
         "summary_icons": summary_icons,
         "sections": visual_sections,
@@ -167,62 +164,62 @@ async def export_markdown(text: str = Form(...)):
 
 @app.post("/shape-it", response_class=JSONResponse)
 async def shape_it_api(
-    text: str = Form(...),
+    content: str = Form(""),
     shape: str = Form("box"),
     style: str = Form("double"),
-    font: str = Form("slant"),
+    font: str = Form("standard"),
 ):
     """Generate SHAPE_IT ASCII art for given text."""
     result = ""
     try:
         if shape == "box":
-            result = draw_box(text, style=style)
+            result = draw_box(content, style=style)
         elif shape == "titled_box":
-            parts = text.split("|", 1)
+            parts = content.split("|", 1)
             title = parts[0].strip()
             body = parts[1].strip() if len(parts) > 1 else ""
             result = draw_titled_box(title, body, style=style)
         elif shape == "banner":
-            result = draw_banner(text, font=font)
+            result = draw_banner(content, font=font)
         elif shape == "callout":
-            result = draw_callout(text)
+            result = draw_callout(content)
         elif shape == "separator":
-            result = draw_separator(text, width=50, style=style)
+            result = draw_separator(content, width=50, style=style)
         elif shape == "pyramid":
             try:
-                height = int(text)
+                height = int(content)
             except ValueError:
                 height = 5
             result = draw_pyramid(height)
         elif shape == "diamond":
             try:
-                height = int(text)
+                height = int(content)
             except ValueError:
                 height = 7
             result = draw_diamond(height)
         elif shape == "flowchart":
-            steps = [s.strip() for s in text.split("→") if s.strip()]
+            steps = [s.strip() for s in content.split("→") if s.strip()]
             if not steps:
-                steps = [s.strip() for s in text.split(",") if s.strip()]
+                steps = [s.strip() for s in content.split(",") if s.strip()]
             result = draw_flowchart(steps)
         elif shape == "vertical_flow":
-            steps = [s.strip() for s in text.split("→") if s.strip()]
+            steps = [s.strip() for s in content.split("→") if s.strip()]
             if not steps:
-                steps = [s.strip() for s in text.split(",") if s.strip()]
+                steps = [s.strip() for s in content.split(",") if s.strip()]
             result = draw_vertical_flow(steps)
         elif shape == "table":
             # Format: header1,header2|row1col1,row1col2|row2col1,row2col2
-            parts = text.split("|")
+            parts = content.split("|")
             headers = [h.strip() for h in parts[0].split(",")]
             rows = [[c.strip() for c in row.split(",")] for row in parts[1:] if row.strip()]
             result = draw_table(headers, rows)
         elif shape == "hierarchy":
-            items = [s.strip() for s in text.split(",") if s.strip()]
+            items = [s.strip() for s in content.split(",") if s.strip()]
             result = draw_hierarchy(items)
         elif shape == "arrow":
-            result = draw_arrow(direction='right', length=20, label=text)
+            result = draw_arrow(direction='right', length=20, label=content)
         else:
-            result = draw_box(text, style=style)
+            result = draw_box(content, style=style)
     except Exception as e:
         result = f"Error generating shape: {str(e)}"
 
@@ -245,6 +242,7 @@ RULES:
 2. For each section, provide a short title and 1-2 sentences of clear content.
 3. Break down details into bullet points.
 4. Use your creative judgment to 'draw' the layout using the shape-it ASCII style (boxes, flows, separators).
+5. For banners, use the 'standard' font.
 
 OUTPUT FORMAT:
 # [Catchy Main Title]
@@ -289,6 +287,7 @@ RULES FOR ASCII ART:
 6. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
 7. Instead, AFTER the JSON block, output each section's ASCII art. You MUST wrap EVERY ASCII block in ```text ... ``` code fences so the spaces are preserved. Separate them by `=== ASCII SECTION X ===` markers.
 8. Copy the ASCII blocks EXACTLY. Do NOT truncate lines, do NOT remove underscores, and do NOT 'summarize' the drawing. It must be a 1:1 character match.
+9. For banners, use the 'standard' font.
 
 HYBRID STRUCTURE TO FOLLOW:
 
@@ -434,7 +433,6 @@ async def render_magic(request: Request, data: str = Form(...)):
             visual_sections.append(visual)
 
         title = ai_data.get('title', 'AI Analysis')
-        title_banner = draw_banner(title[:30], font='slant')
         
         summary_text = ai_data.get('summary', '')
         summary_keywords = ai_data.get('summary_keywords', [])
@@ -445,7 +443,6 @@ async def render_magic(request: Request, data: str = Form(...)):
         return templates.TemplateResponse("explanation.html", {
             "request": request,
             "title": title,
-            "title_banner": title_banner,
             "summary_text": summary_text,
             "summary_icons": summary_icons,
             "sections": visual_sections,
@@ -552,9 +549,9 @@ def parse_text_into_sections(text):
     return sections
 
 
-def get_semantic_keywords_ai(text, count=5, tier="gemini"):
+def get_semantic_keywords_ai(text, count=5, tier="heuristic"):
     """
-    Use selected AI Strategy to choose the best iconographic keywords.
+    Use selected Strategy to choose the best iconographic keywords.
     """
     if tier == "manual":
         return extract_keywords(text, count)
@@ -562,36 +559,7 @@ def get_semantic_keywords_ai(text, count=5, tier="gemini"):
     if tier == "ollama":
         return get_semantic_keywords_ollama(text, count)
 
-    if not llm_model:
-        return extract_keywords(text, count)
-
-    prompt = f"""
-    Analyze the following text and select the {count} most important concept keywords
-    that would best describe it visually using simple icons or emojis.
-
-    RULES:
-    - Return ONLY a JSON list of strings.
-    - Choose keywords that are common objects, actions, or simple concepts.
-    - Example: For text about "learning to code", you might return ["study", "computer", "code", "brain"].
-
-    TEXT:
-    {text}
-    """
-
-    try:
-        response = llm_model.generate_content(prompt)
-        content = response.text.strip()
-        # Clean up JSON if LLM added markdown wrappers
-        if content.startswith("```json"):
-            content = content.replace("```json", "").replace("```", "").strip()
-        elif content.startswith("```"):
-             content = content.replace("```", "").strip()
-
-        keywords = json.loads(content)
-        return keywords[:count]
-    except Exception as e:
-        print(f"⚠️ AI mapping error: {e}")
-        return extract_keywords(text, count)
+    return extract_keywords(text, count)
 
 
 def get_semantic_keywords_ollama(text, count=5):
@@ -670,7 +638,7 @@ def extract_keywords(text, max_keywords=10):
     return keywords
 
 
-def generate_visual_section(section, ai_tier="gemini"):
+def generate_visual_section(section, ai_tier="heuristic"):
     """
     Generate visual elements for a section.
     Returns a dict with ASCII art and icon data.

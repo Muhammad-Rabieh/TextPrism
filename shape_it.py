@@ -315,7 +315,7 @@ def draw_separator(text='', width=50, style='double', fill_char='░'):
     return '\n'.join(lines)
 
 
-def draw_banner(text, font='slant'):
+def draw_banner(text, font='standard'):
     """
     Generate a large text banner using pyfiglet.
 
@@ -616,7 +616,7 @@ if __name__ == '__main__':
     print(draw_separator("Chapter 1: Introduction", width=45))
 
     print("\n--- 8. Banner ---")
-    print(draw_banner("Hello", font='slant'))
+    print(draw_banner("Hello", font='standard'))
 
     print("\n--- 9. Callout ---")
     print(draw_callout("This is a key point!", pointer='down'))

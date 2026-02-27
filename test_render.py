@@ -129,7 +129,6 @@ def test_mapping_and_ascii():
     response = templates.TemplateResponse("explanation.html", {
         "request": MockRequest(),
         "title": json_data['title'],
-        "title_banner": draw_banner(json_data['title'], font='slant'),
         "summary_text": json_data['summary'],
         "summary_icons": summary_icons,
         "sections": visual_sections,

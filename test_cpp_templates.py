@@ -2,44 +2,52 @@ import sys
 import os
 import json
 import base64
-from fastapi.templating import Jinja2Templates
+import re
+from fastapi.testclient import TestClient
 
 # Add current dir to path
 sys.path.append(os.getcwd())
 
-from emoji_engine import EmojiEngine
-from utils import normalize_ascii
-from shape_it import draw_banner
+# Import our FastAPI app
+from app import app
 
-class MockRequest:
-    def __init__(self):
-        self.scope = {}
+client = TestClient(app)
 
-templates = Jinja2Templates(directory="templates")
-engine = EmojiEngine()
+def inline_images_in_html(html_str):
+    """
+    Finds all relative src="/..." image tags in the HTML output
+    and replaces them with embedded base64 data URIs so the file
+    can be viewed locally without running the FastAPI server.
+    """
+    def replacer(match):
+        img_path = match.group(1)
+        # remove leading slash
+        if img_path.startswith('/'):
+            img_path = img_path[1:]
+        
+        # Try finding it in local data dir or directly
+        for p in [img_path, os.path.join('data', img_path)]:
+            full_path = os.path.join(os.getcwd(), p)
+            if os.path.exists(full_path):
+                ext = os.path.splitext(p)[1][1:].lower()
+                try:
+                    if ext == 'svg':
+                        with open(full_path, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                            return f'src="data:image/svg+xml;base64,{base64.b64encode(content.encode()).decode()}"'
+                    else:
+                        with open(full_path, 'rb') as f:
+                            return f'src="data:image/{ext};base64,{base64.b64encode(f.read()).decode()}"'
+                except Exception as e:
+                    print(f"Error encoding {p}: {e}")
+        return match.group(0)
 
-def get_base64_image(path):
-    """Helper to embed images in standalone HTML for portability."""
-    for p in [path, os.path.join('data', path)]:
-        full_path = os.path.join(os.getcwd(), p)
-        if os.path.exists(full_path):
-            ext = os.path.splitext(p)[1][1:].lower()
-            try:
-                if ext == 'svg':
-                    with open(full_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                        return f"data:image/svg+xml;base64,{base64.b64encode(content.encode()).decode()}"
-                else:
-                    with open(full_path, 'rb') as f:
-                        return f"data:image/{ext};base64,{base64.b64encode(f.read()).decode()}"
-            except Exception as e:
-                print(f"Error encoding {path}: {e}")
-    return ""
+    # find src="/..."
+    return re.sub(r'src="(/[^"]+)"', replacer, html_str)
 
 
 # ══════════════════════════════════════════════════════════════
 # ASCII ART BLOCKS — Exact 1:1 character-match from user input
-# Using raw triple-quoted strings to preserve every character.
 # ══════════════════════════════════════════════════════════════
 
 ASCII_SECTION_1 = """\
@@ -77,8 +85,8 @@ ASCII_SECTION_4 = """\
 
 def generate_cpp_templates_test():
     """
-    C++ Templates Tutorial — fully offline visual explanation.
-    No LLM, no API key, no network required.
+    C++ Templates Tutorial — tests the fully integrated /render-magic endpoint.
+    It builds a mock LLM Hybrid Response and POSTs it to the app.
     """
 
     json_data = {
@@ -106,7 +114,6 @@ def generate_cpp_templates_test():
         },
         {
           "title": "One Definition, Zero Duplication",
-          "raw_ascii": ASCII_SECTION_2,
           "sentences": [
             {
               "text": "Templates remove repeated code by allowing one function or class to handle many types.",
@@ -162,80 +169,50 @@ def generate_cpp_templates_test():
       ]
     }
 
-    # ── Process sections ──────────────────────────────────────
-    visual_sections = []
-    print("\n── Icon Mapping Audit ──")
-    for section in json_data.get('sections', []):
-        sec_sentences = section.get('sentences', [])
-        processed_sentences = []
-        all_kw = []
-        for sent in sec_sentences:
-            kw = sent.get('keyword', '')
-            if kw:
-                all_kw.append(kw)
-                icon = engine.lookup(kw)
-                src = ""
-                if icon.get('path'):
-                    src = get_base64_image(icon['path'])
-                    if src:
-                        icon['src'] = src
-                print(f"  {kw:15} → {icon.get('type', 'none'):10} | {'✅ embedded' if src else '❌ missing'} | {icon.get('path', 'N/A')}")
-            else:
-                icon = None
-            processed_sentences.append({'text': sent.get('text', ''), 'icon': icon})
+    # 1. Build the Hybrid Response Payload (Markdown Fences + ASCII Blocks)
+    hybrid_payload = f"""```json\n{json.dumps(json_data, indent=2)}\n```
 
-        title_icons = engine.lookup_many(all_kw[:2])
-        for icon in title_icons:
-            if icon.get('path'):
-                src = get_base64_image(icon['path'])
-                if src: icon['src'] = src
+=== ASCII SECTION 1 ===
+```text
+{ASCII_SECTION_1}
+```
 
-        # Process bullets with icons too
-        bullet_icons = []
-        for bullet in section.get('bullets', []):
-            first_word = bullet.split()[0].lower().rstrip('.,!')
-            bicon = engine.lookup(first_word)
-            if bicon.get('path'):
-                src = get_base64_image(bicon['path'])
-                if src: bicon['src'] = src
-            bullet_icons.append(bicon)
+=== ASCII SECTION 2 ===
+```text
+{ASCII_SECTION_2}
+```
 
-        visual_sections.append({
-            'title': section.get('title', ''),
-            'sentences': processed_sentences,
-            'bullets': section.get('bullets', []),
-            'type': 'h2',
-            'ascii_box': normalize_ascii(section.get('raw_ascii', '')),
-            'title_icons': title_icons,
-            'bullet_icons': bullet_icons
-        })
+=== ASCII SECTION 3 ===
+```text
+{ASCII_SECTION_3}
+```
 
-    # ── Summary icons ─────────────────────────────────────────
-    summary_icons = engine.lookup_many(json_data.get('summary_keywords', []))
-    for icon in summary_icons:
-        if icon.get('path'):
-            src = get_base64_image(icon['path'])
-            if src: icon['src'] = src
+=== ASCII SECTION 4 ===
+```text
+{ASCII_SECTION_4}
+```
+"""
 
-    # ── Banner ────────────────────────────────────────────────
-    banner_text = draw_banner("C++ TEMPLATES", font='slant')
+    print("── Invoking /render-magic via API TestClient ──")
+    response = client.post("/render-magic", data={"data": hybrid_payload})
+    
+    if response.status_code != 200:
+        print(f"❌ Error {response.status_code}")
+        print(response.text)
+        return
 
-    # ── Render ────────────────────────────────────────────────
-    response = templates.TemplateResponse("explanation.html", {
-        "request": MockRequest(),
-        "title": json_data['title'],
-        "title_banner": banner_text,
-        "summary_text": json_data['summary'],
-        "summary_icons": summary_icons,
-        "sections": visual_sections,
-        "original_text": "C++ Templates Tutorial (Offline Test)"
-    })
+    # 2. Extract HTML Output
+    html_output = response.text
+
+    # 3. Inline images for local portability without running FastAPI server
+    print("── Inlining base64 assets for portability ──")
+    portable_html = inline_images_in_html(html_output)
 
     output_path = "cpp_templates_tutorial.html"
-    with open(output_path, "wb") as f:
-        f.write(response.body)
+    with open(output_path, "w", encoding='utf-8') as f:
+        f.write(portable_html)
 
-    print(f"\n✅ Generated: {output_path}")
+    print(f"\n✅ Generated successfully via API: {output_path}")
     print(f"   Open in browser: file://{os.path.abspath(output_path)}")
     return output_path
 
