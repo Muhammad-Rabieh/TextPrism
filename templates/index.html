@@ -100,54 +100,38 @@
     <div id="magic-prompt-modal" class="modal" style="display:none;">
         <div class="modal-content glass-card" style="max-width: 650px;">
             <div class="modal-header">
-                <h3>✨ Magic UI Workflow (2-Phase)</h3>
-                <button class="modal-close" id="magic-modal-close-btn">&times;</button>
+                <h3>✨ One-Click Magic Explanation</h3>
+                <button class="modal-close" id="magic-modal-close">&times;</button>
             </div>
-
-            <!-- Step Indicator -->
-            <div class="workflow-steps">
-                <div class="step active" id="step1-indicator"><span>1</span> Distill</div>
-                <div class="line"></div>
-                <div class="step" id="step2-indicator"><span>2</span> Map</div>
-                <div class="line"></div>
-                <div class="step" id="step3-indicator"><span>3</span> Build</div>
-            </div>
-
             <div class="modal-body">
-                <!-- Phase 1: Distill -->
-                <div id="phase1-container">
-                    <p class="modal-hint"><strong>Phase 1: Structure & Art.</strong> Copy this prompt to an LLM to
-                        explain your text using the <em>shape-it ascii art style</em>.</p>
+                <!-- Unified One-Phase Magic -->
+                <div id="unified-magic-container">
+                    <p class="modal-hint">
+                        <strong>One-Click Magic.</strong>
+                        1. Copy the prompt below.
+                        2. Paste it into an LLM.
+                        3. Paste the LLM's response into the input box at the bottom.
+                    </p>
+
                     <div class="prompt-box">
-                        <pre id="magic-prompt-phase1-text"></pre>
-                        <button id="copy-phase1-btn" class="btn btn-sm btn-accent">Copy Prompt</button>
+                        <pre id="magic-prompt-text"></pre>
+                        <button id="copy-magic-btn" class="btn btn-sm btn-accent">Copy Prompt</button>
                     </div>
 
-                    <p class="modal-hint" style="margin-top: 20px;">Paste the LLM's distilled outline below:</p>
-                    <textarea id="distilled-text-input" class="glass-textarea" rows="4"
-                        placeholder="Paste the simplified outline here..."></textarea>
-
-                    <div class="modal-actions">
-                        <button id="goto-phase2-btn" class="btn btn-primary">Next: Semantic Mapping</button>
-                    </div>
-                </div>
-
-                <!-- Phase 2: Map -->
-                <div id="phase2-container" style="display:none;">
-                    <p class="modal-hint"><strong>Phase 2: Semantic Mapping.</strong> Copy this prompt to LLM to map the
-                        clean outline into visual JSON.</p>
-                    <div class="prompt-box">
-                        <pre id="magic-prompt-phase2-text"></pre>
-                        <button id="copy-phase2-btn" class="btn btn-sm btn-accent">Copy Prompt</button>
+                    <div class="ai-input-wrapper" style="margin-top: 20px;">
+                        <label for="ai-response-input"
+                            style="display: block; margin-bottom: 8px; font-weight: 600;">Paste AI Response
+                            Here:</label>
+                        <textarea id="ai-response-input" placeholder="```json ... === ASCII SECTION 1 === ...```"
+                            rows="8"></textarea>
                     </div>
 
-                    <p class="modal-hint" style="margin-top: 20px;">Paste the final JSON response below:</p>
-                    <textarea id="ai-response-input" class="glass-textarea" rows="4"
-                        placeholder="Paste the JSON mapping here..."></textarea>
-
-                    <div class="modal-actions">
-                        <button id="back-to-phase1-btn" class="btn btn-ghost">Back</button>
-                        <button id="process-ai-btn" class="btn btn-primary">Build Visual Explanation</button>
+                    <div class="modal-footer"
+                        style="padding: 15px 0 0 0; border-top: 1px solid var(--glass-border); margin-top: 15px;">
+                        <button id="process-ai-btn" class="btn btn-primary btn-block">
+                            <img src="/icons/heroicons/sparkles.svg" alt="" class="btn-icon">
+                            Build Visual Explanation
+                        </button>
                     </div>
                 </div>
             </div>

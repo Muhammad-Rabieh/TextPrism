@@ -13,33 +13,31 @@ def test_render_magic_endpoint():
     """
     cpp_templates_json = {
         "title": "The Blueprint of C++ Templates",
-        "summary": "C++ templates are a powerful feature used to write generic, reusable code across three primary functional areas.",
+        "explanation": "[generic] C++ templates are a powerful feature used to write generic, [reusability] reusable code across multiple data types.",
+        "explanation_keywords": ["generic", "reusability"],
         "sections": [
             {
                 "title": "The Power of Generics",
-                "content": "Templates act as a 'cookie cutter' for code, allowing you to write a single function or class that works with any data type without rewriting it.",
-                "keywords": ["generic", "blueprint", "reusability", "adaptability"],
+                "content": "[blueprint] Templates act as a 'cookie cutter' for code, allowing you to write a single function or class that works with any data type. [adaptability] It adapts to different inputs without rewriting.",
                 "bullets": [
-                    "Write Once, Use Everywhere: Create a single logic flow that adapts to different inputs.",
-                    "Zero Duplication: Eliminates the need to copy-paste code just to change a variable type."
+                    "Write Once, Use Everywhere.",
+                    "Zero Duplication: No copy-paste."
                 ]
             },
             {
                 "title": "Safety and Customization",
-                "content": "Unlike older programming methods, templates are checked by the compiler for errors and can be 'specialized' to behave differently for specific types.",
-                "keywords": ["security", "compiler", "logic", "customization"],
+                "content": "[security] Templates are checked by the compiler for errors. [customization] They can be 'specialized' to behave differently for specific types.",
                 "bullets": [
-                    "Type Safety: The compiler ensures your data types match, preventing common crashes.",
-                    "Template Specialization: You can create a 'custom version' of a template for a unique data type if the general logic doesn't fit."
+                    "Type Safety: Prevents crashes.",
+                    "Template Specialization: Custom versions."
                 ]
             },
             {
                 "title": "The Foundation of Modern C++",
-                "content": "Templates are the engine behind the Standard Template Library (STL), providing the most common tools developers use daily.",
-                "keywords": ["engine", "storage", "algorithm", "utility"],
+                "content": "[engine] Templates are the engine behind the Standard Template Library (STL). [algorithm] They power vector, map, and universal algorithms.",
                 "bullets": [
-                    "Smart Containers: Powers objects like std::vector and std::map that store your data efficiently.",
-                    "Universal Algorithms: Enables sorting and searching functions that work across any collection of data."
+                    "Smart Containers: std::vector and std::map.",
+                    "Universal Algorithms: Sorting and searching."
                 ]
             }
         ]
@@ -74,40 +72,38 @@ def test_render_magic_endpoint():
 @pytest.mark.parametrize("topic, json_data, expected_keywords", [
     ("Python Decorators", {
         "title": "Python Decorators: Wrapping Logic",
-        "summary": "Decorators are a powerful way to modify function behavior without changing source code.",
+        "explanation": "[wrap] Decorators are a powerful way to modify function behavior without changing source code.",
+        "explanation_keywords": ["wrap", "gift"],
         "sections": [
             {
                 "title": "The Wrapper Concept",
-                "content": "A decorator is a function that takes another function and extends its behavior while wrapping it.",
-                "keywords": ["wrap", "gift", "layer", "logic"],
+                "content": "[gift] A decorator is a function that takes another function. [layer] It extends behavior while wrapping it.",
                 "bullets": ["Wraps existing functions", "Executed at definition time"]
             },
             {
                 "title": "Metaprogramming Power",
-                "content": "They allow developers to write 'code that writes code', abstracting repetitive tasks.",
-                "keywords": ["magic", "brain", "code", "automation"],
+                "content": "[magic] They allow developers to write 'code that writes code'. [brain] Automation of repetitive tasks.",
                 "bullets": ["Logging automation", "Authentication guards"]
             }
         ]
     }, ["wrap", "magic", "brain"]),
     ("Rust Ownership", {
         "title": "Rust Ownership: Memory Safety Rules",
-        "summary": "Ownership ensures memory safety without a garbage collector via a strict set of rules.",
+        "explanation": "[law] Ownership ensures memory safety without a garbage collector via a strict set of rules.",
+        "explanation_keywords": ["law", "safety"],
         "sections": [
             {
                 "title": "Ownership Rules",
-                "content": "Each value has one owner. When the owner goes out of scope, the value is dropped.",
-                "keywords": ["law", "master", "control", "safety"],
+                "content": "[master] Each value has one owner. [safety] When the owner goes out of scope, the value is dropped.",
                 "bullets": ["One owner at a time", "Scope-based cleanup"]
             },
             {
                 "title": "Borrowing & References",
-                "content": "Data can be lent via references (&) following the 'one writer or many readers' rule.",
-                "keywords": ["lend", "share", "temporary", "link"],
+                "content": "[lend] Data can be lent via references. [link] Borrowing follows strict rules.",
                 "bullets": ["Immutable references", "Mutable references"]
             }
         ]
-    }, ["law", "lend", "safety"])
+    }, ["law", "Borrowing", "safety"])
 ])
 def test_complex_technical_rendering(topic, json_data, expected_keywords):
     """

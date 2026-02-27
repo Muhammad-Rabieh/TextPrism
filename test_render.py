@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import base64
+import re
 from fastapi.templating import Jinja2Templates
 
 # Add current dir to path
@@ -42,26 +43,18 @@ def test_mapping_and_ascii():
     # In my prompt I demand strict 1:1 match.
     json_data = {
       "title": "VIBRANT CORE",
-      "summary": "Resilient systems with generic structural safety.",
-      "summary_keywords": ["power", "safety", "vibrant"],
+      "explanation": "[power] Resilient systems with [safety] generic structural safety.",
+      "explanation_keywords": ["power", "safety", "vibrant"],
       "sections": [
         {
           "title": "Structural Blueprint",
-          "sentences": [
-            {
-              "text": "The core of the system is designed for modular power.",
-              "keyword": "power"
-            }
-          ]
+          "content": "[power] The core of the system is designed for modular power.",
+          "bullets": ["Modular setup.", "High efficiency."]
         },
         {
           "title": "Type Safety Shield",
-          "sentences": [
-            {
-              "text": "Strong safety guarantees are provided at compile time.",
-              "keyword": "safety"
-            }
-          ]
+          "content": "[safety] Strong safety guarantees are provided at compile time.",
+          "bullets": ["No runtime crashes.", "Strict typing."]
         }
       ]
     }
@@ -74,45 +67,44 @@ def test_mapping_and_ascii():
     ]
 
     for idx, section in enumerate(json_data["sections"]):
-        # 1. Process Sentences
+        # 3. New Parser for Inline Tags
         processed_sentences = []
-        all_kw = [] # Collect all keywords for title icons
-        for sent in section["sentences"]:
-            kw = sent["keyword"]
+        all_kw = []
+        parts = re.split(r'\[([\w\s_-]+)\]', section.get('content', ''))
+        
+        if parts[0].strip():
+            processed_sentences.append({'text': parts[0].strip(), 'icon': None})
+            
+        for i in range(1, len(parts), 2):
+            kw = parts[i].strip()
+            text = parts[i+1].strip() if i+1 < len(parts) else ""
             all_kw.append(kw)
             res = engine.lookup(kw)
             
-            # Embed image data so it works locally without server
+            # Embed image data so it works locally
             encoded_img = get_base64_image(res['path']) if res['path'] else ""
             
             processed_sentences.append({
-                "text": sent["text"],
+                "text": text,
                 "icon": {
                     "type": res["type"],
                     "src": res["path"],
                     "data_uri": encoded_img
                 }
             })
-            print(f"  {kw:<15} → {res['type']:<10} | {res['path']}")
 
-        # 2. Extract ASCII (from hybrid blocks)
-        raw_ai_ascii = ascii_blocks[idx] if idx < len(ascii_blocks) else ""
-        normalized_art = normalize_ascii(raw_ai_ascii)
-
-        # 3. Section title icons
-        title_icons = engine.lookup_many(all_kw[:2]) # Use first two keywords for title icons
+        # Section title icons
+        title_icons = engine.lookup_many(all_kw[:2])
         for icon in title_icons:
             if icon.get('path'):
                 icon['src'] = get_base64_image(icon['path'])
 
-        # FIX FOR NEWLINES: Ensure they are real newlines
-        raw_art = section.get('raw_ascii', '')
-        normalized_art = normalize_ascii(raw_art)
+        normalized_art = normalize_ascii(ascii_blocks[idx] if idx < len(ascii_blocks) else "")
 
         visual_sections.append({
             'title': section.get('title', ''),
             'sentences': processed_sentences,
-            'bullets': [],
+            'bullets': section.get('bullets', []),
             'type': 'h2',
             'ascii_box': normalized_art,
             'title_icons': title_icons,
@@ -120,7 +112,8 @@ def test_mapping_and_ascii():
         })
 
     # Summary icons
-    summary_icons = engine.lookup_many(json_data.get('summary_keywords', []))
+    summary_text = json_data.get('explanation', '')
+    summary_icons = engine.lookup_many(json_data.get('explanation_keywords', []))
     for icon in summary_icons:
         if icon.get('path'):
             icon['src'] = get_base64_image(icon['path'])
@@ -129,8 +122,8 @@ def test_mapping_and_ascii():
     response = templates.TemplateResponse("explanation.html", {
         "request": MockRequest(),
         "title": json_data['title'],
-        "summary_text": json_data['summary'],
-        "summary_icons": summary_icons,
+        "explanation_text": summary_text,
+        "explanation_icons": summary_icons,
         "sections": visual_sections,
         "original_text": "Manual Pipeline Debug"
     })

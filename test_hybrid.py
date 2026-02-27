@@ -12,33 +12,22 @@ Sure! Here is the mapped visual explanation:
 ```json
 {
   "title": "Computer Networks",
-  "summary": "Networks connect computers together.",
-  "summary_keywords": ["globe", "network"],
+  "explanation": "[globe] Networks connect computers together in a grid of nodes.",
+  "explanation_keywords": ["globe", "network"],
   "sections": [
     {
       "title": "Local Area Network",
-      "sentences": [
-        {
-          "text": "A LAN connects computers in a small area.",
-          "keyword": "office"
-        }
-      ],
+      "content": "[office] A LAN connects computers in a small area. [router] It is fast and private.",
       "bullets": ["Fast", "Private"]
     },
     {
       "title": "Wide Area Network",
-      "sentences": [
-        {
-          "text": "A WAN spans large geographical distances.",
-          "keyword": "earth"
-        }
-      ],
+      "content": "[earth] A WAN spans large geographical distances. [satellite] It operates over a large area.",
       "bullets": ["Slower", "Public"]
     }
   ]
 }
 ```
-
 === ASCII SECTION 1 ===
   +-------+    +-------+
   | PC 1  |----| PC 2  |

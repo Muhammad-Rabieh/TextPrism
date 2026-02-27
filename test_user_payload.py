@@ -4,21 +4,12 @@ import json
 raw_text = """
 {
   "title": "C++ Templates: Build Once, Use Everywhere",
-  "summary": "C++ templates enable generic programming, eliminate duplication, enforce compile-time safety, and power the STL ecosystem.",
-  "summary_keywords": ["doodle blueprint", "doodle rocket"],
+  "explanation": "[doodle_blueprint] C++ templates enable generic programming, [doodle_rocket] eliminate duplication, and power the STL ecosystem.",
+  "explanation_keywords": ["doodle_blueprint", "doodle_rocket"],
   "sections": [
     {
       "title": "Generic Code Engine",
-      "sentences": [
-        {
-          "text": "A C++ template lets you create generic functions or classes.",
-          "keyword": "doodle blueprint"
-        },
-        {
-          "text": "You write the logic once, and it works with any data type.",
-          "keyword": "doodle factory"
-        }
-      ],
+      "content": "[doodle_blueprint] A C++ template lets you create generic functions or classes. [doodle_factory] You write the logic once, and it works with any data type.",
       "bullets": [
         "Supports int, float, double, string, custom types",
         "No rewriting for every data type",
@@ -27,16 +18,7 @@ raw_text = """
     },
     {
       "title": "No More Duplication",
-      "sentences": [
-        {
-          "text": "Templates eliminate repeated code by allowing a single reusable definition.",
-          "keyword": "doodle stack"
-        },
-        {
-          "text": "This keeps programs cleaner and easier to manage.",
-          "keyword": "doodle broom"
-        }
-      ],
+      "content": "[doodle_stack] Templates eliminate repeated code by allowing a single reusable definition. [doodle_broom] This keeps programs cleaner and easier to manage.",
       "bullets": [
         "One implementation instead of many",
         "Reduces copy-paste functions",
@@ -45,16 +27,7 @@ raw_text = """
     },
     {
       "title": "Safety + Specialization",
-      "sentences": [
-        {
-          "text": "Templates are type-safe and checked at compile time.",
-          "keyword": "doodle shield"
-        },
-        {
-          "text": "They can also be specialized for specific data types when custom behavior is required.",
-          "keyword": "doodle wrench"
-        }
-      ],
+      "content": "[doodle_shield] Templates are type-safe and checked at compile time. [doodle_wrench] They can also be specialized for specific data types.",
       "bullets": [
         "Compile-time type checking",
         "Safer than void* and macros",
@@ -63,16 +36,7 @@ raw_text = """
     },
     {
       "title": "Foundation of the STL",
-      "sentences": [
-        {
-          "text": "Templates form the backbone of the Standard Template Library (STL).",
-          "keyword": "colorful building"
-        },
-        {
-          "text": "They power flexible containers and reusable algorithms.",
-          "keyword": "doodle engine"
-        }
-      ],
+      "content": "[colorful_building] Templates form the backbone of the Standard Template Library (STL). [doodle_engine] They power flexible containers and reusable algorithms.",
       "bullets": [
         "Containers: vector, map",
         "Algorithms: sort, find",

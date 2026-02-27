@@ -91,21 +91,12 @@ def generate_cpp_templates_test():
 
     json_data = {
       "title": "GENERIC MACHINES: How C++ Templates Multiply Power",
-      "summary": "C++ templates enable generic, reusable, and type-safe programming across multiple data types. They eliminate duplication, enforce compile-time safety, and power the STL ecosystem.",
-      "summary_keywords": ["gear", "lightning"],
+      "explanation": "[gear] C++ templates enable generic, reusable, and type-safe programming across multiple data types. [lightning] They eliminate duplication, enforce compile-time safety, and power the STL ecosystem.",
+      "explanation_keywords": ["gear", "lightning"],
       "sections": [
         {
           "title": "The Generic Blueprint",
-          "sentences": [
-            {
-              "text": "A C++ template is a tool for building generic classes or functions.",
-              "keyword": "blueprint"
-            },
-            {
-              "text": "It lets the same logic adapt to any data type without rewriting the code.",
-              "keyword": "recycle"
-            }
-          ],
+          "content": "[blueprint] A C++ template is a tool for building generic classes or functions. [recycle] It lets the same logic adapt to any data type without rewriting the code.",
           "bullets": [
             "Create flexible functions.",
             "Create reusable classes.",
@@ -114,16 +105,7 @@ def generate_cpp_templates_test():
         },
         {
           "title": "One Definition, Zero Duplication",
-          "sentences": [
-            {
-              "text": "Templates remove repeated code by allowing one function or class to handle many types.",
-              "keyword": "layers"
-            },
-            {
-              "text": "Instead of copying logic, you generalize it.",
-              "keyword": "sparkles"
-            }
-          ],
+          "content": "[layers] Templates remove repeated code by allowing one function or class to handle many types. [sparkles] Instead of copying logic, you generalize it.",
           "bullets": [
             "Eliminate multiple nearly identical functions.",
             "Keep source code compact.",
@@ -132,16 +114,7 @@ def generate_cpp_templates_test():
         },
         {
           "title": "Safe and Customizable Power",
-          "sentences": [
-            {
-              "text": "Templates enforce strong type safety during compilation.",
-              "keyword": "safety"
-            },
-            {
-              "text": "They can also be specialized to handle specific data types differently when needed.",
-              "keyword": "wrench"
-            }
-          ],
+          "content": "[safety] Templates enforce strong type safety during compilation. [wrench] They can also be specialized to handle specific data types differently when needed.",
           "bullets": [
             "Safer than void* pointers.",
             "More reliable than macros.",
@@ -150,16 +123,7 @@ def generate_cpp_templates_test():
         },
         {
           "title": "Backbone of the STL",
-          "sentences": [
-            {
-              "text": "Templates form the foundation of the Standard Template Library.",
-              "keyword": "foundation"
-            },
-            {
-              "text": "Core containers and algorithms rely on them to operate across all compatible data types.",
-              "keyword": "rocket"
-            }
-          ],
+          "content": "[foundation] Templates form the foundation of the Standard Template Library. [rocket] Core containers and algorithms rely on them to operate across all compatible data types.",
           "bullets": [
             "vector stores elements generically.",
             "map manages key–value pairs.",
@@ -168,7 +132,6 @@ def generate_cpp_templates_test():
         }
       ]
     }
-
     # 1. Build the Hybrid Response Payload (Markdown Fences + ASCII Blocks)
     hybrid_payload = f"""```json\n{json.dumps(json_data, indent=2)}\n```
 

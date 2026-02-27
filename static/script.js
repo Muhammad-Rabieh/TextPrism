@@ -17,34 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal
 
 
-    // Magic Prompt Modal Elements
+    // Unified Magic Prompt Elements
     const magicPromptModal = document.getElementById('magic-prompt-modal');
     const magicPromptBtn = document.getElementById('magic-prompt-btn');
-    const magicModalCloseBtn = document.getElementById('magic-modal-close-btn');
-
-    // Containers
-    const phase1Container = document.getElementById('phase1-container');
-    const phase2Container = document.getElementById('phase2-container');
-
-    // Prompts
-    const phase1PromptText = document.getElementById('magic-prompt-phase1-text');
-    const phase2PromptText = document.getElementById('magic-prompt-phase2-text');
-
-    // Buttons
-    const copyPhase1Btn = document.getElementById('copy-phase1-btn');
-    const copyPhase2Btn = document.getElementById('copy-phase2-btn');
-    const gotoPhase2Btn = document.getElementById('goto-phase2-btn');
-    const backToPhase1Btn = document.getElementById('back-to-phase1-btn');
-    const processAiBtn = document.getElementById('process-ai-btn');
-
-    // Inputs
-    const distilledTextInput = document.getElementById('distilled-text-input');
+    const magicPromptText = document.getElementById('magic-prompt-text');
+    const copyMagicBtn = document.getElementById('copy-magic-btn');
     const aiResponseInput = document.getElementById('ai-response-input');
-
-    // Indicators
-    const step1Ind = document.getElementById('step1-indicator');
-    const step2Ind = document.getElementById('step2-indicator');
-    const step3Ind = document.getElementById('step3-indicator');
+    const processAiBtn = document.getElementById('process-ai-btn');
+    const magicModalCloseBtn = document.getElementById('magic-modal-close');
 
     let activeShape = 'box';
     let lastGeneratedHTML = '';
@@ -62,82 +42,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
             magicPromptBtn.disabled = true;
             try {
-                const response = await fetch('/magic-prompt/distill', {
+                const response = await fetch('/magic-prompt/unified', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: text })
                 });
                 const data = await response.json();
 
-                if (phase1PromptText) {
-                    phase1PromptText.textContent = data.prompt;
-                    // Reset modal state
-                    showPhase(1);
+                if (magicPromptText) {
+                    magicPromptText.textContent = data.prompt;
+                    aiResponseInput.value = ''; // Clear previous
                     magicPromptModal.style.display = 'flex';
-                } else {
-                    // Fallback if index.html is old
-                    const oldOutput = document.getElementById('magic-prompt-text');
-                    if (oldOutput) {
-                        oldOutput.textContent = data.prompt;
-                        magicPromptModal.style.display = 'flex';
-                    } else {
-                        alert("UI Mismatch: Please hard-reload the page (Ctrl+F5).");
-                    }
                 }
             } catch (err) {
-                console.error('Phase 1 error:', err);
-                alert('Failed to generate Phase 1 prompt.');
+                console.error('Unified Prompt error:', err);
+                alert('Failed to generate prompt.');
             } finally {
                 magicPromptBtn.disabled = false;
             }
         });
     }
 
-    function showPhase(phase) {
-        if (phase === 1) {
-            phase1Container.style.display = 'block';
-            phase2Container.style.display = 'none';
-            step1Ind.className = 'step active';
-            step2Ind.className = 'step';
-            step3Ind.className = 'step';
-        } else if (phase === 2) {
-            phase1Container.style.display = 'none';
-            phase2Container.style.display = 'block';
-            step1Ind.className = 'step completed';
-            step2Ind.className = 'step active';
-            step3Ind.className = 'step';
-        }
-    }
-
-    gotoPhase2Btn.addEventListener('click', async () => {
-        const distilled = distilledTextInput.value.trim();
-        if (!distilled) {
-            distilledTextInput.focus();
-            return;
-        }
-
-        gotoPhase2Btn.disabled = true;
-        gotoPhase2Btn.textContent = 'Generating Phase 2...';
-
-        try {
-            const response = await fetch('/magic-prompt/map', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ distilled_text: distilled })
+    if (copyMagicBtn) {
+        copyMagicBtn.addEventListener('click', () => {
+            const textToCopy = magicPromptText.innerText || magicPromptText.textContent;
+            copyTextToClipboard(textToCopy).then(() => {
+                copyMagicBtn.textContent = 'Copied!';
+                copyMagicBtn.classList.add('btn-accent');
+                setTimeout(() => {
+                    copyMagicBtn.textContent = 'Copy Prompt';
+                    copyMagicBtn.classList.remove('btn-accent');
+                }, 2000);
             });
-            const data = await response.json();
-            phase2PromptText.textContent = data.prompt;
-            showPhase(2);
-        } catch (err) {
-            console.error('Phase 2 error:', err);
-            alert('Failed to generate Phase 2 prompt.');
-        } finally {
-            gotoPhase2Btn.disabled = false;
-            gotoPhase2Btn.textContent = 'Next: Semantic Mapping';
-        }
-    });
-
-    backToPhase1Btn.addEventListener('click', () => showPhase(1));
+        });
+    }
 
     magicModalCloseBtn.addEventListener('click', () => {
         magicPromptModal.style.display = 'none';
@@ -168,36 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-
-    copyPhase1Btn.addEventListener('click', () => {
-        const textToCopy = phase1PromptText.innerText || phase1PromptText.textContent;
-        copyTextToClipboard(textToCopy).then(() => {
-            copyPhase1Btn.textContent = 'Copied!';
-            copyPhase1Btn.classList.add('btn-accent');
-            setTimeout(() => {
-                copyPhase1Btn.textContent = 'Copy Prompt';
-                copyPhase1Btn.classList.remove('btn-accent');
-            }, 2000);
-        }).catch(err => {
-            console.error('Could not copy text: ', err);
-            copyPhase1Btn.textContent = 'Failed to copy';
-        });
-    });
-
-    copyPhase2Btn.addEventListener('click', () => {
-        const textToCopy = phase2PromptText.innerText || phase2PromptText.textContent;
-        copyTextToClipboard(textToCopy).then(() => {
-            copyPhase2Btn.textContent = 'Copied!';
-            copyPhase2Btn.classList.add('btn-accent');
-            setTimeout(() => {
-                copyPhase2Btn.textContent = 'Copy Prompt';
-                copyPhase2Btn.classList.remove('btn-accent');
-            }, 2000);
-        }).catch(err => {
-            console.error('Could not copy text: ', err);
-            copyPhase2Btn.textContent = 'Failed to copy';
-        });
-    });
+    /* Legacy event listeners removed for One-Phase Magic workflow */
 
     processAiBtn.onclick = async () => {
         const json = aiResponseInput.value.trim();
@@ -208,8 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         processAiBtn.disabled = true;
         processAiBtn.textContent = '... Explaining ...';
-        step2Ind.className = 'step completed';
-        step3Ind.className = 'step active';
 
         try {
             const formData = new FormData();
@@ -234,12 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
             copyBtn.disabled = false;
             magicPromptModal.style.display = 'none';
             aiResponseInput.value = '';
-            distilledTextInput.value = '';
         } catch (err) {
             console.error('Magic render error:', err);
-            alert('Failed to render AI response. Ensure it is valid JSON.');
-            step3Ind.className = 'step';
-            step2Ind.className = 'step active';
+            // If the error has a response body text, use it, otherwise generic alert
+            const errorMsg = err.message || 'Failed to render AI response. Ensure it is valid JSON.';
+            alert(errorMsg);
         } finally {
             processAiBtn.disabled = false;
             processAiBtn.textContent = 'Build Visual Explanation';

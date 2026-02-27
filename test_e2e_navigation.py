@@ -9,52 +9,26 @@ It lets the same logic adapt to any data type without rewriting the code.
 Templates remove repeated code by allowing one function or class to handle many types.
 """
 
-# Sample Phase 1 LLM Output (Distilled Markdown)
-PHASE_1_OUTPUT = """
-# C++ Templates Explained
-
-## The Generic Blueprint
-- A template is a tool for building generic classes or functions.
-- It lets the same logic adapt to any data type without rewriting the code.
-
-## One Definition, Zero Duplication
-- Templates remove repeated code by allowing one function or class to handle many types.
-"""
-
-# Sample Phase 2 LLM Output (Hybrid JSON + ASCII)
-PHASE_2_OUTPUT = """```json
+# Sample Single-Phase AI Response (Hybrid JSON + ASCII)
+SINGLE_PHASE_OUTPUT = """```json
 {
   "title": "C++ Templates Explained",
-  "explanation": "Templates are blueprints for generic code.",
+  "explanation": "[vision] Templates are blueprints for generic code.",
   "explanation_keywords": ["blueprint", "recycle"],
   "sections": [
     {
       "title": "The Generic Blueprint",
-      "sentences": [
-        {
-          "text": "A template is a tool for building generic classes or functions.",
-          "keyword": "wrench"
-        },
-        {
-          "text": "It lets the same logic adapt to any data type without rewriting the code.",
-          "keyword": "layers"
-        }
-      ],
+      "content": "[wrench] A template is a tool for building generic classes. [layers] It lets the logic adapt to any data type.",
       "bullets": [
         "Create flexible functions.",
         "Create reusable classes."
       ]
     },
     {
-      "title": "One Definition, Zero Duplication",
-      "sentences": [
-        {
-          "text": "Templates remove repeated code by allowing one function.",
-          "keyword": "safety"
-        }
-      ],
+      "title": "Zero Duplication",
+      "content": "[safety] Templates remove repeated code by allowing one function handle many types.",
       "bullets": [
-        "Eliminate multiple nearly identical functions.",
+        "Eliminate nearly identical functions.",
         "Keep source code compact."
       ]
     }
@@ -82,6 +56,7 @@ PHASE_2_OUTPUT = """```json
 """
 
 
+
 def test_e2e_user_journey():
     with sync_playwright() as p:
         print("🚀 Launching browser...")
@@ -99,35 +74,21 @@ def test_e2e_user_journey():
         print("🖱️ Step 2: Clicking 'Explain & Map with AI'...")
         page.click("#magic-prompt-btn")
 
-        print("⏳ Waiting for Phase 1 Modal...")
+        print("⏳ Waiting for Magic Modal...")
         page.wait_for_selector("#magic-prompt-modal", state="visible")
         time.sleep(1)
 
-        print("📋 Step 3: Simulating user copying the Phase 1 Prompt...")
-        page.click("#copy-phase1-btn")
+        print("📋 Step 3: Simulating user copying the Unified Prompt...")
+        page.click("#copy-magic-btn")
         time.sleep(1)
 
-        print("✍️ Step 4: Pasting simulated 1st AI result (Distilled Outline)...")
-        page.fill("#distilled-text-input", PHASE_1_OUTPUT)
+        print("✍️ Step 4: Pasting simulated AI response (Hybrid JSON+ASCII)...")
+        page.fill("#ai-response-input", SINGLE_PHASE_OUTPUT)
         time.sleep(1)
 
-        print("🖱️ Step 5: Moving to Next step (Semantic Mapping)...")
-        page.click("#goto-phase2-btn")
-
-        print("⏳ Waiting for Phase 2 panel to render...")
-        page.wait_for_selector("#phase2-container", state="visible")
-        time.sleep(1)
-
-        print("📋 Step 6: Simulating user copying the Phase 2 Prompt...")
-        page.click("#copy-phase2-btn")
-        time.sleep(1)
-
-        print("✍️ Step 7: Pasting simulated 2nd AI result (Hybrid JSON+ASCII)...")
-        page.fill("#ai-response-input", PHASE_2_OUTPUT)
-        time.sleep(1)
-
-        print("🎨 Step 8: Hitting the final 'Build Visual Explanation' button!")
+        print("🎨 Step 5: Hitting the final 'Build Visual Explanation' button!")
         page.click("#process-ai-btn")
+
 
         print("⏳ Waiting for the UI to process the request and render output...")
         # The frontend script strips .explanation-wrapper and inserts its inner HTML

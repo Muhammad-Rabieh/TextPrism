@@ -15,6 +15,7 @@ import os
 import json
 import re
 import traceback
+import subprocess
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -227,39 +228,58 @@ async def shape_it_api(
     return {"ascii": result, "shape": shape}
 
 
-@app.post("/magic-prompt/distill", response_class=JSONResponse)
-async def get_magic_prompt_distill(request: Request):
-    """Phase 1: Generate a prompt to distill raw text into a core explanation."""
+@app.post("/magic-prompt/unified", response_class=JSONResponse)
+async def get_magic_prompt_unified(request: Request):
+    """Unified Phase: Generate a prompt to both structure text and map icons in one go."""
     data = await request.json()
     text = data.get("text", "")
-    prompt = f"""
-I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact explanation.
+    prompt = fr"""
+I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact Visual Explanation in a **Single Phase**.
 
-COMMAND:
-Explain the following using shape-it ascii art style:
+I want you to output a **Hybrid Format**: a single JSON object followed by raw text ASCII blocks.
+Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence using an inline tag.
 
-RULES:
-1. Distill the text into 3-5 key sections that explain the core topic.
-2. For each section, provide a short title and 1-2 sentences of clear content.
-3. Break down details into bullet points.
-4. Use your creative judgment to 'draw' the layout using the shape-it ASCII style (boxes, flows, separators).
-5. For banners, use the 'standard' font.
+RULES FOR THE EXPLANATION:
+1. Distill the text into 3-5 key sections.
+2. For each section, provide a short title.
+3. For the content of each section, write 2-3 sentences.
+4. **STRICT VISUAL PARITY: At the start of EVERY sentence, insert exactly ONE general keyword in square brackets [keyword].**
+5. **GENERAL KEYWORDS: Use high-level English nouns like [rocket], [shield], [engine]. NO implementation details like 'doodle_'.**
+6. **SECTION PARITY: EVERY section title MUST have its own [keyword] tag at the start.**
+7. Separate section details into bullet points.
 
-OUTPUT FORMAT:
-# [Catchy Main Title]
+RULES FOR THE ASCII ART:
+7. Use your creative judgment to 'draw' a layout for each section using the shape-it ASCII style.
+8. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
+9. Instead, AFTER the JSON block, output each section's ASCII art wrapped in ```text ... ``` code fences. Separate them by `=== ASCII SECTION X ===` markers.
 
-## [Section 1 Title]
-Content: [Simple explanation]
-Bullets:
-- [Point A]
-- [Point B]
+REQUIRED JSON STRUCTURE:
+```json
+{{
+  "title": "Main Document Title",
+  "explanation": "[vision] Overall explanation starting with a keyword tag.",
+  "explanation_keywords": ["keyword1", "keyword2"],
+  "sections": [
+    {{
+      "title": "Section Title",
+      "content": "[keyword] Sentence one. [keyword] Sentence two.",
+      "bullets": ["Point 1", "Point 2"]
+    }}
+  ]
+}}
+```
 
-[Repeat for other sections...]
-
-DOCUMENT TEXT:
+TEXT TO TRANSFORM:
 {text[:10000]}
 """
     return {"prompt": prompt.strip()}
+
+
+@app.post("/magic-prompt/distill", response_class=JSONResponse)
+async def get_magic_prompt_distill(request: Request):
+    """Legacy Phase 1: Use unified instead."""
+    return await get_magic_prompt_unified(request)
+
 
 
 @app.post("/magic-prompt", response_class=JSONResponse)
@@ -328,32 +348,63 @@ TEXT TO MAP:
     return {"prompt": prompt.strip()}
 
 
+def extract_json_balanced(text):
+    """
+    Finds and extracts the first balanced JSON object { ... } from a string.
+    This is highly resilient to conversational text or ASCII art surrounding the JSON.
+    """
+    start_idx = text.find('{')
+    if start_idx == -1:
+        return None
+
+    count = 0
+    for i in range(start_idx, len(text)):
+        if text[i] == '{':
+            count += 1
+        elif text[i] == '}':
+            count -= 1
+            if count == 0:
+                return text[start_idx:i+1]
+    return None
+
+def clean_json_garbage(json_str):
+    """Deep cleanup for common LLM JSON mistakes like trailing commas."""
+    # Remove trailing commas before closing braces/brackets
+    json_str = re.sub(r',\s*([\]}])', r'\1', json_str)
+    # Ensure quotes are double for basic JSON
+    if "'" in json_str and '"' not in json_str:
+        json_str = json_str.replace("'", '"')
+    return json_str
+
 @app.post("/render-magic", response_class=HTMLResponse)
 async def render_magic(request: Request, data: str = Form(...)):
     """Render a visual explanation from AI-generated Hybrid format."""
     try:
         raw_text = data.strip()
         
-        # 1. Extract JSON block using regex
-        json_match = re.search(r'```json\s*(.*?)\s*```', raw_text, re.DOTALL | re.IGNORECASE)
-        if json_match:
-            json_str = json_match.group(1)
-        else:
-            # Fallback: find first { and last }
-            start = raw_text.find('{')
-            end = raw_text.rfind('}')
-            if start != -1 and end != -1:
-                json_str = raw_text[start:end+1]
+        # 1. Extract JSON block using brace balancing (highly resilient)
+        json_str = extract_json_balanced(raw_text)
+        
+        if not json_str:
+            # Fallback to markdown code block if no braces found (unlikely but possible)
+            json_match = re.search(r'```json\s*(.*?)\s*```', raw_text, re.DOTALL | re.IGNORECASE)
+            if json_match:
+                json_str = json_match.group(1)
             else:
-                raise ValueError("Could not find JSON block in output.")
+                raise ValueError("No JSON object found in AI response. Ensure the output starts with '{' or is wrapped in ```json tags.")
         
         try:
             ai_data = json.loads(json_str)
-        except json.JSONDecodeError as e:
-            # Deep fallback for broken trailing commas or quotes
-            print(f"⚠️ JSON Decode Error: {e}. Attempting basic fix...")
-            json_str = json_str.replace("'", '"')
-            ai_data = json.loads(json_str)
+        except json.JSONDecodeError as first_err:
+            print(f"⚠️ Initial JSON Decode Error: {first_err}. Attempting cleanup...")
+            try:
+                cleaned_str = clean_json_garbage(json_str)
+                ai_data = json.loads(cleaned_str)
+            except json.JSONDecodeError as second_err:
+                print(f"❌ Final JSON Decode Error: {second_err}")
+                snippet = json_str[:150] + "..." if len(json_str) > 150 else json_str
+                raise ValueError(f"Invalid JSON format. Check for unescaped characters or trailing commas. Snippet: {snippet}")
+
         
         # 2. Extract ASCII Blocks
         ascii_blocks = {}
@@ -381,28 +432,59 @@ async def render_magic(request: Request, data: str = Form(...)):
         visual_sections = []
         for idx, section in enumerate(ai_data.get('sections', [])):
             sec_title = section.get('title', '')
-            sec_sentences = section.get('sentences', [])
+            raw_content = section.get('content', '')
             sec_bullets = section.get('bullets', [])
             
-            # Reconstruct content from sentences for ASCII art and legacy support
-            reconstructed_content = " ".join([s.get('text', '') for s in sec_sentences])
-            if not reconstructed_content:
-                reconstructed_content = section.get('content', '')
-
-            # Process sentence-level icons
+            # 3. New Parser for Inline Tags: [keyword] Sentence Text.
             processed_sentences = []
             all_sec_keywords = []
-            for sent in sec_sentences:
-                kw = sent.get('keyword', '')
+            
+            # Split by [keyword] tags while keeping the content
+            # Pattern matches [word] followed by text
+            parts = re.split(r'\[([\w\s_-]+)\]', raw_content)
+            # parts will be ['', 'kw1', 'Sentence 1', 'kw2', 'Sentence 2']
+            
+            # First part might be text without a tag
+            if parts[0].strip():
+                processed_sentences.append({
+                    'text': parts[0].strip(),
+                    'icon': None
+                })
+            
+            for i in range(1, len(parts), 2):
+                kw = parts[i].strip()
+                text = parts[i+1].strip() if i+1 < len(parts) else ""
+                
                 if kw:
                     all_sec_keywords.append(kw)
                     icon = engine.lookup(kw)
                 else:
                     icon = None
+                
                 processed_sentences.append({
-                    'text': sent.get('text', ''),
+                    'text': text,
                     'icon': icon
                 })
+
+            # For legacy/compatibility: if no sentences were found via tags, use nested ones if present
+            if not processed_sentences:
+                sec_sentences = section.get('sentences', [])
+                for sent in sec_sentences:
+                    kw = sent.get('keyword', '')
+                    if kw:
+                        all_sec_keywords.append(kw)
+                        icon = engine.lookup(kw)
+                    else:
+                        icon = None
+                    processed_sentences.append({
+                        'text': sent.get('text', ''),
+                        'icon': icon
+                    })
+
+            # Reconstruct content string for ASCII fallback logic
+            reconstructed_content = " ".join([s.get('text', '') for s in processed_sentences])
+            if not reconstructed_content:
+                reconstructed_content = raw_content
 
             # USE ORIGINAL RAW ASCII FROM HYBRID OUTPUT
             # Get the block from the parsed ascii_blocks (0-indexed) or fallback to 'raw_ascii' from old JSON
@@ -697,8 +779,21 @@ def generate_visual_section(section, ai_tier="heuristic"):
 # Entry Point
 # ─────────────────────────────────────────────────────────────
 
+def kill_process_on_port(port):
+    """Attempt to clear the port using fuser -k."""
+    try:
+        # fuser -k <port>/tcp sends SIGKILL to processes using the port
+        cmd = f"fuser -k {port}/tcp"
+        subprocess.run(cmd, shell=True, check=False, capture_output=True)
+        print(f"🔄 Port {port} cleared (if occupied).")
+    except Exception as e:
+        print(f"⚠️  Could not clear port {port}: {e}")
+
 if __name__ == '__main__':
     import uvicorn
+    # 1. Clear the port before starting to prevent bind errors
+    kill_process_on_port(8000)
+    
     print("=" * 60)
     print("🚀 Text Explain Project — Starting Server")
     print("=" * 60)
