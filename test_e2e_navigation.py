@@ -25,8 +25,8 @@ PHASE_1_OUTPUT = """
 PHASE_2_OUTPUT = """```json
 {
   "title": "C++ Templates Explained",
-  "summary": "Templates are blueprints for generic code.",
-  "summary_keywords": ["blueprint", "recycle"],
+  "explanation": "Templates are blueprints for generic code.",
+  "explanation_keywords": ["blueprint", "recycle"],
   "sections": [
     {
       "title": "The Generic Blueprint",
@@ -96,7 +96,7 @@ def test_e2e_user_journey():
         page.fill("#text-input", SAMPLE_INPUT)
         time.sleep(1) # Visual pauses
 
-        print("🖱️ Step 2: Clicking 'Summarize & Map with AI'...")
+        print("🖱️ Step 2: Clicking 'Explain & Map with AI'...")
         page.click("#magic-prompt-btn")
 
         print("⏳ Waiting for Phase 1 Modal...")

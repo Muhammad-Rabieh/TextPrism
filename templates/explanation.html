@@ -303,16 +303,18 @@
     <div class="explanation-wrapper">
         <!-- Title Banner -->
         <div class="title-section">
-            <h1 style="margin-top: 12px; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text);">{{ title }}</h1>
+            <h1
+                style="margin-top: 12px; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text);">
+                {{ title }}</h1>
         </div>
 
-        <!-- Summary Box -->
-        <div class="summary-box">
-            <h2 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);">📋 Summary</h2>
-            <p class="section-text">{{ summary_text[:300] }}</p>
-            {% if summary_icons %}
-            <div class="summary-icons">
-                {% for icon in summary_icons %}
+        <!-- Explanation Box -->
+        <div class="explanation-box">
+            <h2 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);">📋 Explanation</h2>
+            <p class="section-text">{{ explanation_text[:400] }}</p>
+            {% if explanation_icons %}
+            <div class="explanation-icons">
+                {% for icon in explanation_icons %}
                 {% if icon.type != 'none' %}
                 <span class="icon-chip">
                     <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"

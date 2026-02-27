@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         processAiBtn.disabled = true;
-        processAiBtn.textContent = '... Building ...';
+        processAiBtn.textContent = '... Explaining ...';
         step2Ind.className = 'step completed';
         step3Ind.className = 'step active';
 
@@ -256,8 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
         outputContent.innerHTML = `
                 <div class="output-placeholder">
                     <img src="/icons/openmoji/1F3B8.png" alt="art" width="72" height="72" class="placeholder-emoji">
-                        <p>Your visual explanation will appear here</p>
-                        <p class="placeholder-sub">Paste text on the left and click "Summarize & Map with AI"</p>
+                            <p>Your visual explanation will appear here</p>
+                        <p class="placeholder-sub">Paste text on the left and click "Explain & Map with AI"</p>
                     </div>
             `;
         downloadBtn.disabled = true;

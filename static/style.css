@@ -585,7 +585,7 @@ h3 {
     margin-bottom: 24px;
 }
 
-.summary-box {
+.explanation-box {
     background: var(--bg-surface);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
@@ -593,7 +593,7 @@ h3 {
     margin-bottom: 24px;
 }
 
-.summary-icons {
+.explanation-icons {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;

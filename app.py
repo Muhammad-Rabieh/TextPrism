@@ -14,6 +14,7 @@ Part of TextPrism.
 import os
 import json
 import re
+import traceback
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -228,17 +229,17 @@ async def shape_it_api(
 
 @app.post("/magic-prompt/distill", response_class=JSONResponse)
 async def get_magic_prompt_distill(request: Request):
-    """Phase 1: Generate a prompt to distill/summarize raw text."""
+    """Phase 1: Generate a prompt to distill raw text into a core explanation."""
     data = await request.json()
     text = data.get("text", "")
     prompt = f"""
-I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact overview.
+I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact explanation.
 
 COMMAND:
 Explain the following using shape-it ascii art style:
 
 RULES:
-1. Distill the text into 3-5 key sections.
+1. Distill the text into 3-5 key sections that explain the core topic.
 2. For each section, provide a short title and 1-2 sentences of clear content.
 3. Break down details into bullet points.
 4. Use your creative judgment to 'draw' the layout using the shape-it ASCII style (boxes, flows, separators).
@@ -294,8 +295,8 @@ HYBRID STRUCTURE TO FOLLOW:
 ```json
 {{
   "title": "Document Title",
-  "summary": "Overall summary",
-  "summary_keywords": ["vibrant1", "vibrant2"],
+  "explanation": "Overall explanation of the key concepts.",
+  "explanation_keywords": ["vibrant1", "vibrant2"],
   "sections": [
     {{
       "title": "Section Title",
@@ -434,22 +435,25 @@ async def render_magic(request: Request, data: str = Form(...)):
 
         title = ai_data.get('title', 'AI Analysis')
         
-        summary_text = ai_data.get('summary', '')
-        summary_keywords = ai_data.get('summary_keywords', [])
-        if not summary_keywords:
-            summary_keywords = extract_keywords(summary_text, 5)
-        summary_icons = engine.lookup_many(summary_keywords)
-
+        # Robustly handle renamed keys
+        explanation_text = ai_data.get('explanation') or ai_data.get('summary', '')
+        explanation_keywords = ai_data.get('explanation_keywords') or ai_data.get('summary_keywords', [])
+        
+        if not explanation_keywords:
+            explanation_keywords = extract_keywords(explanation_text, 5)
+        explanation_icons = engine.lookup_many(explanation_keywords)
         return templates.TemplateResponse("explanation.html", {
             "request": request,
             "title": title,
-            "summary_text": summary_text,
-            "summary_icons": summary_icons,
+            "explanation_text": explanation_text,
+            "explanation_icons": explanation_icons,
             "sections": visual_sections,
             "original_text": "Manual AI Input"
         })
     except Exception as e:
+        traceback.print_exc()
         return HTMLResponse(content=f"<p style='color:red;'>Error processing AI JSON: {str(e)}</p>", status_code=400)
+
 
 
 @app.get("/lookup/{word}", response_class=JSONResponse)
