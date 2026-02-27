@@ -143,27 +143,59 @@ document.addEventListener('DOMContentLoaded', () => {
         magicPromptModal.style.display = 'none';
     });
 
+    // ── Helper: Copy Text ──
+    function copyTextToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        } else {
+            return new Promise((resolve, reject) => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) resolve();
+                    else reject(new Error('Fallback: Copy command was unsuccessful'));
+                } catch (err) {
+                    reject(err);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+    }
+
     copyPhase1Btn.addEventListener('click', () => {
         const textToCopy = phase1PromptText.innerText || phase1PromptText.textContent;
-        navigator.clipboard.writeText(textToCopy).then(() => {
+        copyTextToClipboard(textToCopy).then(() => {
             copyPhase1Btn.textContent = 'Copied!';
             copyPhase1Btn.classList.add('btn-accent');
             setTimeout(() => {
                 copyPhase1Btn.textContent = 'Copy Prompt';
                 copyPhase1Btn.classList.remove('btn-accent');
             }, 2000);
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+            copyPhase1Btn.textContent = 'Failed to copy';
         });
     });
 
     copyPhase2Btn.addEventListener('click', () => {
         const textToCopy = phase2PromptText.innerText || phase2PromptText.textContent;
-        navigator.clipboard.writeText(textToCopy).then(() => {
+        copyTextToClipboard(textToCopy).then(() => {
             copyPhase2Btn.textContent = 'Copied!';
             copyPhase2Btn.classList.add('btn-accent');
             setTimeout(() => {
                 copyPhase2Btn.textContent = 'Copy Prompt';
                 copyPhase2Btn.classList.remove('btn-accent');
             }, 2000);
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+            copyPhase2Btn.textContent = 'Failed to copy';
         });
     });
 
@@ -298,10 +330,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Copy Output ──
     copyBtn.addEventListener('click', () => {
         const text = outputContent.innerText;
-        navigator.clipboard.writeText(text).then(() => {
+        copyTextToClipboard(text).then(() => {
             const originalHTML = copyBtn.innerHTML;
             copyBtn.innerHTML = '<img src="/icons/heroicons/check.svg" alt="" class="btn-icon"> Copied!';
             setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 2000);
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+            alert('Failed to copy natively. Please copy manually.');
         });
     });
 
