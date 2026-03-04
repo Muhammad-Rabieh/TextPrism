@@ -213,7 +213,8 @@
 
         .ascii-box,
         .ascii-flow,
-        .ascii-callout {
+        .ascii-callout,
+        .ascii-sentence {
             font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
             font-size: 0.8rem;
             line-height: 1.0;
@@ -231,6 +232,15 @@
             max-width: 100%;
             display: block;
             box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .ascii-sentence {
+            font-size: 0.75rem;
+            padding: 16px;
+            margin: 12px 0;
+            border-top: 3px solid var(--accent);
+            background: #ffffff;
+            width: 100%;
         }
 
         .ascii-callout {
@@ -370,11 +380,16 @@
             <div class="sentence-grid">
                 
                 <div class="sentence-item">
-                    
-                    <img src="icons/openmoji/1F4AA.png"
-                        alt="" class="sentence-icon">
-                    
-                    <p class="sentence-text">The core of the system is designed for modular power.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <img src="icons/openmoji/1F4AA.png"
+                                alt="" class="sentence-icon">
+                            
+                            <p class="sentence-text">The core of the system is designed for modular power.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
             </div>
@@ -433,11 +448,16 @@
             <div class="sentence-grid">
                 
                 <div class="sentence-item">
-                    
-                    <img src="icons/openmoji/1F6E1.png"
-                        alt="" class="sentence-icon">
-                    
-                    <p class="sentence-text">Strong safety guarantees are provided at compile time.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <img src="icons/openmoji/1F6E1.png"
+                                alt="" class="sentence-icon">
+                            
+                            <p class="sentence-text">Strong safety guarantees are provided at compile time.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
             </div>

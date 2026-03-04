@@ -234,36 +234,38 @@ async def get_magic_prompt_unified(request: Request):
     data = await request.json()
     text = data.get("text", "")
     prompt = fr"""
-I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact Visual Explanation in a **Single Phase**.
+I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact **Visual Explanation** in a **Single Phase**. 
+**CRITICAL: Your goal is an in-depth EXPLANATION, not a summary. Provide a detailed narrative for each part so the reader truly learns the material.**
 
-I want you to output a **Hybrid Format**: a single JSON object followed by raw text ASCII blocks.
-Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence using an inline tag.
+I want you to output a **Hybrid Format**: a single JSON object followed by raw text ASCII blocks. 
+Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence using an inline tag. 
 
-RULES FOR THE EXPLANATION:
-1. Distill the text into 3-5 key sections.
-2. For each section, provide a short title.
-3. For the content of each section, write 2-3 sentences.
-4. **STRICT VISUAL PARITY: At the start of EVERY sentence, insert exactly ONE general keyword in square brackets [keyword].**
-5. **GENERAL KEYWORDS: Use high-level English nouns like [rocket], [shield], [engine]. NO implementation details like 'doodle_'.**
-6. **SECTION PARITY: EVERY section title MUST have its own [keyword] tag at the start.**
-7. Separate section details into bullet points.
+RULES FOR THE EXPLANATION: 
+1. Organize the material into 3-5 key sections. 
+2. For each section, provide a short title. 
+3. For the content of each section, write 3-5 sentences of **in-depth explanation**. Ensure you cover nuances and details.
+4. **STRICT VISUAL PARITY: At the start of EVERY sentence, insert exactly ONE general keyword in square brackets [keyword].** 
+5. **GENERAL KEYWORDS: Use high-level English nouns like [rocket], [shield], [engine]. NO implementation details like 'doodle_'.** 
+6. **SECTION PARITY: EVERY section title MUST have its own [keyword] tag at the start.** 
+7. Separate section details into bullet points. 
 
-RULES FOR THE ASCII ART:
-7. Use your creative judgment to 'draw' a layout for each section using the shape-it ASCII style.
-8. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
-9. Instead, AFTER the JSON block, output each section's ASCII art wrapped in ```text ... ``` code fences. Separate them by `=== ASCII SECTION X ===` markers.
+RULES FOR THE ASCII ART: 
+7. Use your creative judgment to 'draw' a layout for each section using the shape-it ASCII style. 
+8. **CRITICAL: DO NOT put the ASCII art inside the JSON.** 
+9. Instead, AFTER the JSON block, output each section's ASCII art wrapped in ```text ... ``` code fences. 
+10. Separate them by `=== ASCII SECTION X ===` markers. 
 
 REQUIRED JSON STRUCTURE:
 ```json
 {{
   "title": "Main Document Title",
-  "explanation": "[vision] Overall explanation starting with a keyword tag.",
+  "explanation": "[vision] Detailed overall explanation starting with a keyword tag.",
   "explanation_keywords": ["keyword1", "keyword2"],
   "sections": [
     {{
-      "title": "Section Title",
-      "content": "[keyword] Sentence one. [keyword] Sentence two.",
-      "bullets": ["Point 1", "Point 2"]
+      "title": "[keyword] Section Title",
+      "content": "[keyword] Detailed sentence providing explanation. [keyword] Further detail expanding on the point.",
+      "bullets": ["Technical detail 1", "Technical detail 2"]
     }}
   ]
 }}
@@ -295,38 +297,40 @@ async def get_magic_prompt_map(request: Request):
     distilled_text = data.get("distilled_text", "")
     prompt = fr"""
 I want you to map the document structure below into a Hybrid Format: a single JSON object followed by raw text ASCII blocks.
-Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence.
+**CRITICAL: Your goal is an in-depth EXPLANATION, not a summary. Expand on the ideas to ensure clarity.**
 
 RULES FOR JSON:
-1. For each section, break the 'content' into individual sentences.
-2. For EVERY sentence, identify exactly ONE high-impact English keyword (noun) that represents that specific thought.
-3. Ensure the output begins with a VALID JSON block inside ```json ... ``` markers.
-4. **VISUAL TIP: We have a massive library of 90,000+ Clipart and Doodles. To get VIBRANT images, use descriptive keywords like 'doodle robot', 'sketched idea', 'colorful building', or 'vivid heart'. Use 'doodle' as a prefix for a high-impact hand-drawn look.**
-5. **SEMANTIC TIP: If a concept is abstract (like 'safety' or 'duplication'), choose a VIVID keyword that represents it (e.g., 'shield' for safety, 'copy' or 'stack' for duplication).**
+1. Provide a comprehensive explanation for each section.
+2. For EVERY sentence, insert exactly ONE [keyword] tag at the start.
+3. Keep the JSON structure valid and began with ```json ... ``` markers.
 
 RULES FOR ASCII ART:
-6. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
-7. Instead, AFTER the JSON block, output each section's ASCII art. You MUST wrap EVERY ASCII block in ```text ... ``` code fences so the spaces are preserved. Separate them by `=== ASCII SECTION X ===` markers.
-8. Copy the ASCII blocks EXACTLY. Do NOT truncate lines, do NOT remove underscores, and do NOT 'summarize' the drawing. It must be a 1:1 character match.
-9. For banners, use the 'standard' font.
+4. For each section, provided a custom high-quality ASCII art block using the shape-it style.
+5. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
+6. Instead, AFTER the JSON block, output each section's ASCII art. You MUST wrap EVERY ASCII block in ```text ... ``` code fences.
+7. Separate them clearly: `=== ASCII SECTION X ===`.
 
 HYBRID STRUCTURE TO FOLLOW:
 
 ```json
 {{
   "title": "Document Title",
-  "explanation": "Overall explanation of the key concepts.",
+  "explanation": "[vision] Detailed explanation of the document's core purpose and scope.",
   "explanation_keywords": ["vibrant1", "vibrant2"],
   "sections": [
     {{
-      "title": "Section Title",
+      "title": "[keyword] Section Title",
       "sentences": [
         {{
-          "text": "The first sentence.",
+          "text": "The primary insight explained thoroughly.",
           "keyword": "vivid_concept1"
+        }},
+        {{
+          "text": "Detailed supporting sentence that provides necessary depth.",
+          "keyword": "depth"
         }}
       ],
-      "bullets": ["Point 1", "Point 2"]
+      "bullets": ["Technical detail.", "Key nuance."]
     }}
   ]
 }}
@@ -334,12 +338,7 @@ HYBRID STRUCTURE TO FOLLOW:
 
 === ASCII SECTION 1 ===
 ```text
-THE EXACT ASCII ART BLOCK FROM PHASE 1 - DO NOT ALTER
-```
-
-=== ASCII SECTION 2 ===
-```text
-THE EXACT ASCII ART BLOCK FROM PHASE 1 - DO NOT ALTER
+THE ASCII ART DRAWING FOR THIS SECTION
 ```
 
 TEXT TO MAP:
@@ -406,26 +405,24 @@ async def render_magic(request: Request, data: str = Form(...)):
                 raise ValueError(f"Invalid JSON format. Check for unescaped characters or trailing commas. Snippet: {snippet}")
 
         
-        # 2. Extract ASCII Blocks
+        # 2. Extract ASCII Blocks (Resilient parsing for sections, sentences, and concepts)
         ascii_blocks = {}
-        # Highly resilient regex: matches == ASCII SECTION 1 ==, ### ASCII SECTION 1 ###, etc.
-        pattern = re.compile(r'(?:=+|-+|#+|\*\*)\s*ASCII SECTION\s+(\d+)\s*(?:=+|-+|#+|\*\*)', flags=re.IGNORECASE)
+        # Matches: === ASCII SECTION 1 ===, === ASCII FOR SENTENCE 1.1 ===, === ASCII FOR CONCEPT 1.1 === etc.
+        pattern = re.compile(r'(?:=+|-+|#+|\*\*)\s*ASCII (?:SECTION|FOR SENTENCE|FOR CONCEPT)\s+([\d\.]+)\s*(?:=+|-+|#+|\*\*)', flags=re.IGNORECASE)
         parts = pattern.split(raw_text)
         
-        # parts will be: [preamble, '1', block_1_text, '2', block_2_text, ...]
+        # parts will be: [preamble, '1' or '1.1', block_text, '2' or '1.2', block_text, ...]
         for i in range(1, len(parts) - 1, 2):
             try:
-                sec_num = int(parts[i].strip())
-                # CRITICAL FIX: Use .strip('\r\n') instead of .strip() to preserve leading spaces on the first line!
+                key = parts[i].strip()
                 block = parts[i+1].strip('\r\n')
                 
-                # Remove markdown code block wrappers if the LLM added them around the ASCII art
+                # Remove markdown code block wrappers
                 block = re.sub(r'^```[\w]*\s*\n', '', block)
                 block = re.sub(r'\n```\s*$', '', block)
                 
-                # 0-indexed internally
-                ascii_blocks[sec_num - 1] = block
-            except ValueError:
+                ascii_blocks[key] = block
+            except Exception:
                 pass
         
         # Transform AI data into our visual_sections format
@@ -435,50 +432,108 @@ async def render_magic(request: Request, data: str = Form(...)):
             raw_content = section.get('content', '')
             sec_bullets = section.get('bullets', [])
             
-            # 3. New Parser for Inline Tags: [keyword] Sentence Text.
+            # 3. New Parser for Inline Tags: [keyword] [shape: style] Sentence Text.
             processed_sentences = []
             all_sec_keywords = []
             
-            # Split by [keyword] tags while keeping the content
-            # Pattern matches [word] followed by text
-            parts = re.split(r'\[([\w\s_-]+)\]', raw_content)
-            # parts will be ['', 'kw1', 'Sentence 1', 'kw2', 'Sentence 2']
+            # Split by tags but keep them. We look for [keyword] then [shape: style]
+            # Pattern matches [kw] [shape: st]
+            tag_pattern = re.compile(r'\[([\w\s_-]+)\]\s*(?:\[shape:\s*([\w_-]+)\])?')
             
-            # First part might be text without a tag
-            if parts[0].strip():
+            # We iterate through the raw_content using finditer to catch tags and text in between
+            last_pos = 0
+            for match in tag_pattern.finditer(raw_content):
+                # Any text BEFORE this tag belongs to the previous sentence (if any)
+                pre_text = raw_content[last_pos:match.start()].strip()
+                if pre_text and processed_sentences:
+                    processed_sentences[-1]['text'] += " " + pre_text
+                elif pre_text: # Floating text at the start
+                     processed_sentences.append({'text': pre_text, 'icon': None, 'ascii': ''})
+                
+                kw = match.group(1).strip()
+                shape = match.group(2).strip() if match.group(2) else "none"
+                
+                # The text for this sentence starts after this match...
+                # but we'll find the END of it at the NEXT match.
+                last_pos = match.end()
+                
+                icon = engine.lookup(kw) if kw else None
+                if kw: all_sec_keywords.append(kw)
+                
                 processed_sentences.append({
-                    'text': parts[0].strip(),
-                    'icon': None
+                    'text': '', # Will be filled in next iteration or at the end
+                    'icon': icon,
+                    'shape': shape,
+                    'ascii': ''
                 })
+
+            # Fill in the text for the sentences found
+            # We re-run a slightly different split to get the text chunks
+            text_parts = tag_pattern.split(raw_content)
             
-            for i in range(1, len(parts), 2):
-                kw = parts[i].strip()
-                text = parts[i+1].strip() if i+1 < len(parts) else ""
+            cursor = 1
+            sent_idx = 0
+            while cursor < len(text_parts) and sent_idx < len(processed_sentences):
+                txt = text_parts[cursor+2].strip() if cursor+2 < len(text_parts) else ""
+                processed_sentences[sent_idx]['text'] = txt
                 
-                if kw:
-                    all_sec_keywords.append(kw)
-                    icon = engine.lookup(kw)
-                else:
-                    icon = None
+                # 4. Resolve ASCII art (AI-drawn block vs heuristic generation)
+                shape = processed_sentences[sent_idx].get('shape', 'none')
                 
-                processed_sentences.append({
-                    'text': text,
-                    'icon': icon
-                })
+                # Try to find an AI-drawn block first: e.g., "1.1", "1.2", etc.
+                # Since we are in section 'idx', we look for strings like "idx+1.sent_idx+1"
+                ai_key = f"{idx+1}.{sent_idx+1}"
+                ai_drawn_ascii = ascii_blocks.get(ai_key)
+                
+                if ai_drawn_ascii:
+                    processed_sentences[sent_idx]['ascii'] = normalize_ascii(ai_drawn_ascii)
+                elif shape != 'none' and txt:
+                    # Fallback to backend generation
+                    try:
+                        if shape == 'box':
+                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_box(txt, padding=1))
+                        elif shape == 'callout':
+                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_callout(txt))
+                        elif shape == 'banner':
+                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_banner(txt[:20]))
+                        elif shape == 'separator':
+                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_separator(txt))
+                    except:
+                        pass
+                
+                cursor += 3
+                sent_idx += 1
 
             # For legacy/compatibility: if no sentences were found via tags, use nested ones if present
             if not processed_sentences:
                 sec_sentences = section.get('sentences', [])
-                for sent in sec_sentences:
+                for s_idx, sent in enumerate(sec_sentences):
                     kw = sent.get('keyword', '')
-                    if kw:
-                        all_sec_keywords.append(kw)
-                        icon = engine.lookup(kw)
-                    else:
-                        icon = None
+                    shape = sent.get('shape', 'none')
+                    txt = sent.get('text', '')
+                    
+                    icon = engine.lookup(kw) if kw else None
+                    if kw: all_sec_keywords.append(kw)
+                    
+                    sent_ascii = ''
+                    # Try AI-drawn block for legacy format too
+                    ai_key = f"{idx+1}.{s_idx+1}"
+                    ai_drawn_ascii = ascii_blocks.get(ai_key)
+                    
+                    if ai_drawn_ascii:
+                        sent_ascii = normalize_ascii(ai_drawn_ascii)
+                    elif shape != 'none' and txt:
+                        try:
+                            if shape == 'box': sent_ascii = normalize_ascii(draw_box(txt))
+                            elif shape == 'callout': sent_ascii = normalize_ascii(draw_callout(txt))
+                            elif shape == 'banner': sent_ascii = normalize_ascii(draw_banner(txt[:20]))
+                        except: pass
+
                     processed_sentences.append({
-                        'text': sent.get('text', ''),
-                        'icon': icon
+                        'text': txt,
+                        'icon': icon,
+                        'shape': shape,
+                        'ascii': sent_ascii
                     })
 
             # Reconstruct content string for ASCII fallback logic
@@ -486,15 +541,15 @@ async def render_magic(request: Request, data: str = Form(...)):
             if not reconstructed_content:
                 reconstructed_content = raw_content
 
-            # USE ORIGINAL RAW ASCII FROM HYBRID OUTPUT
-            # Get the block from the parsed ascii_blocks (0-indexed) or fallback to 'raw_ascii' from old JSON
-            raw_ai_ascii = ascii_blocks.get(idx, section.get('raw_ascii', ''))
-            raw_ai_ascii = normalize_ascii(raw_ai_ascii)
+            # Section-level ASCII fallback (only if no sentence-level ASCII exists)
+            # Or if it's explicitly provided as a SECTION block
+            sec_key = str(idx + 1)
+            raw_ai_ascii = ascii_blocks.get(sec_key, section.get('raw_ascii', ''))
             
-            # Only fallback to app-generated if AI provided none
-            ascii_box = raw_ai_ascii
-            if not ascii_box and reconstructed_content:
-                 ascii_box = draw_titled_box(sec_title or f'Section {idx+1}', reconstructed_content[:120], style='double', padding=1)
+            ascii_box = normalize_ascii(raw_ai_ascii) if raw_ai_ascii else ""
+            
+            # If no ASCII at all for this section, and no sentence-level either, 
+            # we could generate an overall box, but let's stick to the prompt's new focus.
 
             visual = {
                 'title': sec_title,

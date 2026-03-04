@@ -213,7 +213,8 @@
 
         .ascii-box,
         .ascii-flow,
-        .ascii-callout {
+        .ascii-callout,
+        .ascii-sentence {
             font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
             font-size: 0.8rem;
             line-height: 1.0;
@@ -231,6 +232,15 @@
             max-width: 100%;
             display: block;
             box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .ascii-sentence {
+            font-size: 0.75rem;
+            padding: 16px;
+            margin: 12px 0;
+            border-top: 3px solid var(--accent);
+            background: #ffffff;
+            width: 100%;
         }
 
         .ascii-callout {
@@ -362,11 +372,18 @@
             <div class="sentence-grid">
                 {% for sent in section.sentences %}
                 <div class="sentence-item">
-                    {% if sent.icon and sent.icon.type != 'none' %}
-                    <img src="{% if sent.icon.src %}{{ sent.icon.src }}{% else %}/{{ sent.icon.path }}{% endif %}"
-                        alt="{{ sent.icon.keyword }}" class="sentence-icon">
-                    {% endif %}
-                    <p class="sentence-text">{{ sent.text }}</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            {% if sent.icon and sent.icon.type != 'none' %}
+                            <img src="{% if sent.icon.src %}{{ sent.icon.src }}{% else %}/{{ sent.icon.path }}{% endif %}"
+                                alt="{{ sent.icon.keyword }}" class="sentence-icon">
+                            {% endif %}
+                            <p class="sentence-text">{{ sent.text }}</p>
+                        </div>
+                        {% if sent.ascii %}
+                        <pre class="ascii-sentence">{{ sent.ascii }}</pre>
+                        {% endif %}
+                    </div>
                 </div>
                 {% endfor %}
             </div>
