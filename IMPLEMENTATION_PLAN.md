@@ -57,6 +57,24 @@ TextPrism is a **Visual Mapping Engine** that enables LLMs to transform dense te
   - Literal `\n` un-escaping for LLM JSON compatibility
 - CSS tuned for pixel-perfect rendering: `line-height: 1.0`, `letter-spacing: -0.2px`
 
+### Layer 5: PDF Export & Layout Integrity
+
+> *Generating high-fidelity, multi-page documents that preserve web styling.*
+
+**How we do it:**
+- **html2pdf.js Integration**: Captures the DOM as a high-resolution canvas before converting to PDF.
+- **Break Avoidance**: `page-break-inside: avoid` ensures ASCII charts and icon grids are never split across pages.
+- **Selective Rendering**: PDF controls are stripped from standalone HTML exports for a cleaner user experience.
+
+### Layer 6: Continuous Verification
+
+> *Ensuring 100% stability across visual and programmatic pipelines.*
+
+**How we do it:**
+- **Master Runner**: `tests/run_all_tests.py` executes 14+ specialized test scripts.
+- **Mocked AI Flows**: Playwright tests simulate AI responses to verify frontend rendering and export buttons.
+- **PDF Structure Analysis**: `pypdf` is used to programmatically verify page counts and content continuity.
+
 ---
 
 ## 📦 Available Assets (Offline)

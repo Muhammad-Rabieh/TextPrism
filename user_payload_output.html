@@ -42,6 +42,22 @@
             box-sizing: border-box;
         }
 
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .explanation-wrapper {
+                max-width: 100%;
+                margin: 0;
+            }
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
@@ -112,6 +128,8 @@
         .section-block {
             margin-bottom: 28px;
             animation: fadeIn 0.4s ease;
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
 
         @keyframes fadeIn {
@@ -189,6 +207,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
             border-left: 4px solid var(--accent);
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
 
         .sentence-item:hover {
@@ -213,7 +233,8 @@
 
         .ascii-box,
         .ascii-flow,
-        .ascii-callout {
+        .ascii-callout,
+        .ascii-sentence {
             font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
             font-size: 0.8rem;
             line-height: 1.0;
@@ -231,6 +252,17 @@
             max-width: 100%;
             display: block;
             box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .ascii-sentence {
+            font-size: 0.75rem;
+            padding: 16px;
+            margin: 12px 0;
+            border-top: 3px solid var(--accent);
+            background: #ffffff;
+            width: 100%;
         }
 
         .ascii-callout {
@@ -296,6 +328,52 @@
             padding-top: 20px;
             border-top: 1px solid var(--border);
         }
+
+        /* Floating Premium Buttons */
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .btn-premium {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+            background: var(--accent-vibrant);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 
@@ -356,13 +434,23 @@
             <div class="sentence-grid">
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">A C++ template lets you create generic functions or classes.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">A C++ template lets you create generic functions or classes.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">You write the logic once, and it works with any data type.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">You write the logic once, and it works with any data type.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
             </div>
@@ -437,13 +525,23 @@ addFloat()                        </pre>
             <div class="sentence-grid">
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">Templates eliminate repeated code by allowing a single reusable definition.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">Templates eliminate repeated code by allowing a single reusable definition.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">This keeps programs cleaner and easier to manage.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">This keeps programs cleaner and easier to manage.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
             </div>
@@ -521,13 +619,23 @@ addFloat()                        </pre>
             <div class="sentence-grid">
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">Templates are type-safe and checked at compile time.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">Templates are type-safe and checked at compile time.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">They can also be specialized for specific data types.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">They can also be specialized for specific data types.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
             </div>
@@ -605,13 +713,23 @@ addFloat()                        </pre>
             <div class="sentence-grid">
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">Templates form the backbone of the Standard Template Library (STL).</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">Templates form the backbone of the Standard Template Library (STL).</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
                 <div class="sentence-item">
-                    
-                    <p class="sentence-text">They power flexible containers and reusable algorithms.</p>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text">They power flexible containers and reusable algorithms.</p>
+                        </div>
+                        
+                    </div>
                 </div>
                 
             </div>
@@ -665,6 +783,18 @@ addFloat()                        </pre>
             Generated by TextPrism — Visual Lexicon for Semantic Text Annotation
         </div>
     </div>
+
+    <div class="action-buttons no-print">
+        <a href="/" class="btn-premium btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            Home
+        </a>
+    </div>
+
 </body>
 
 </html>

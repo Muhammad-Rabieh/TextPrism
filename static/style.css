@@ -515,6 +515,8 @@ h3 {
     display: block;
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
     border-top: 4px solid var(--accent-vibrant);
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .ascii-banner {
@@ -630,6 +632,8 @@ h3 {
 
 .section-block {
     margin-bottom: 28px;
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .section-separator {
@@ -684,6 +688,8 @@ h3 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     transition: all 0.3s ease;
     border-left: 4px solid var(--accent-primary, #0969da);
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .sentence-item:hover {

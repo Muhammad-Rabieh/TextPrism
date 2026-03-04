@@ -12,8 +12,8 @@ TextPrism is a **Visual Mapping Engine** that transforms dense text into rich, i
 - 🗺️ **Granular Sentence-Level Mapping** — Every sentence is paired with a vibrant, semantically relevant icon via the **Vibrancy Ranking Engine**.
 - 📚 **90k+ Offline Asset Lexicon** — OpenMoji, OpenClipArt, Lucide, Heroicons, Noto Emoji, and 15+ more icon libraries — all local, all offline.
 - 🔓 **Universal AI Compatibility** — Works with web LLMs (ChatGPT/Gemini/Claude), local models (Ollama), or API-based mapping (Gemini API).
-- 📥 **Export-Ready** — Generates standalone HTML visual documents.
-- 🧪 **Offline Testable** — Standalone test scripts generate visual explanations without any API key or network.
+- 📥 **High-Fidelity PDF Export** — Export visual explanations to pixel-perfect, multi-page PDFs with layout preservation.
+- 🧪 **Master Verification Suite** — Consolidated test runner ensures 100% stability across all core rendering and export pipelines.
 
 ---
 
@@ -37,10 +37,11 @@ python app.py
 ### Offline Test (No API Key Needed)
 
 ```bash
+# Run the Master Verification Suite
+python tests/run_all_tests.py
+
 # Generate a C++ Templates visual tutorial
 python test_cpp_templates.py
-
-# Open cpp_templates_tutorial.html in your browser
 ```
 
 ---
@@ -57,7 +58,7 @@ python test_cpp_templates.py
 │  4. RENDER: TextPrism parses JSON rules and attaches raw ASCII │
 │     • Vibrancy Ranking Engine scores icon quality              │
 │     • ASCII art normalized for pixel-perfect alignment         │
-│  5. OUTPUT: Standalone HTML with embedded icons + ASCII art     │
+│  5. OUTPUT: Visual Reports in PDF, HTML, or Markdown           │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -89,6 +90,8 @@ python test_cpp_templates.py
 |------|---------|
 | `test_cpp_templates.py` | Offline C++ Templates tutorial (no API needed) |
 | `test_render.py` | Generic standalone render test |
+| `tests/run_all_tests.py` | Master Test Runner — unified health check |
+| `tests/test_pdf_integrity.py` | PDF Layout Test — multi-page pagination check |
 | `scripts/build_index.py` | Build unified Visual Lexicon index |
 | `scripts/download_clipart.py` | Batch download 20 clipart modules |
 | `scripts/optimize_images.py` | Compress PNG/SVG assets |

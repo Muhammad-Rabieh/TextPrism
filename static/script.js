@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearBtn = document.getElementById('clear-btn');
     const outputContent = document.getElementById('output-content');
     const downloadBtn = document.getElementById('download-html-btn');
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
     const downloadMdBtn = document.getElementById('download-md-btn');
     const copyBtn = document.getElementById('copy-btn');
+    console.log('TextPrism Script v1.3 initialized. PDF Button exists:', !!downloadPdfBtn);
 
 
 
@@ -137,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             lastGeneratedHTML = html;
             downloadBtn.disabled = false;
+            if (downloadPdfBtn) downloadPdfBtn.disabled = false;
             downloadMdBtn.disabled = false;
             copyBtn.disabled = false;
             magicPromptModal.style.display = 'none';
@@ -167,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
             `;
         downloadBtn.disabled = true;
+        if (downloadPdfBtn) downloadPdfBtn.disabled = true;
         downloadMdBtn.disabled = true;
         copyBtn.disabled = true;
         lastGeneratedHTML = '';
@@ -196,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fix relative paths for local viewing
         const origin = window.location.origin;
         let standaloneHTML = lastGeneratedHTML
-            .replace(/src="\//g, `src = "${origin}/`)
+            .replace(/src="\//g, `src="${origin}/`)
             .replace(/href="\//g, `href="${origin}/`);
 
         // Ensure UTF-8 meta is present and clean
@@ -206,6 +210,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
         downloadFile(standaloneHTML, 'visual-explanation.html', 'text/html;charset=utf-8');
     });
+
+    // ── Download PDF ──
+    if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', () => {
+            const element = outputContent;
+            if (!element || !element.innerHTML.trim() || element.querySelector('.output-placeholder')) {
+                alert('No content to export as PDF.');
+                return;
+            }
+
+            const options = {
+                margin: [10, 10, 10, 10],
+                filename: 'TextPrism_Explanation.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true,
+                    backgroundColor: window.getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#f8fafc'
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            const originalHTML = downloadPdfBtn.innerHTML;
+            downloadPdfBtn.disabled = true;
+            downloadPdfBtn.innerHTML = '<span class="spinner-sm"></span>';
+
+            const images = element.querySelectorAll('img');
+            const promises = Array.from(images).map(img => {
+                if (img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                if (typeof html2pdf === 'undefined') {
+                    throw new Error('html2pdf library not loaded.');
+                }
+
+                return html2pdf().set(options).from(element).save();
+            }).catch(err => {
+                console.error('PDF Export Critical error:', err);
+                alert(`Failed to export PDF: ${err.message}`);
+            }).finally(() => {
+                downloadPdfBtn.disabled = false;
+                downloadPdfBtn.innerHTML = originalHTML;
+            });
+        });
+    }
 
     // ── Download Markdown ──
     downloadMdBtn.addEventListener('click', async () => {
@@ -225,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             downloadFile(data.markdown, 'explanation.md', 'text/markdown;charset=utf-8');
         } catch (err) {
-            console.error('Markdown export error:', err);
+            console.error('Markdown Export: Error:', err);
             alert('Failed to export Markdown.');
         } finally {
             downloadMdBtn.disabled = false;
@@ -241,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
             copyBtn.innerHTML = '<img src="/icons/heroicons/check.svg" alt="" class="btn-icon"> Copied!';
             setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 2000);
         }).catch(err => {
-            console.error('Could not copy text: ', err);
+            console.error('Copy Output: Failed:', err);
             alert('Failed to copy natively. Please copy manually.');
         });
     });

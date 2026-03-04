@@ -18,7 +18,7 @@ def test_render_magic_endpoint():
         "sections": [
             {
                 "title": "The Power of Generics",
-                "content": "[blueprint] Templates act as a 'cookie cutter' for code, allowing you to write a single function or class that works with any data type. [adaptability] It adapts to different inputs without rewriting.",
+                "content": "[blueprint] [shape: box] Templates act as a 'cookie cutter' for code, allowing you to write a single function or class that works with any data type. [adaptability] [shape: banner] It adapts to different inputs without rewriting.",
                 "bullets": [
                     "Write Once, Use Everywhere.",
                     "Zero Duplication: No copy-paste."
@@ -43,11 +43,11 @@ def test_render_magic_endpoint():
         ]
     }
 
-    # Convert to JSON string
-    json_str = json.dumps(cpp_templates_json)
+    # Convert to a "Hybrid" string with ASCII sections
+    full_ai_response = json.dumps(cpp_templates_json) + "\n\n=== ASCII SECTION 1 ===\n┌─────────────────┐\n│ TEMPLATE BLUEPRINT │\n└─────────────────┘\n"
 
     # Post to the endpoint
-    response = client.post("/render-magic", data={"data": json_str})
+    response = client.post("/render-magic", data={"data": full_ai_response})
 
     # Assertions
     assert response.status_code == 200
