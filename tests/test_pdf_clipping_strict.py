@@ -1,0 +1,61 @@
+import requests
+import sys
+import fitz
+
+html_payload = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; padding: 40px; }
+        .test-text {
+            font-size: 16px;
+            line-height: 1.8;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-top: -10px;
+            margin-bottom: -10px;
+            overflow: visible;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <p class="test-text">typography checking jumping quickly foxes yyy ppp ggg jjj qqq TTT Ill hhh bbb ddd.</p>
+</body>
+</html>
+"""
+
+pdf_path = "tests/strict_clipping.pdf"
+
+try:
+    r = requests.post("http://127.0.0.1:8000/export-pdf", json={"html": html_payload})
+    if r.status_code != 200:
+        sys.exit(1)
+    with open(pdf_path, "wb") as f:
+        f.write(r.content)
+except Exception as e:
+    sys.exit(1)
+
+doc = fitz.open(pdf_path)
+page = doc[0]
+words = page.get_text("words")
+
+clipping_suspected = False
+print(f"Total words found: {len(words)}")
+
+for w in words:
+    x0, y0, x1, y1, word_text = w[:5]
+    height = y1 - y0
+    print(f"Word: '{word_text}', Height: {height:.2f}pt, Width: {(x1-x0):.2f}pt, Bbox: {x0:.1f},{y0:.1f} -> {x1:.1f},{y1:.1f}")
+    if height < 17.0: # Arbitrary strict threshold for a 16px Arial/Helvetica box
+        print(f"SUSPICIOUS CLIPPING on '{word_text}' (height: {height:.2f}pt) bbox: {x0:.1f},{y0:.1f} -> {x1:.1f},{y1:.1f}")
+        clipping_suspected = True
+
+if clipping_suspected:
+    print("FAIL: The PDF word bounding boxes are suspiciously tight, indicating Chromium clipped the font.")
+    sys.exit(1)
+else:
+    print("PASS: The bounding boxes appear sufficiently large for the font.")
+    sys.exit(0)

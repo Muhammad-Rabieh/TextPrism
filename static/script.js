@@ -438,7 +438,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            /* Forced fallback to universally safe system fonts. 
+               Chromium PDF exporter historically calculates extremely tight 
+               mathematical bounding boxes for custom Web Fonts (like Inter), 
+               causing selection tools and PDF parsers to clip start/end/top/bottom of words. */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
             background: white !important;
             color: #0f172a;
             padding: 0;
@@ -489,10 +493,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* Ensure dark-mode colors print properly */
         .section-block { background: white; }
+        
+        /* Bulletproof Block Layout to prevent Chromium Flexbox clipping */
         .sentence-item { 
-            background: white; 
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #3b82f6;
+            display: block !important;
+            background: white !important; 
+            border: 1px solid #e2e8f0 !important;
+            border-left: 4px solid #3b82f6 !important;
+            margin-bottom: 16px !important;
+            padding: 18px 20px !important;
+            overflow: visible !important;
+            page-break-inside: avoid !important;
+        }
+        /* Defeat the inline inline-styles from explanation.html */
+        .sentence-item > div,
+        .sentence-item > div > div {
+            display: block !important;
+            overflow: visible !important;
+        }
+        .sentence-icon {
+            float: left !important;
+            margin-right: 18px !important;
+            margin-bottom: 4px !important;
+            margin-top: 2px !important;
+        }
+        .sentence-text {
+            display: block !important;
+            line-height: 1.8 !important; 
+            padding-top: 10px !important; 
+            padding-bottom: 10px !important; 
+            margin-top: -10px !important;
+            margin-bottom: -10px !important;
+            overflow: visible !important;
+        }
+        
+        /* Universal Paint-Box Expansion to fix all Chromium text clipping tops/bottoms */
+        h1, h2, h3, p, li, .section-text {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            margin-top: -8px !important;
+            margin-bottom: -8px !important;
+            overflow: visible !important;
+        }
+        
+        /* ── PDF Font Size Enhancements for Readability ── */
+        .title-section h1 { font-size: 32px !important; }
+        .explanation-box h2 { font-size: 22px !important; margin-bottom: 12px !important; }
+        .section-header h1 { font-size: 28px !important; }
+        .section-header h2 { font-size: 24px !important; }
+        .section-header h3 { font-size: 20px !important; }
+        .sentence-text, .section-text, .bullet-list li { font-size: 18px !important; line-height: 1.8 !important; }
+        .explanation-box .section-text { font-size: 20px !important; line-height: 1.8 !important; }
+        
+        .ascii-sentence {
+            clear: both !important;
+            margin-top: 16px !important;
+            display: block !important;
+        }
+        .sentence-item::after {
+            content: "";
+            display: table;
+            clear: both;
         }
         pre, .ascii-box, .ascii-flow, .ascii-callout, .ascii-sentence {
             background: #f8fafc !important;

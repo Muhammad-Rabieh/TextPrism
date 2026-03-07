@@ -376,6 +376,26 @@ def clean_json_garbage(json_str):
         json_str = json_str.replace("'", '"')
     return json_str
 
+def extract_inline_tags(text):
+    """
+    Extracts [keyword] or [keyword] [shape: something] tags from text.
+    Returns (cleaned_text, list_of_keywords).
+    """
+    if not text:
+        return "", []
+    
+    tag_pattern = re.compile(r'\[([\w\s_-]+)\]\s*(?:\[shape:\s*([\w_-]+)\])?')
+    keywords = []
+    
+    for match in tag_pattern.finditer(text):
+        kw = match.group(1).strip()
+        if kw:
+            keywords.append(kw)
+            
+    # Remove tags from text
+    clean_text = tag_pattern.sub('', text).strip()
+    return re.sub(r'\s+', ' ', clean_text), keywords
+
 @app.post("/render-magic", response_class=HTMLResponse)
 async def render_magic(request: Request, data: str = Form(...)):
     """Render a visual explanation from AI-generated Hybrid format."""
@@ -429,9 +449,11 @@ async def render_magic(request: Request, data: str = Form(...)):
         # Transform AI data into our visual_sections format
         visual_sections = []
         for idx, section in enumerate(ai_data.get('sections', [])):
-            sec_title = section.get('title', '')
+            sec_title_raw = section.get('title', '')
+            sec_title, sec_title_kws = extract_inline_tags(sec_title_raw)
+            
             raw_content = section.get('content', '')
-            sec_bullets = section.get('bullets', [])
+            sec_bullets_raw = section.get('bullets', [])
             
             # 3. New Parser for Inline Tags: [keyword] [shape: style] Sentence Text.
             processed_sentences = []
@@ -441,45 +463,46 @@ async def render_magic(request: Request, data: str = Form(...)):
             # Pattern matches [kw] [shape: st]
             tag_pattern = re.compile(r'\[([\w\s_-]+)\]\s*(?:\[shape:\s*([\w_-]+)\])?')
             
-            # We iterate through the raw_content using finditer to catch tags and text in between
+            # Single-pass parsing of text and tags
             last_pos = 0
             for match in tag_pattern.finditer(raw_content):
-                # Any text BEFORE this tag belongs to the previous sentence (if any)
                 pre_text = raw_content[last_pos:match.start()].strip()
-                if pre_text and processed_sentences:
-                    processed_sentences[-1]['text'] += " " + pre_text
-                elif pre_text: # Floating text at the start
-                     processed_sentences.append({'text': pre_text, 'icon': None, 'ascii': ''})
+                
+                # Text before the tag belongs to the PREVIOUS sentence, or is floating intro text
+                if pre_text:
+                    if processed_sentences:
+                        processed_sentences[-1]['text'] += " " + pre_text
+                    else:
+                        processed_sentences.append({'text': pre_text, 'icon': None, 'shape': 'none', 'ascii': ''})
                 
                 kw = match.group(1).strip()
                 shape = match.group(2).strip() if match.group(2) else "none"
                 
-                # The text for this sentence starts after this match...
-                # but we'll find the END of it at the NEXT match.
-                last_pos = match.end()
-                
                 icon = engine.lookup(kw) if kw else None
                 if kw: all_sec_keywords.append(kw)
                 
+                # Start a new sentence for the current tag
                 processed_sentences.append({
-                    'text': '', # Will be filled in next iteration or at the end
+                    'text': '', 
                     'icon': icon,
                     'shape': shape,
                     'ascii': ''
                 })
-
-            # Fill in the text for the sentences found
-            # We re-run a slightly different split to get the text chunks
-            text_parts = tag_pattern.split(raw_content)
-            
-            cursor = 1
-            sent_idx = 0
-            while cursor < len(text_parts) and sent_idx < len(processed_sentences):
-                txt = text_parts[cursor+2].strip() if cursor+2 < len(text_parts) else ""
-                processed_sentences[sent_idx]['text'] = txt
                 
-                # 4. Resolve ASCII art (AI-drawn block vs heuristic generation)
-                shape = processed_sentences[sent_idx].get('shape', 'none')
+                last_pos = match.end()
+
+            # Catch trailing text after the last tag
+            trailing_text = raw_content[last_pos:].strip()
+            if trailing_text:
+                if processed_sentences:
+                    processed_sentences[-1]['text'] += " " + trailing_text
+                else:
+                    processed_sentences.append({'text': trailing_text, 'icon': None, 'shape': 'none', 'ascii': ''})
+            
+            # 4. Resolve ASCII art (AI-drawn block vs heuristic generation)
+            for sent_idx, sent in enumerate(processed_sentences):
+                txt = sent['text'].strip()
+                shape = sent.get('shape', 'none')
                 
                 # Try to find an AI-drawn block first: e.g., "1.1", "1.2", etc.
                 # Since we are in section 'idx', we look for strings like "idx+1.sent_idx+1"
@@ -487,23 +510,20 @@ async def render_magic(request: Request, data: str = Form(...)):
                 ai_drawn_ascii = ascii_blocks.get(ai_key)
                 
                 if ai_drawn_ascii:
-                    processed_sentences[sent_idx]['ascii'] = normalize_ascii(ai_drawn_ascii)
+                    sent['ascii'] = normalize_ascii(ai_drawn_ascii)
                 elif shape != 'none' and txt:
                     # Fallback to backend generation
                     try:
                         if shape == 'box':
-                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_box(txt, padding=1))
+                            sent['ascii'] = normalize_ascii(draw_box(txt, padding=1))
                         elif shape == 'callout':
-                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_callout(txt))
+                            sent['ascii'] = normalize_ascii(draw_callout(txt))
                         elif shape == 'banner':
-                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_banner(txt[:20]))
+                            sent['ascii'] = normalize_ascii(draw_banner(txt[:20]))
                         elif shape == 'separator':
-                            processed_sentences[sent_idx]['ascii'] = normalize_ascii(draw_separator(txt))
+                            sent['ascii'] = normalize_ascii(draw_separator(txt))
                     except:
                         pass
-                
-                cursor += 3
-                sent_idx += 1
 
             # For legacy/compatibility: if no sentences were found via tags, use nested ones if present
             if not processed_sentences:
@@ -542,44 +562,55 @@ async def render_magic(request: Request, data: str = Form(...)):
             if not reconstructed_content:
                 reconstructed_content = raw_content
 
-            # Section-level ASCII fallback (only if no sentence-level ASCII exists)
-            # Or if it's explicitly provided as a SECTION block
+            # Section-level ASCII fallback
             sec_key = str(idx + 1)
             raw_ai_ascii = ascii_blocks.get(sec_key, section.get('raw_ascii', ''))
-            
             ascii_box = normalize_ascii(raw_ai_ascii) if raw_ai_ascii else ""
+
+            # If there's no extracted keywords for the title, fallback to basic keyword extraction
+            if not sec_title_kws and sec_title:
+                sec_title_kws = extract_keywords(sec_title, 2)
             
-            # If no ASCII at all for this section, and no sentence-level either, 
-            # we could generate an overall box, but let's stick to the prompt's new focus.
+            # Clean and map bullets
+            clean_bullets = []
+            bullet_icons_list = []
+            for b_raw in sec_bullets_raw:
+                b_clean, b_kws = extract_inline_tags(b_raw)
+                if not b_kws and b_clean:
+                    b_kws = extract_keywords(b_clean, 2)
+                clean_bullets.append(b_clean)
+                bullet_icons_list.append(engine.lookup_many(b_kws))
 
             visual = {
                 'title': sec_title,
                 'content': reconstructed_content,
                 'sentences': processed_sentences,
-                'bullets': sec_bullets,
+                'bullets': clean_bullets,
                 'type': 'h2',
-                'ascii_separator': '',  # Removed: User wants no app-injected changes
+                'ascii_separator': '',  
                 'ascii_box': ascii_box,
-                'ascii_flow': '',       # Removed: Prioritize LLM's own flow/art
-                'ascii_callout': '',    # Removed: Prioritize LLM's own callouts
-                'title_icons': engine.lookup_many(all_sec_keywords[:2]),
-                'bullet_icons': []
+                'ascii_flow': '',       
+                'ascii_callout': '',    
+                'title_icons': engine.lookup_many(sec_title_kws) if sec_title_kws else engine.lookup_many(all_sec_keywords[:2]),
+                'bullet_icons': bullet_icons_list
             }
-            for bullet in visual['bullets']:
-                bullet_words = extract_keywords(bullet, 2)
-                visual['bullet_icons'].append(engine.lookup_many(bullet_words))
-            
             visual_sections.append(visual)
 
-        title = ai_data.get('title', 'AI Analysis')
+        # ── Global Explanation & Title ──
+        raw_title = ai_data.get('title', 'AI Analysis')
+        title, _ = extract_inline_tags(raw_title)
         
-        # Robustly handle renamed keys
-        explanation_text = ai_data.get('explanation') or ai_data.get('summary', '')
-        explanation_keywords = ai_data.get('explanation_keywords') or ai_data.get('summary_keywords', [])
+        raw_explanation = ai_data.get('explanation') or ai_data.get('summary', '')
+        explanation_text, exp_kws = extract_inline_tags(raw_explanation)
         
-        if not explanation_keywords:
-            explanation_keywords = extract_keywords(explanation_text, 5)
-        explanation_icons = engine.lookup_many(explanation_keywords)
+        if not exp_kws:
+            exp_kws = ai_data.get('explanation_keywords') or ai_data.get('summary_keywords', [])
+        
+        if not exp_kws:
+            exp_kws = extract_keywords(explanation_text, 5)
+            
+        explanation_icons = engine.lookup_many(exp_kws)
+
         return templates.TemplateResponse("explanation.html", {
             "request": request,
             "title": title,
@@ -864,6 +895,11 @@ async def export_pdf(request: Request):
         async with async_playwright() as pw:
             browser = await pw.chromium.launch(headless=True)
             page = await browser.new_page()
+
+            # DEBUG LISTENERS
+            page.on("console", lambda msg: print(f"🖥️ Playwright Console: {msg.text}"))
+            page.on("requestfailed", lambda req: print(f"❌ Playwright Failed Req: {req.url} -> {req.failure}"))
+            page.on("pageerror", lambda err: print(f"💥 Playwright Page Error: {err}"))
 
             # Set the content and wait for all assets to load
             await page.set_content(html_content, wait_until="networkidle")
