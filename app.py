@@ -17,11 +17,12 @@ import re
 import traceback
 import subprocess
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import requests
+import tempfile
 
 from shape_it import (
     draw_box, draw_titled_box, draw_pyramid, draw_diamond,
@@ -843,6 +844,58 @@ def kill_process_on_port(port):
         print(f"🔄 Port {port} cleared (if occupied).")
     except Exception as e:
         print(f"⚠️  Could not clear port {port}: {e}")
+
+@app.post("/export-pdf")
+async def export_pdf(request: Request):
+    """
+    Server-side PDF generation using Playwright's Chrome print engine.
+    This properly respects CSS page-break-inside: avoid rules, unlike
+    html2pdf.js which rasterizes via html2canvas and blindly slices.
+    """
+    try:
+        data = await request.json()
+        html_content = data.get("html", "")
+        if not html_content:
+            return JSONResponse({"error": "No HTML content provided"}, status_code=400)
+
+        # Import playwright (async version for FastAPI)
+        from playwright.async_api import async_playwright
+
+        async with async_playwright() as pw:
+            browser = await pw.chromium.launch(headless=True)
+            page = await browser.new_page()
+
+            # Set the content and wait for all assets to load
+            await page.set_content(html_content, wait_until="networkidle")
+
+            # Small delay for fonts/images to fully render
+            await page.wait_for_timeout(1000)
+
+            # Generate PDF using Chrome's native print engine
+            # This properly respects CSS page-break-inside: avoid
+            pdf_bytes = await page.pdf(
+                format="A4",
+                print_background=True,
+                margin={
+                    "top": "15mm",
+                    "right": "12mm",
+                    "bottom": "15mm",
+                    "left": "12mm"
+                }
+            )
+
+            await browser.close()
+
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "attachment; filename=export.pdf"}
+        )
+
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse({"error": str(e)}, status_code=500)
+
 
 if __name__ == '__main__':
     import uvicorn

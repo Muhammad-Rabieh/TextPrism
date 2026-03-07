@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── DOM Elements ──
     const textInput = document.getElementById('text-input');
     const clearBtn = document.getElementById('clear-btn');
+    const pasteMainBtn = document.getElementById('paste-main-btn');
     const outputContent = document.getElementById('output-content');
     const downloadBtn = document.getElementById('download-html-btn');
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const magicPromptBtn = document.getElementById('magic-prompt-btn');
     const magicPromptText = document.getElementById('magic-prompt-text');
     const copyMagicBtn = document.getElementById('copy-magic-btn');
+    const pasteAiBtn = document.getElementById('paste-ai-btn');
     const aiResponseInput = document.getElementById('ai-response-input');
     const processAiBtn = document.getElementById('process-ai-btn');
     const magicModalCloseBtn = document.getElementById('magic-modal-close');
@@ -82,6 +84,127 @@ document.addEventListener('DOMContentLoaded', () => {
     magicModalCloseBtn.addEventListener('click', () => {
         magicPromptModal.style.display = 'none';
     });
+
+    // ── Main Page Paste Button (Overlay Technique) ──
+    if (pasteMainBtn) {
+        const mainPasteOverlay = document.createElement('textarea');
+        mainPasteOverlay.style.position = 'absolute';
+        mainPasteOverlay.style.opacity = '0';
+        mainPasteOverlay.style.cursor = 'pointer';
+        mainPasteOverlay.style.zIndex = '10';
+        mainPasteOverlay.style.top = '0';
+        mainPasteOverlay.style.left = '0';
+        mainPasteOverlay.style.width = '100%';
+        mainPasteOverlay.style.height = '100%';
+        mainPasteOverlay.style.border = 'none';
+        mainPasteOverlay.style.background = 'transparent';
+        mainPasteOverlay.style.resize = 'none';
+        mainPasteOverlay.setAttribute('tabindex', '0');
+        pasteMainBtn.style.position = 'relative';
+        pasteMainBtn.style.overflow = 'hidden';
+        pasteMainBtn.appendChild(mainPasteOverlay);
+
+        pasteMainBtn.addEventListener('click', () => mainPasteOverlay.focus());
+
+        mainPasteOverlay.addEventListener('focus', () => {
+            const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+            const shortcut = isMac ? 'Cmd+V' : 'Ctrl+V';
+            const oldChildren = Array.from(pasteMainBtn.children).filter(c => c !== mainPasteOverlay);
+            oldChildren.forEach(c => c.style.display = 'none');
+            const hint = document.createElement('span');
+            hint.id = 'paste-main-hint';
+            hint.style.fontWeight = '600';
+            hint.style.color = 'var(--accent-primary)';
+            hint.style.pointerEvents = 'none';
+            hint.textContent = `Press ${shortcut}`;
+            pasteMainBtn.insertBefore(hint, mainPasteOverlay);
+            mainPasteOverlay.addEventListener('blur', function blurHandler() {
+                const h = document.getElementById('paste-main-hint');
+                if (h) h.remove();
+                oldChildren.forEach(c => c.style.display = '');
+                mainPasteOverlay.removeEventListener('blur', blurHandler);
+            });
+        });
+
+        mainPasteOverlay.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text');
+            if (text) {
+                textInput.value = text;
+                const h = document.getElementById('paste-main-hint');
+                if (h) h.remove();
+                const oldChildren = Array.from(pasteMainBtn.children).filter(c => c !== mainPasteOverlay);
+                oldChildren.forEach(c => c.style.display = '');
+                pasteMainBtn.innerHTML = '<img src="/icons/heroicons/check.svg" alt="" class="btn-icon" style="filter: brightness(0) opacity(0.6); width: 14px; height: 14px; margin-right: 4px;"> Pasted!';
+                pasteMainBtn.appendChild(mainPasteOverlay);
+                setTimeout(() => mainPasteOverlay.blur(), 2000);
+            }
+        });
+    }
+
+    if (pasteAiBtn) {
+        // Create a transparent textarea overlay on top of the button
+        const pasteOverlay = document.createElement('textarea');
+        pasteOverlay.style.position = 'absolute';
+        pasteOverlay.style.opacity = '0';
+        pasteOverlay.style.cursor = 'pointer';
+        pasteOverlay.style.zIndex = '10';
+        pasteOverlay.style.top = '0';
+        pasteOverlay.style.left = '0';
+        pasteOverlay.style.width = '100%';
+        pasteOverlay.style.height = '100%';
+        pasteOverlay.style.border = 'none';
+        pasteOverlay.style.background = 'transparent';
+        pasteOverlay.style.resize = 'none';
+        pasteOverlay.setAttribute('tabindex', '0');
+        pasteAiBtn.style.position = 'relative';
+        pasteAiBtn.style.overflow = 'hidden';
+        pasteAiBtn.appendChild(pasteOverlay);
+
+        // When the button is clicked, focus the overlay so it can receive Ctrl+V
+        pasteAiBtn.addEventListener('click', (e) => {
+            pasteOverlay.focus();
+        });
+
+        pasteOverlay.addEventListener('focus', () => {
+            const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+            const shortcut = isMac ? 'Cmd+V' : 'Ctrl+V';
+            pasteAiBtn.setAttribute('data-original-text', pasteAiBtn.innerText);
+            const oldChildren = Array.from(pasteAiBtn.children).filter(c => c !== pasteOverlay);
+            oldChildren.forEach(c => c.style.display = 'none');
+            const hint = document.createElement('span');
+            hint.id = 'paste-hint';
+            hint.style.fontWeight = '600';
+            hint.style.color = 'var(--accent-primary)';
+            hint.style.pointerEvents = 'none';
+            hint.textContent = `Press ${shortcut}`;
+            pasteAiBtn.insertBefore(hint, pasteOverlay);
+
+            pasteOverlay.addEventListener('blur', function blurHandler() {
+                const h = document.getElementById('paste-hint');
+                if (h) h.remove();
+                oldChildren.forEach(c => c.style.display = '');
+                pasteOverlay.removeEventListener('blur', blurHandler);
+            });
+        });
+
+        pasteOverlay.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text');
+            if (text) {
+                aiResponseInput.value = text;
+                const h = document.getElementById('paste-hint');
+                if (h) h.remove();
+                const oldChildren = Array.from(pasteAiBtn.children).filter(c => c !== pasteOverlay);
+                oldChildren.forEach(c => c.style.display = '');
+                pasteAiBtn.innerHTML = '<img src="/icons/heroicons/check.svg" alt="" class="btn-icon" style="filter: brightness(0) opacity(0.6); width: 14px; height: 14px; margin-right: 4px;"> Pasted!';
+                pasteAiBtn.appendChild(pasteOverlay);
+                setTimeout(() => {
+                    pasteOverlay.blur();
+                }, 2000);
+            }
+        });
+    }
 
     // ── Helper: Copy Text ──
     function copyTextToClipboard(text) {
@@ -162,6 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Clear Button ──
     clearBtn.addEventListener('click', () => {
         textInput.value = '';
+        if (aiResponseInput) aiResponseInput.value = '';
+
         outputContent.innerHTML = `
                 <div class="output-placeholder">
                     <img src="/icons/openmoji/1F3B8.png" alt="art" width="72" height="72" class="placeholder-emoji">
@@ -169,6 +294,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="placeholder-sub">Paste text on the left and click "Explain & Map with AI"</p>
                     </div>
             `;
+
+        // Reset Paste Buttons Labels if they were changed (e.g. to "Pasted!")
+        const initialPasteHTML = `
+            <img src="/icons/heroicons/clipboard.svg" alt="" class="btn-icon"
+                style="filter: brightness(0) opacity(0.6); width: 14px; height: 14px; margin-right: 4px;">
+            Paste
+        `;
+
+        if (pasteMainBtn) {
+            const overlay = pasteMainBtn.querySelector('textarea');
+            pasteMainBtn.innerHTML = initialPasteHTML;
+            if (overlay) pasteMainBtn.appendChild(overlay);
+        }
+        if (pasteAiBtn) {
+            const overlay = pasteAiBtn.querySelector('textarea');
+            pasteAiBtn.innerHTML = initialPasteHTML;
+            if (overlay) pasteAiBtn.appendChild(overlay);
+        }
+
         downloadBtn.disabled = true;
         if (downloadPdfBtn) downloadPdfBtn.disabled = true;
         downloadMdBtn.disabled = true;
@@ -176,6 +320,36 @@ document.addEventListener('DOMContentLoaded', () => {
         lastGeneratedHTML = '';
         textInput.focus();
     });
+
+    // ── Helper: Get Export Filename from Generated Title ──
+    function getExportFilename(extension) {
+        // Try to read the title from the first meaningful heading in the output
+        const titleEl = outputContent.querySelector(
+            'h1, h2, h3, .doc-title, .banner-title, .ascii-title, .section-title, [class*="title"]'
+        );
+        let rawTitle = (titleEl && titleEl.textContent.trim()) || '';
+
+        // Fallback: grab first non-empty text node from output
+        if (!rawTitle) {
+            const walker = document.createTreeWalker(outputContent, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const t = node.nodeValue.trim().replace(/[★●•►▸→]/g, '').trim();
+                if (t.length > 2) { rawTitle = t; break; }
+            }
+        }
+
+        // Sanitize: take first 3 meaningful words, strip special chars
+        const words = rawTitle
+            .replace(/[^a-zA-Z0-9\s\-]/g, ' ')
+            .trim()
+            .split(/\s+/)
+            .filter(w => w.length > 0)
+            .slice(0, 3);
+
+        const baseName = words.length > 0 ? words.join('_') : 'TextPrism_Export';
+        return `${baseName}.${extension}`;
+    }
 
     // ── Helper: Download Data ──
     function downloadFile(content, fileName, mimeType) {
@@ -208,58 +382,165 @@ document.addEventListener('DOMContentLoaded', () => {
             standaloneHTML = standaloneHTML.replace('<head>', '<head><meta charset="UTF-8">');
         }
 
-        downloadFile(standaloneHTML, 'visual-explanation.html', 'text/html;charset=utf-8');
+        downloadFile(standaloneHTML, getExportFilename('html'), 'text/html;charset=utf-8');
     });
 
-    // ── Download PDF ──
+    // ── Download PDF (Server-Side via Playwright) ──
     if (downloadPdfBtn) {
-        downloadPdfBtn.addEventListener('click', () => {
+        downloadPdfBtn.addEventListener('click', async () => {
             const element = outputContent;
             if (!element || !element.innerHTML.trim() || element.querySelector('.output-placeholder')) {
                 alert('No content to export as PDF.');
                 return;
             }
 
-            const options = {
-                margin: [10, 10, 10, 10],
-                filename: 'TextPrism_Explanation.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    letterRendering: true,
-                    backgroundColor: window.getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#f8fafc'
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-            };
-
             const originalHTML = downloadPdfBtn.innerHTML;
             downloadPdfBtn.disabled = true;
-            downloadPdfBtn.innerHTML = '<span class="spinner-sm"></span>';
+            downloadPdfBtn.innerHTML = '<span class="spinner-sm"></span> Generating...';
 
-            const images = element.querySelectorAll('img');
-            const promises = Array.from(images).map(img => {
-                if (img.complete) return Promise.resolve();
-                return new Promise(resolve => {
-                    img.onload = resolve;
-                    img.onerror = resolve;
-                });
-            });
+            try {
+                // Build a full standalone HTML document with embedded styles
+                // that Chrome's print engine will properly paginate
+                const computedBg = window.getComputedStyle(document.documentElement)
+                    .getPropertyValue('--bg-primary').trim() || '#f8fafc';
 
-            Promise.all(promises).then(() => {
-                if (typeof html2pdf === 'undefined') {
-                    throw new Error('html2pdf library not loaded.');
+                // Grab ALL stylesheets from the current page for faithful rendering
+                let allStyles = '';
+                for (const sheet of document.styleSheets) {
+                    try {
+                        for (const rule of sheet.cssRules) {
+                            allStyles += rule.cssText + '\n';
+                        }
+                    } catch (e) {
+                        // Cross-origin sheets can't be read, skip
+                    }
                 }
 
-                return html2pdf().set(options).from(element).save();
-            }).catch(err => {
-                console.error('PDF Export Critical error:', err);
+                // Convert relative icon URLs to absolute
+                const origin = window.location.origin;
+                let contentHTML = element.innerHTML
+                    .replace(/src="\//g, `src="${origin}/`)
+                    .replace(/href="\//g, `href="${origin}/`);
+
+                const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        ${allStyles}
+
+        /* ── PDF Print Overrides ── */
+        @page {
+            size: A4;
+            margin: 15mm 12mm;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: white !important;
+            color: #0f172a;
+            padding: 0;
+            margin: 0;
+            line-height: 1.7;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .output-content {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        /* Force page break BEFORE each section */
+        .section-block {
+            page-break-before: always;
+            break-before: page;
+            margin-top: 0;
+        }
+
+        /* First section should NOT have a page break before it */
+        .section-block:first-of-type {
+            page-break-before: auto;
+            break-before: auto;
+        }
+
+        /* Never split these leaf elements across pages */
+        .sentence-item,
+        .ascii-box,
+        .ascii-flow,
+        .ascii-callout,
+        .ascii-sentence,
+        .ascii-banner,
+        .section-separator,
+        .section-header,
+        .section-text,
+        .summary-box,
+        .explanation-box,
+        .bullet-list li,
+        pre {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        /* Hide interactive elements */
+        .no-print, .action-buttons, button { display: none !important; }
+
+        /* Ensure dark-mode colors print properly */
+        .section-block { background: white; }
+        .sentence-item { 
+            background: white; 
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #3b82f6;
+        }
+        pre, .ascii-box, .ascii-flow, .ascii-callout, .ascii-sentence {
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+    <div class="output-content">
+        ${contentHTML}
+    </div>
+</body>
+</html>`;
+
+                // Send to server for Playwright-based PDF generation
+                const response = await fetch('/export-pdf', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ html: fullHTML })
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || 'Server PDF generation failed');
+                }
+
+                // Download the returned PDF
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = getExportFilename('pdf');
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+
+            } catch (err) {
+                console.error('PDF Export error:', err);
                 alert(`Failed to export PDF: ${err.message}`);
-            }).finally(() => {
+            } finally {
                 downloadPdfBtn.disabled = false;
                 downloadPdfBtn.innerHTML = originalHTML;
-            });
+            }
         });
     }
 
@@ -279,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/export-md', { method: 'POST', body: formData });
             const data = await response.json();
 
-            downloadFile(data.markdown, 'explanation.md', 'text/markdown;charset=utf-8');
+            downloadFile(data.markdown, getExportFilename('md'), 'text/markdown;charset=utf-8');
         } catch (err) {
             console.error('Markdown Export: Error:', err);
             alert('Failed to export Markdown.');

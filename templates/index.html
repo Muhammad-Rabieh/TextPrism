@@ -53,9 +53,14 @@
                     <div class="form-actions">
                         <button type="button" id="magic-prompt-btn" class="btn btn-primary">
                             <img src="/icons/heroicons/sparkles.svg" alt="" class="btn-icon">
-                            Explain & Map with AI
+                            Explain &amp; Map with AI
                         </button>
-                        <button id="clear-btn" class="btn btn-ghost">
+                        <button type="button" id="paste-main-btn" class="btn btn-ghost">
+                            <img src="/icons/heroicons/clipboard.svg" alt="" class="btn-icon"
+                                style="filter: brightness(0) opacity(0.6); width: 14px; height: 14px; margin-right: 4px;">
+                            Paste
+                        </button>
+                        <button type="button" id="clear-btn" class="btn btn-ghost">
                             <img src="/icons/heroicons/trash.svg" alt="" class="btn-icon">
                             Clear
                         </button>
@@ -118,17 +123,27 @@
                         3. Paste the LLM's response into the input box at the bottom.
                     </p>
 
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                        <button id="copy-magic-btn" class="btn btn-sm btn-accent">Copy Prompt</button>
+                    </div>
                     <div class="prompt-box">
                         <pre id="magic-prompt-text"></pre>
-                        <button id="copy-magic-btn" class="btn btn-sm btn-accent">Copy Prompt</button>
                     </div>
 
                     <div class="ai-input-wrapper" style="margin-top: 20px;">
-                        <label for="ai-response-input"
-                            style="display: block; margin-bottom: 8px; font-weight: 600;">Paste AI Response
-                            Here:</label>
-                        <textarea id="ai-response-input" placeholder="```json ... === ASCII SECTION 1 === ...```"
-                            rows="8"></textarea>
+                        <div
+                            style="display: flex; justify-content: flex-start; align-items: flex-end; gap: 12px; margin-bottom: 8px;">
+                            <label for="ai-response-input" style="font-weight: 600; margin: 0;">Paste AI Response
+                                Here:</label>
+                            <button type="button" id="paste-ai-btn" class="btn btn-sm btn-ghost"
+                                style="padding: 4px 8px; height: auto;">
+                                <img src="/icons/heroicons/clipboard.svg" alt="" class="btn-icon"
+                                    style="filter: brightness(0) opacity(0.6); width: 14px; height: 14px; margin-right: 4px;">
+                                Paste
+                            </button>
+                        </div>
+                        <textarea id="ai-response-input" style="width: 100%; box-sizing: border-box; resize: vertical;"
+                            placeholder="```json ... === ASCII SECTION 1 === ...```" rows="8"></textarea>
                     </div>
 
                     <div class="modal-footer"

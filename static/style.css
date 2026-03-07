@@ -1000,12 +1000,6 @@ h3 {
     margin: 0;
 }
 
-#copy-prompt-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 5;
-}
 
 /* ── Workflow Stepper ── */
 .workflow-steps {
