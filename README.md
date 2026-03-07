@@ -25,26 +25,29 @@ TextPrism is a Visual Mapping Engine that transforms dense text into rich, icono
 # Clone and Setup
 git clone https://github.com/Muhammad-Rabieh/TextPrism.git
 cd TextPrism
-python -m venv venv
+
+# Create and Activate Virtual Environment
+python3 -m venv venv
 source venv/bin/activate
 
-# Install Dependencies
-pip install -r requirements.txt
+# Install Dependencies using local pip module
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
 
-# Setup PDF engine (Required for PDF Export)
-playwright install chromium
+# Setup PDF high-fidelity engine (Required for PDF Export)
+python3 -m playwright install chromium
 ```
 
 ### 2. Launch the Server
 ```bash
-python app.py
+python3 app.py
 # Open http://localhost:8000
 ```
 
 ### 3. Running Tests
 ```bash
 # Run the Master Verification Suite
-python tests/run_all_tests.py
+python3 tests/run_all_tests.py
 ```
 
 ---
