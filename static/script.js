@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let activeShape = 'box';
     let lastGeneratedHTML = '';
+    let lastVisualSourceText = ''; // New: Store the AI raw text used for the last render
 
     /* AI Tier Selection removed */
 
@@ -261,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             lastGeneratedHTML = html;
+            lastVisualSourceText = json; // Preserve for high-quality export
             downloadBtn.disabled = false;
             if (downloadPdfBtn) downloadPdfBtn.disabled = false;
             downloadMdBtn.disabled = false;
@@ -607,7 +609,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Download Markdown ──
     downloadMdBtn.addEventListener('click', async () => {
-        const text = textInput.value.trim();
+        // Use lastVisualSourceText if available (the rich AI response), 
+        // fall back to textInput for simple heuristic renders.
+        const text = (lastVisualSourceText || textInput.value).trim();
         if (!text) return;
 
         downloadMdBtn.disabled = true;
@@ -619,9 +623,21 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('text', text);
 
             const response = await fetch('/export-md', { method: 'POST', body: formData });
-            const data = await response.json();
 
-            downloadFile(data.markdown, getExportFilename('md'), 'text/markdown;charset=utf-8');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to export Markdown.');
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = getExportFilename('zip');
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
         } catch (err) {
             console.error('Markdown Export: Error:', err);
             alert('Failed to export Markdown.');

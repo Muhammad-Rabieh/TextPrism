@@ -17,6 +17,8 @@ Part of TextPrism.
 import json
 import os
 import re
+import base64
+import mimetypes
 
 # ─────────────────────────────────────────────────────────────
 # Paths
@@ -158,40 +160,57 @@ class EmojiEngine:
         self.clipart_index = {}
         self._load_indexes()
 
+    def get_base64_src(self, rel_path):
+        """Convert a local asset path to a Base64 data URI."""
+        if not rel_path:
+            return None
+            
+        abs_path = os.path.join(DATA_DIR, rel_path)
+            
+        if not os.path.exists(abs_path):
+            return None
+
+        try:
+            mime_type, _ = mimetypes.guess_type(abs_path)
+            if not mime_type:
+                mime_type = 'image/svg+xml' if abs_path.endswith('.svg') else 'image/png'
+                
+            with open(abs_path, "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                return f"data:{mime_type};base64,{encoded_string}"
+        except Exception as e:
+            print(f"⚠️ Error encoding {abs_path}: {e}")
+            return None
+
     def _load_indexes(self):
         """Load the visual lexicon JSON files."""
         if os.path.isfile(EMOJI_INDEX_PATH):
             with open(EMOJI_INDEX_PATH, 'r', encoding='utf-8') as f:
                 self.emoji_index = json.load(f)
         else:
-            print(f"⚠️  Emoji index not found: {EMOJI_INDEX_PATH}")
+            print(f"⚠️ Emoji index not found: {EMOJI_INDEX_PATH}")
 
         if os.path.isfile(HEROICON_INDEX_PATH):
             with open(HEROICON_INDEX_PATH, 'r', encoding='utf-8') as f:
                 self.heroicon_index = json.load(f)
         else:
-            print(f"⚠️  Heroicon index not found: {HEROICON_INDEX_PATH}")
+            print(f"⚠️ Heroicon index not found: {HEROICON_INDEX_PATH}")
 
         if os.path.isfile(CLIPART_INDEX_PATH):
             with open(CLIPART_INDEX_PATH, 'r', encoding='utf-8') as f:
                 self.clipart_index = json.load(f)
         else:
-            print(f"⚠️  Clipart index not found: {CLIPART_INDEX_PATH}")
+            print(f"⚠️ Clipart index not found: {CLIPART_INDEX_PATH}")
 
-    def lookup(self, word, prefer='vivid'):
+    def lookup(self, word, prefer='vivid', embed=False):
         """
         Find the best matching icon for a word, prioritizing visual vibrancy.
         
-        Scoring hierarchy:
-          1. Module Color Tier (A=100, B=60, C=15) + path bonuses
-          2. OpenMoji emoji (always colorful, score 90)
-          3. Heroicons (BW outlines, score 10 — last resort)
-          4. Exact match bonus (+200)
-          5. Remapping penalty (-40)
+        If embed=True, the 'src' field will contain the Base64 data URI.
         """
         word_lower = word.lower().strip()
         
-        # Semantic remapping: abstract terms → concrete vivid icons
+        # Semantic remapping
         remappings = {
             "safety": ["shield_color", "security", "safe_box"],
             "duplication": ["copy_color", "layers", "stack"],
@@ -228,27 +247,19 @@ class EmojiEngine:
                 
                 # VIBRANCY SCORE
                 if r['type'] == 'openmoji':
-                    score = 90  # OpenMoji is always colorful
+                    score = 90
                 elif r['type'] == 'clipart':
-                    # Use module-aware vibrancy scoring
                     score = r.get('vibrancy', _score_clipart_path(r.get('path', '')))
                 elif r['type'] == 'heroicon':
-                    score = 10  # BW outlines — absolute last resort
+                    score = 10
                 else:
                     score = 5
 
-                # RELEVANCE BONUS — proportional to vibrancy
-                # Colorful exact matches get a big boost; BW exact matches get a small one.
-                # This prevents a monochrome "sparkles.svg" from beating a colorful "sparkles_color.svg".
                 if r['match'] == 'exact':
-                    if score >= 80:
-                        score += 200  # Colorful exact match: massive boost
-                    elif score >= 40:
-                        score += 80   # Mixed-tier exact match: moderate boost
-                    else:
-                        score += 20   # BW exact match: tiny boost (still loses to color partial)
+                    if score >= 80: score += 200
+                    elif score >= 40: score += 80
+                    else: score += 20
                 
-                # REMAPPING PENALTY
                 if w != word_lower:
                     score -= 40
 
@@ -256,26 +267,23 @@ class EmojiEngine:
                 all_matches.append(r)
 
         if all_matches:
-            all_matches.sort(key=lambda x: x['visual_score'], reverse=True)
-            return all_matches[0]
+            all_matches.sort(key=lambda x: (x['visual_score'], x['match'] == 'exact'), reverse=True)
+            best = all_matches[0]
+            if embed and best.get('path'):
+                best['src'] = self.get_base64_src(best['path'])
+            return best
 
         # Category/Tag fallback
         result = self._category_fallback(word_lower)
         if result['type'] != 'none':
+            if embed and result.get('path'):
+                result['src'] = self.get_base64_src(result['path'])
             return result
 
-        # Default
-        return {
-            'type': 'none',
-            'filename': None,
-            'path': None,
-            'match': 'none',
-            'keyword': word_lower,
-        }
+        return {'type': 'none', 'filename': None, 'path': None, 'match': 'none', 'keyword': word_lower}
 
     def _lookup_clipart(self, word):
-        """Find the most vibrant clipart match using module-aware scoring."""
-        # Exact match — still score it for vibrancy
+        """Find the most vibrant clipart match."""
         exact_result = None
         if word in self.clipart_index:
             rel_path = self.clipart_index[word]
@@ -288,7 +296,6 @@ class EmojiEngine:
                 'vibrancy': _score_clipart_path(rel_path),
             }
 
-        # Partial word match — collect ALL matches
         partial_matches = []
         try:
             pattern = re.compile(rf'\b{re.escape(word)}\b', re.IGNORECASE)
@@ -298,23 +305,19 @@ class EmojiEngine:
         if pattern:
             for key, rel_path in self.clipart_index.items():
                 if pattern.search(key):
-                    vibrancy = _score_clipart_path(rel_path)
                     partial_matches.append({
                         'type': 'clipart',
                         'filename': os.path.basename(rel_path),
                         'path': f'clipart/{rel_path}',
                         'match': 'partial',
                         'keyword': key,
-                        'vibrancy': vibrancy,
+                        'vibrancy': _score_clipart_path(rel_path),
                     })
 
-        # Combine exact + partials and pick the most vibrant
         all_candidates = partial_matches[:]
-        if exact_result:
-            all_candidates.append(exact_result)
+        if exact_result: all_candidates.append(exact_result)
         
         if all_candidates:
-            # Sort by vibrancy descending, then prefer exact matches
             all_candidates.sort(key=lambda x: (x['vibrancy'], x['match'] == 'exact'), reverse=True)
             return all_candidates[0]
 
@@ -322,7 +325,6 @@ class EmojiEngine:
 
     def _lookup_emoji(self, word):
         """Try to find an emoji match."""
-        # Exact match
         if word in self.emoji_index:
             filename = self.emoji_index[word]
             return {
@@ -333,7 +335,6 @@ class EmojiEngine:
                 'keyword': word,
             }
 
-        # Partial match - word as a whole word in key
         for key, filename in self.emoji_index.items():
             if re.search(rf'\b{re.escape(word)}\b', key.lower()):
                 return {
@@ -348,7 +349,6 @@ class EmojiEngine:
 
     def _lookup_heroicon(self, word):
         """Try to find a heroicon match."""
-        # Exact match
         if word in self.heroicon_index:
             filename = self.heroicon_index[word]
             return {
@@ -359,7 +359,6 @@ class EmojiEngine:
                 'keyword': word,
             }
 
-        # Partial match
         for key, filename in self.heroicon_index.items():
             if re.search(rf'\b{re.escape(word)}\b', key.lower()):
                 return {
@@ -374,11 +373,9 @@ class EmojiEngine:
 
     def _category_fallback(self, word):
         """Try category-based matching."""
-        # Check if word hints at a category
         category = CATEGORY_KEYWORDS.get(word)
 
         if category and category in CATEGORY_MAP:
-            # Use the first keyword from that category that exists in our index
             for fallback_word in CATEGORY_MAP[category]:
                 if fallback_word in self.emoji_index:
                     filename = self.emoji_index[fallback_word]
@@ -389,67 +386,11 @@ class EmojiEngine:
                         'match': 'category',
                         'keyword': fallback_word,
                     }
-
         return {'type': 'none', 'filename': None, 'path': None, 'match': 'none', 'keyword': word}
 
-    def lookup_many(self, words, prefer='clipart'):
-        """
-        Look up multiple words at once.
-
-        Args:
-            words: List of strings.
-            prefer: 'emoji' or 'heroicon'.
-
-        Returns:
-            List of lookup result dicts.
-        """
-        return [self.lookup(w, prefer) for w in words]
-
-    def get_emoji_by_codepoint(self, codepoint):
-        """
-        Directly get an OpenMoji icon by its Unicode codepoint.
-
-        Args:
-            codepoint: e.g., '1F600' or '2764-FE0F'
-
-        Returns:
-            dict with type, filename, path, or None if not found.
-        """
-        filename = f'{codepoint}.png'
-        filepath = os.path.join(BASE_DIR, 'data', 'icons', 'openmoji', filename)
-
-        if os.path.isfile(filepath):
-            return {
-                'type': 'openmoji',
-                'filename': filename,
-                'path': f'icons/openmoji/{filename}',
-                'match': 'codepoint',
-                'keyword': codepoint,
-            }
-        return None
-
-    def get_heroicon(self, name):
-        """
-        Directly get a Heroicon by its filename (without .svg).
-
-        Args:
-            name: e.g., 'light-bulb', 'document-text'
-
-        Returns:
-            dict with type, filename, path, or None if not found.
-        """
-        filename = f'{name}.svg'
-        filepath = os.path.join(BASE_DIR, 'data', 'icons', 'heroicons', filename)
-
-        if os.path.isfile(filepath):
-            return {
-                'type': 'heroicon',
-                'filename': filename,
-                'path': f'icons/heroicons/{filename}',
-                'match': 'direct',
-                'keyword': name,
-            }
-        return None
+    def lookup_many(self, words, embed=False):
+        """Look up multiple words at once."""
+        return [self.lookup(w, embed=embed) for w in words]
 
     def stats(self):
         """Return statistics about the visual lexicon."""
@@ -459,43 +400,10 @@ class EmojiEngine:
             'clipart_keywords': len(self.clipart_index),
             'total_vocabulary': len(self.emoji_index) + len(self.heroicon_index) + len(self.clipart_index),
             'categories': len(CATEGORY_MAP),
-            'category_keywords': len(CATEGORY_KEYWORDS),
         }
 
-
-# ─────────────────────────────────────────────────────────────
-# Demo / Testing
-# ─────────────────────────────────────────────────────────────
-
 if __name__ == '__main__':
-    print("=" * 60)
-    print("🔍 Visual Lexicon Lookup Engine — Demo")
-    print("=" * 60)
-
     engine = EmojiEngine()
-
-    # Show stats
-    stats = engine.stats()
-    print(f"\n📊 Lexicon Stats:")
-    for k, v in stats.items():
-        print(f"   {k}: {v}")
-
-    # Test lookups
-    test_words = [
-        'happy', 'book', 'computer', 'fire', 'idea',
-        'ipod', 'robot', 'programming', 'rocket', 'canvas',
-        'learning', 'technology', 'conversation',
-        'xyznonexistent',
-    ]
-
-    print(f"\n🔍 Lookup Tests:")
-    print(f"{'Word':<20} {'Type':<12} {'Match':<10} {'Keyword':<15} {'File'}")
-    print("─" * 80)
-
-    for word in test_words:
-        result = engine.lookup(word)
-        t = result['type']
-        m = result['match']
-        k = result['keyword'] or ''
-        f = result['filename'] or '(none)'
-        print(f"{word:<20} {t:<12} {m:<10} {k:<15} {f}")
+    print(f"📊 Lexicon initialized with {engine.stats()['total_vocabulary']} icons.")
+    res = engine.lookup('rocket', embed=True)
+    print(f"🚀 Base64 Rocket Found: {res.get('src')[:50] if res.get('src') else 'NOT FOUND'}...")

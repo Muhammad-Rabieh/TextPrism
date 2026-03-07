@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Explanation — {{ title }}</title>
+    <title>Visual Explanation — Test</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
@@ -385,126 +385,76 @@
     <div class="explanation-wrapper">
         <!-- Title Banner -->
         <div class="title-section">
-            {% if title_icons %}
-            <div class="explanation-icons" style="justify-content: center; margin-bottom: 8px;">
-                {% for icon in title_icons %}
-                {% if icon.type != 'none' %}
-                <span class="icon-chip">
-                    <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
-                        alt="{{ icon.keyword }}" title="{{ icon.keyword }}">
-                </span>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
             <h1
                 style="margin-top: 12px; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text);">
-                {{ title }}</h1>
+                Test</h1>
         </div>
 
         <!-- Explanation Box -->
         <div class="explanation-box">
             <h2 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);">📋 Explanation</h2>
-            <p class="section-text">{{ explanation_text[:400] }}</p>
-            {% if explanation_icons %}
+            <p class="section-text">Test</p>
+            
             <div class="explanation-icons">
-                {% for icon in explanation_icons %}
-                {% if icon.type != 'none' %}
+                
+                
                 <span class="icon-chip">
-                    <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
-                        alt="{{ icon.keyword }}" title="{{ icon.keyword }}">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAADAFBMVEVHcEwAAAAAAAAAAAAAAADTMCcAAAAAAAAAAAAAAAAAAAAAAADSLibiSjvbQTTqWUfSLyfVNCvYOjAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADmTz7TMSkAAADoV0UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAwIAAAAAAAAAAAAAAAAAAAAMBQQAAAAIAgLnVUPoVEIAAAAAAAAAAAAAAAAkDQoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeBgUAAAAJAgIFAQEAAADoVkbUMSnjTz8AAAAAAAAAAAAAAAAAAADVNSshBwbZPTIQBQRPGRVGEA0AAAAAAAAfBwYAAABbFBEZBgUAAAAAAAB1GhYRBQQ+GBMYCQd2GhY1CwkTBATTMCjbPzHSLyfqWkcAAADQz84BAQHFxMPOzcwFBQXPzs02NjU5OTkODg7KycgTExNGRUVAPz+rqqrLyskZGRnAwL/oWUY7OjrMLSYXFxc9PT0hISEQEBAgHx/Ix8ZoaGcEAgKKiYmop6YMDAxfX1+ko6IpKSgqKipycnFVVFTRLycEBAS6ubiioqHNzMvHxsWqJiBDQ0JBQUFdXVy0s7O8KiNXV1ZIR0d9fXy8vLsdHR2xsK/bVEIwMDBLS0rkV0WXOi2dnJsTBwV5eHh6enmVlZRSUVG4RjdtbWyMNitsGBR7e3qFhIS/vr3ASTrTUUCYl5aJHhnPLia+STmtrKtbIxsRBwXESzt1dHSAgH9xGRSgn57MTj6UIRuSkZEmJiaDg4JHR0aDMidwb26jPjGnpqaZmZhZWFiLi4qqqqmNjIyeIx00NDSUlJO0KCGHh4bEw8KdnZxRHxh7LyVsKiGuJyAuEg5/HBgkJCSjJB5iFhJ2LiRIEA1QUE+pJh+wr64XFxYoEAycPC/lWEaCHRgoCQdJSEhQEg9WExBPHhiAMScyMjFjYmLGLCVqammzsrEXCQenQDNbW1otLSxoKB8KBAO4KSILCwuvr67FLCWPjo3JTT1aWVk5OJw3AAAAxnRSTlMAFvwB7uO8IPcEK+fuyMD6+sjAgFRMjuWuhev11NQQ8DPBEvveYIsZ+pFkw/Al/dP85eRu2V1b/Jz6CaLQHc5pCvOo+fr+8NTUFLeXWXvG/bz+5/o7effh/PYqnv36+Pn89Pfev//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////+//////////6hm2SjAAAEY0lEQVRYw+2Xd1hTVxiHL5AmjLa2gsyWIkNFSqF116potHvZvey++X03JCQECJEtYSoIarVQZFlH1bqtWldFrVrrbLr3bumurd3rBELJRfLcG/JXn/L76z43z32f852855zvcFx/+vPfil9kpJ9nhMRRYaFJCl+w+IYnhYbF+fdlGEFj70RnrEaj4HgMGD86xS3MhLAA9pkpo7ik1JJOLOmW0pLi/Sb2UhF/j2zM5WGsnL0HSvXUGa3W8UBbd7QA0+71kse5LRbCE7vt3z3e8Lchu8xeU1m24XBDk/1dVr0Oijg5nEG+qKxlXzSdbnTMTHKy4yGvqpT9cCofGCKDMw71qURHDGyCn/3q64N/NWse5fk/Tu7ZdeswxvrpBYbap8PtUpzIcHxLZD5txS/bVs3UdOQRvjPVC+5SAxkWojYhRkqFQKTpab4B1p+bNV0ZyP+b3F1TUVBDdBjjJUBXgI09Ez9s0XRnwFXdJL5uMormUxMCJEARmEVHMf05jXMuO9uJ9N1kfE+piJEAXQwLfYOnNeKc4wTij6GA1kMhWdohKkNzD9C5zqBc6KgCEyVAoXiRCrFRzLngPGdQHQqpBKESoGDModlYJeJcdJYzh38bs+kAgiVAI1BPGXhSBDpfxOE3I4OqMEJKbORQOV4VgQaKQWtQTgYMkgCpYKIV2CYCDbhQBPoCa8kElQTIR4HFu/GGeLIvdfaI/xy1NVD4SC22wXhKK1iXuPYo1ypo26CUXP3BWE1F2OLaow+Yj8Uy9pFReIzae6gt8uhNtNNCjJYEqWBMXYFXXHv0HtamGiXnmiUWpR9imUuPqqfjVAViZWy1Y5nbH2GDK48WIJtW4zoZoOuZku/jXVcercFKSkOQDJCXt057Ah+78ugmbLLpvKPlHCNKrDMbsb13j15H4bx9MiyyZxIyaSVe692jd1BFORguC8Rqs1Vg2ZLePModhlrL3HHXyDtqlVhOlU5byZXdHn3G9qLluFbm2R+EAv1OjJl5pkfVd2AdvSXrP+toaUKw1JyNT870aDOyzZsQIrvvCmTrrQFjPu3p0TN3Yyc79G6Q3dcM9RWyzI14vue5dh8a52UJvl6yQVw825bboN4o9qhOjRNs4ce70bGxIR1hNdwv8qj6IVbxISFiqDu9XzCO02JjV3FXd3j0IApr2DIb4g7H3t2U0FFh2o/d+9Exb/xJLyE82i0QNxx5Nrajqrd3eXRSjUVkMyHOPQ7nk4BW0rfjAdaX2Af068PIT6VWJPi4CeISI1hx6S2YsUFzI9vOZqBlFissItH9ln0SfvudtAZccvBmfk8y0mzUVCZz2ffIFBTYyLwfuOVLoNVMtiJM6dNVJCUJx9NJv0MH6OboKT0NE1P6BOJUIVjILhBZ+flbWaObiYAJfb0e+SuQ5rg+aHMQ7s/1Of4hqFxv59TsRUCUJ1c21UjkLSV6OQ8jVZxH8UqAUL5IwOBozsP4BXoDMYF+nOeJUiqjuP7053+afwCBPZ+5UmHVZAAAAABJRU5ErkJggg=="
+                        alt="shield" title="shield">
                 </span>
-                {% endif %}
-                {% endfor %}
+                
+                
             </div>
-            {% endif %}
+            
         </div>
 
         <!-- Sections -->
-        {% for section in sections %}
+        
         <div class="section-block">
-            {% if section.ascii_separator %}
-            <pre class="section-separator">{{ section.ascii_separator }}</pre>
-            {% endif %}
+            
 
-            {% if section.title %}
+            
             <div class="section-header">
-                {% for icon in section.title_icons %}
-                {% if icon.type != 'none' %}
-                <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
-                    alt="{{ icon.keyword }}">
-                {% endif %}
-                {% endfor %}
-                <h2>{{ section.title }}</h2>
+                
+                
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAAC01BMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAm//Qz84AAACbm5r////OzcwBAQHCwcASEhIdHBzLyskKCgomJiYXFxcGBgbPzs0ODg46OjlhYWAeHh59fHxJSUkEBATIx8YDAwMICAghISGfnp6wr650dHMbGxsgHx8FBQUwMDCVlZSUlJNDQ0J6eXiqqag7OjrNzMuvrq2HhoVsbGtnZmYJCQkpKSiKioloZ2eSkpGXlpUVFRUMDAxZWFhtbWyRkZA4ODiampmFhYQkJCTGxcRLS0oQEBC3trWysbAPDw83NjbBwL+ZmZgjIyNJSEjFxMNYWFfMy8ouLi67urk3NzdjY2JWVlaBgYEUFBQZGRkyMjLHxsZOTk5KSklHRkZ1dXR+fn2Af357e3qlpKO0s7NdXVxra2qKiYk2NjXDwsGNjIympqa9vLtlZWTKycgtLSwoKCh3d3YYGBhPT06jo6K4t7dRUVHEw8L19fWDg4L39/e1tLOVlZXZ2dkxMTCop6aIiIdBQUGOjY2gn549PT2AgH9MS0tzcnJfX18lJSXu7u6qqqkuLS0oKCft7e1WVVW8vLvj4+MqKir+/v7k5OSQkI/Hx8dpaWg0NDRTU1Kurax7e3tHcEw+sCx9AAAA8XRSTlMA7Y/l/u4C/BH2awGoIgkpmD0252ZANPKm14xp3YGSLAd+nosrsZxhykvCQ/gORicFlcVH6LeqGSSvBFE6T9rJL2TgtNYM7DPQVfrZCC1bXO/MiB70CoY7FFKCmf////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AWkzJKgAABMJJREFUWMPtV/dbk1cUDhCJ7KViWSJuwNZtcaHWUrV7ryfvJYGQAWETRgAFQRDZgigblL2to4p7D6ijtXvv3X+h9xtJ0z4N+dr81vL+8D33nu+cN9997zn3nohEk5jE/xJLprJYYi2P0xaw2OJkJdEspMZRpGKWlUSOOCilSIKvlUTOSGSIjmPmv1pPsH8gP7RDIUNUCDveEPha8FyhPJ42VFxPdvgwomMZoth6uHDvqPgRnsJ4Qryh1UMyx5WOF2CnlMVOLKBT1zkS6LTwni6EZ5EDkjoulibDj7oH4Q2OKBNBItG6B5BalSK7htBXLfOsl+CwjEaeqIM4YLUd3uaIzmHz6gAx6k7QsawXkvUWidxxiQuNuZBME7EklpvFqugkuTiGm12Cu0UiFwd5OuctzT/dpG3gx9I3a5qa8/lxutzBxfLa/FHXIZ0QMhVmCxA78HGDwAakpPx5ngm/J4Rs23Iou4xBt4s+VwLKzurbRtP5SiwSlkjz8CEfE1WVTTXWaOgjuyqKNx7EPIGZ/fwLcsKG/KqAvKa6jJCy6ho5FIX/QGkOs5HDhGRUQtdHePTpUZnBWHMEKc3hZShpxC097pUzHDt2MM/yHOgPUXMa1gkicfN19gJu0oh4JOQSsm8kGoge2UdIbgJ6qPka4OXs6zYhyVzHVSuYc7X/5AGp9GuNPJGQcUqjpPvWP07Ib/K081LpoZP9jM+KVY5mjxNbxqEiKZGVQpqHHLqqCmh/jPxuqBsVdH2dOM6+ykhMqmB8bc0QrYT2aKMxXXahh5Cb+PmtSIqxQfxCSDzeN75uPKrFSjNEYXjXJH8V2E+IAl2RLG4ggZD9UJg4nEWYGaKZ2G3ilwYqtQZjHNEYNHSh2GPisNvsOR6EYyZ+laCZuAefckRfQkl3EJUmDseYs+5vsRR5Jn460GT8BOc4outQEfIBdCYOeVhqhsgH0feLyg0ldQRVhHwMxfcMzzdZiCfkMI4YirD81P1o+Jgr+2fY21nRntnAStBGSKsKA3fu3r1zFV+0EqLDO/RFw0ftCtZxyoPmEsne7emAZQ7URfkeTbx6VBPyQwl3939LU/sUommiptP0hMMy26cestAOrNm4KQzd9JevoGkvIbWlOWr1vZ9qCTlbz2p4GmGbNq4RVrQeuEwjCpqh2EuMGFWgu4CaVfAQWvz24ShlFG3RIa64lqOpvRAHXQtjLUW4vUCiaVAfYPfmjBbIGs4cH88cHgB2neFO8AFME8YzNQKjhvuiTw0e6nEZbxyFzSuCiNzR/EfWXcztHdTrB3tzY6Qm5ewuhOcxSXbhxPdaY7ZYQD9ivxDxhoiYrliT+BvGj4rHQnshSg9x7gVFGmSlGz+jDZqiAm48pBag91aMcN6flUDsBWWLURgvMUr42z8JWy0SbduOXro/McXJ2Bzi9AiucKG35KGPhvhx/YjsK2zfJqjRau/Ivwzx64tNOrYyBItELz4nRtt12TBC1wrZtuneUKVig4dpD0n1fYktng1IVQls/USiGRF8B8l2tdyd0onl7NzVR4KIGUKLzW2+51/67JRsyWJDzzvfzYrOvxXPWtn5P4mrURQ9Zi9DwUeKDV+0a60kEvlHTGEQvnjyr+skJvHfwu/KbGweqtRWzAAAAABJRU5ErkJggg=="
+                    alt="gear">
+                
+                
+                <h2>Test</h2>
             </div>
-            {% endif %}
+            
 
-            {% if section.ascii_box %}
-            <pre class="ascii-box">{{ section.ascii_box }}</pre>
-            {% endif %}
+            
 
-            {% if section.sentences %}
+            
             <div class="sentence-grid">
-                {% for sent in section.sentences %}
+                
                 <div class="sentence-item">
                     <div style="flex: 1;">
                         <div style="display: flex; align-items: flex-start; gap: 16px;">
-                            {% if sent.icon and sent.icon.type != 'none' %}
-                            <img src="{% if sent.icon.src %}{{ sent.icon.src }}{% else %}/{{ sent.icon.path }}{% endif %}"
-                                alt="{{ sent.icon.keyword }}" class="sentence-icon">
-                            {% endif %}
-                            <p class="sentence-text">{{ sent.text }}</p>
+                            
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAADAFBMVEVHcEwAAAAQCwQSDQQNCQMDAgANCQMAAAAAAAAAAAAAAAAAAAAAAAABAAADAgEAAAAzIw0lGQkAAAAAAAABAAAGBAEAAAAqHQsAAAAAAAAaEwgAAAAAAAAAAAAAAAAAAACCWiMAAAAAAAAAAAAiFwgaEgcoGwotHwx3Ux8nHAowIQ0AAAAAAAAAAAAAAAAAAAAuIAwEAwEAAAASDgdSORUAAAA/LBFcQBgxIg0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIXiQAAAAAAAAAAAAAAAAMCAMAAABEMRRrSx1GQDkHBQSWaChmRxsXEAZzUR4AAAATDQWjcSsAAAC3gDGLYibEiTVONxWndC1kRhuhcCuKXyUAAABXPRhjRRq2fjGPhngAAAB4VB9rYFBJQDJeQhkfGhI6KBAAzxz0qkEAAADQz85oSRyMYSUBAQH///8EAwLzqUA/Pz4HBwfwp0DhnDwUFBTqoz7bmTrChzObaynrpD/ooT0ODQ0KCgm/hTMjIyLknz3tpT9fQhkIBgI3NzcyIg2teS5sWkJpSRwQDAVsbGuJXyTfmzvUkzjXljp6VSCqdi02JQ66gjEVDwcZEgdZPhggHx+op6YoJiMmGwvGijW0fTDPzs3LjTYMCQNIMhMdHR24t7bKyci9vLo1NTXIlEoiGAm9hDIZFhE6KRLupj/RkTfZnUmXaSgwMDApKSkeFAhkRRrxqUGdnJyioaDJyMe0tLOuhUtLQTSSkZF1dXTMy8rMjjY8OzsrHgu2fzDHxsVBLRFPOBUVDgZ+WCLBwcBMNRRTU1NoZ2dvTR7OjzcZGRlMPypyTx729vaSZidhYWFGRkWHh4eLiomZl5WDgoFvbm5NTUzsqEZeU0NqZF1vXUTPmEqPYyavr65WVVVDLxJfXl6jcSutrKtjXll0YUSSZig8KhAtKymmcyyAf39bTjwuJRiYd0trVjh/Xi/ppEN/f36imo6mpqW6hz7+/v6qqqrppUWEa0fl5eVTST3Q0NBHcEyG0CVyAAABAHRSTlMA8/Lz7/juQx7+B3cm/fsC7d43+u/3GuQKZvJNgKKeDv6qyebb5eHo/ebr24sRIR3z/l779Ejy8uFvz9+0PrMEttK8+BXsLmD2vuv0/P7z6vXz4vT+0/bs/PHz9/r+keLj8f5u6/rz+Pfz//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////7///////////////////////////////////////////8AZrjdYwAABM9JREFUWMPt2GlYVFUYB3ApQUcZMJUKU0LJIg1N0GxfTJMs2vd9X577R+8MM8OAwgzDMIAS+xoiq2AYIiCYaGliZWruW2navu8L7T29M/cO98RsdwY/+MHzaR5m+D33vOec97zvHTTo1DiZxsiwGSeCOTNMCVwZOFBm2HA/BN0fglEXnTsg55zJwCX5XOKDSsy5LNhnJvBaYEw2Zx1VFwOXX+UbEzVLidjrdZw4im4Drp7iPXNN6BwgZhknjZRwf/h7Haoh1wHP5YDPyGOo5OkKRIR6E6rA8RScJ+J73rfAUmhmqIUUqgkj5TJnj6U5PL08nsa6m4GXPmWkhLvuhGL8VFnOk/5QPNMYL45DFcDHGxkqKTIIfmOHeT4PEwAs/TW+b7z2qgHqJekMVTAduCPaw3kYp0DAzA7w6xskautHauR8oGOozWOAG29wExw6D/6PJXEtubWwfN4jUR9uoqfMZkO1KBbKcbNdnYcrgEsLhIUu57HycLVEbagH6vIZKv2mIIwe7ixUwRHAxMelhS4Gvl7LhspIoUplqJrnAb+hjtAUIO4tM/v0peDfa5Soxm08yr7sZH4wGpjrCA1FEO2Zb9iFLrTA8O5yieptA74vEb9No70ZgiHOoNM3vw58VcVQq94AKjZIUvXBneB3WcOY/KwCMXvPcwEJ0ylnj9cysjM/k6ie7Vpof0x/OATTKGAuIVqM3bRnwlskSZebA8snzFZYtx9QA29bl9ANRNOpo1CxeyYvg4f+W2YrdOlRKuQXF9Bp9uksBbbUMFTVy0A7sxVewGJODkTTqe13vIpWApoGB+gMDxDHJS6hUOV2MunxJyO021/xGhKmk1XCnvldPCwN3kM0nY7/Ha/UHdOALl8gyvaUBHanSgfGgBdt0D58IfzifI+QuTw8RUwCZYsS6DzQES5Oq7RB1b8Y0e0WGswkeaDDCtiSQFaR6NmgrnbgO04ulEb5Voh1wupS+hhXmESfK9HbsJ8S1Q/2n50lA2r6g7J+3SprlLPwppDu/kElnbRjP3PeQJmqPQco669J5LgFmC/8dYWeknkrsxzyIJXq730UmxYJ4v7sPi6sZ4F3kEr1rxGJDCTe3BkWbLEuKneBbEild4CseZO3INcNFMAuv/HAHmeQbi8tor6pEhnyIDPl2Pre3x2gbMowhjaNxoQ18iCOa6ad2LS1H7QDMLZrNJo2LVbLhWgnlgHbDCxUArWJmCY93RG2G3ySHEgIK1goEvUaTeZOHrXiBSgTsi40r06SoPkwbapQ0y613zMj5EIct3Ehs7MXQKul++Odvm+9gIT/F6Gk4n5Z01eI0zULT3Ok1Q00Ff73JniARO4vA3/UloxjnUHBs6isuUcG1G0CeL6VqxkB3B3lstDK9wAdX097/qAJv7kstOyl362pbqDOY1oYqdIxUUXjuvQTi9HBtyS4hI4KtdehOPfFqL08ntjsAjqi1a4Vqni/uZ4L9ugIKOblOYVWoIL6CnkFu72FuN3sFDIdjpHdQohNTcBDzqA4b5oae5s1qaYflDwPiIj2ofFTzkxkoJSnqEcO86FHjnokSGhFBeiBAN9aUaY5tkL3Xeh7c9zXrkci49GBteviCwQlRg34BYLtlYbiRLzSsI4Zk0NPvWk6ucZ/Oz405DMJ1oQAAAAASUVORK5CYII="
+                                alt="package" class="sentence-icon">
+                            
+                            <p class="sentence-text"> Test</p>
                         </div>
-                        {% if sent.ascii %}
-                        <pre class="ascii-sentence">{{ sent.ascii }}</pre>
-                        {% endif %}
+                        
                     </div>
                 </div>
-                {% endfor %}
+                
             </div>
-            {% elif section.content %}
-            <p class="section-text">{{ section.content }}</p>
-            {% endif %}
+            
 
-            {% if section.ascii_callout %}
-            <pre class="ascii-callout">{{ section.ascii_callout }}</pre>
-            {% endif %}
+            
 
-            {% if section.ascii_flow %}
-            <pre class="ascii-flow">{{ section.ascii_flow }}</pre>
-            {% endif %}
+            
 
-            {% if section.content_icons %}
-            <div class="content-icons">
-                {% for icon in section.content_icons %}
-                {% if icon.type != 'none' %}
-                <span class="mini-icon">
-                    <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
-                        alt="{{ icon.keyword }}" title="{{ icon.keyword }}">
-                </span>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
+            
 
-            {% if section.bullets %}
-            <ul class="bullet-list">
-                {% for bullet in section.bullets %}
-                <li>
-                    {% if section.bullet_icons and loop.index0 < section.bullet_icons|length %} {% for icon in
-                        section.bullet_icons[loop.index0] %} {% if icon.type !='none' %} <img
-                        src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
-                        alt="{{ icon.keyword }}">
-                        {% endif %}
-                        {% endfor %}
-                        {% endif %}
-                        <span>{{ bullet }}</span>
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+            
         </div>
-        {% endfor %}
+        
 
         <div class="footer-note">
             Generated by TextPrism — Visual Lexicon for Semantic Text Annotation
