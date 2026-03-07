@@ -3,22 +3,24 @@ import os
 import sys
 import time
 
-# List of all test files discovered
+# List of all test files discovered (all now in the tests/ directory)
 test_files = [
-    "test_json_robustness.py",
+    "tests/check_doc_charset.py",
+    "tests/test_render.py",
+    "tests/test_cpp_templates.py",
+    "tests/test_cpp_templates_v2.py",
+    "tests/test_json_robustness.py",
+    "tests/test_regex.py",
+    "tests/test_robust_regex.py",
+    "tests/test_hybrid.py",
+    "tests/test_user_payload.py",
+    "tests/test_user_payload_render.py",
     "tests/test_ai_render.py",
     "tests/test_all_exports.py",
-    "tests/test_clipart_size.py",
-    "test_fonts.py",
-    "test_e2e_navigation.py",
-    "test_regex.py",
-    "test_cpp_templates_v2.py",
-    "test_render.py",
-    "test_user_payload.py",
-    "test_cpp_templates.py",
-    "test_hybrid.py",
-    "test_robust_regex.py",
-    "test_user_payload_render.py"
+    "tests/test_e2e_navigation.py",
+    "tests/test_fonts.py",
+    "tests/test_clip.py",
+    "tests/test_pdf_clipping_strict.py"
 ]
 
 def run_test(file_path):

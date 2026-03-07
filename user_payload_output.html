@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Explanation — C++ Templates: Build Once, Use Everywhere</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --text-sec: #475569;
+            --accent: #3b82f6;
+            --accent-vibrant: #7c3aed;
+            --accent2: #10b981;
+            --accent3: #ef4444;
+            --radius: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f1218;
+                --card-bg: #1a1d23;
+                --border: #2d333b;
+                --text: #e2e8f0;
+                --text-sec: #94a3b8;
+                --accent: #60a5fa;
+                --accent-vibrant: #a78bfa;
+                --accent2: #34d399;
+                --accent3: #f87171;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .explanation-wrapper {
+                max-width: 100%;
+                margin: 0;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 32px;
+            line-height: 1.7;
+        }
+
+        .explanation-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .ascii-banner {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            line-height: 1.2;
+            color: var(--accent);
+            background: #f6f8fa;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            display: inline-block;
+            white-space: pre;
+            overflow-x: auto;
+            max-width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .summary-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .summary-icons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .summary-icons .icon-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            background: rgba(124, 92, 252, 0.1);
+            border: 1px solid rgba(124, 92, 252, 0.2);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: var(--accent);
+        }
+
+        .icon-chip img {
+            width: 22px;
+            height: 22px;
+        }
+
+        .section-block {
+            margin-bottom: 28px;
+            animation: fadeIn 0.4s ease;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-separator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            line-height: 1.2;
+            color: var(--text-sec);
+            background: #f6f8fa;
+            border-radius: 6px;
+            padding: 8px 12px;
+            white-space: pre;
+            overflow-x: auto;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .section-header h2,
+        .section-header h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .section-header img {
+            width: 28px;
+            height: 28px;
+        }
+
+        .hero-section-icon {
+            width: 22px;
+            height: 22px;
+            filter: brightness(0) invert(0.6);
+        }
+
+        .section-text {
+            color: var(--text-sec);
+            font-size: 0.92rem;
+            padding: 4px 0;
+            margin-bottom: 8px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .sentence-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 12px 0;
+        }
+
+        .sentence-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 14px 18px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .sentence-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            border-left-width: 8px;
+        }
+
+        .sentence-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .sentence-text {
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0 !important;
+        }
+
+        .ascii-box,
+        .ascii-flow,
+        .ascii-callout,
+        .ascii-sentence {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.0;
+            letter-spacing: -0.2px;
+            color: var(--text);
+            background: linear-gradient(to bottom, #fdfdfd, #f8fafc);
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--accent-vibrant);
+            border-radius: 12px;
+            padding: 24px;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 24px auto;
+            width: fit-content;
+            max-width: 100%;
+            display: block;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .ascii-sentence {
+            font-size: 0.75rem;
+            padding: 16px;
+            margin: 12px 0;
+            border-top: 3px solid var(--accent);
+            background: #ffffff;
+            width: 100%;
+        }
+
+        .ascii-callout {
+            color: var(--text);
+        }
+
+        .ascii-flow {
+            color: var(--text);
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .bullet-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent2);
+        }
+
+        .bullet-list li img {
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+        }
+
+        .content-icons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .content-icons .mini-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            background: rgba(0, 212, 170, 0.08);
+            border: 1px solid rgba(0, 212, 170, 0.15);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            color: var(--accent2);
+        }
+
+        .mini-icon img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Floating Premium Buttons */
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .btn-premium {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+            background: var(--accent-vibrant);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="explanation-wrapper">
+        <!-- Title Banner -->
+        <div class="title-section">
+            <h1
+                style="margin-top: 12px; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text);">
+                C++ Templates: Build Once, Use Everywhere</h1>
+        </div>
+
+        <!-- Explanation Box -->
+        <div class="explanation-box">
+            <h2 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);">📋 Explanation</h2>
+            <p class="section-text">C++ templates enable generic programming, eliminate duplication, and power the STL ecosystem.</p>
+            
+            <div class="explanation-icons">
+                
+                
+                
+                
+                
+            </div>
+            
+        </div>
+
+        <!-- Sections -->
+        
+        <div class="section-block">
+            
+
+            
+            <div class="section-header">
+                
+                
+                <img src="/icons/openmoji/1F4E6.png"
+                    alt="package">
+                
+                
+                
+                <img src="/icons/openmoji/1F4BB.png"
+                    alt="code">
+                
+                
+                
+                <h2>Generic Code Engine</h2>
+                
+            </div>
+            
+
+            
+            <pre class="ascii-box">┌────────────────────┐   
+│ Template&lt;T&gt; │          
+│ (One Blueprint) │      
+└─────────┬──────────┘   
+│                        
+┌───────────┼───────────┐
+▼ ▼ ▼                    
+[int] [double] [string]  </pre>
+            
+
+            
+            <div class="sentence-grid">
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> A C++ template lets you create generic functions or classes.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> You write the logic once, and it works with any data type.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+
+            
+
+            
+
+            
+
+            
+            <ul class="bullet-list">
+                
+                <li>
+                      
+                          <img src="/clipart/module_1/openclipart/svg/computer/icons/lemon-theme/actions/int.svg"
+                        alt="int">
+                        
+                        
+                        
+                        <span>Supports int, float, double, string, custom types</span>
+                </li>
+                
+                <li>
+                      
+                          <img src="/clipart/module_1/openclipart/svg/computer/icons/flat-theme/action/data.svg"
+                        alt="data">
+                        
+                        
+                        
+                        <span>No rewriting for every data type</span>
+                </li>
+                
+                <li>
+                      
+                         
+                        
+                        
+                        <span>Compiler generates type-specific versions automatically</span>
+                </li>
+                
+            </ul>
+            
+        </div>
+        
+        <div class="section-block">
+            
+
+            
+            <div class="section-header">
+                
+                
+                <img src="/clipart/module_1/openclipart/svg/signs_and_symbols/money/gold_coins_in_a_stack_jo_01.svg"
+                    alt="gold coins in a stack jo 01">
+                
+                
+                
+                <h2>No More Duplication</h2>
+                
+            </div>
+            
+
+            
+            <pre class="ascii-box">Without Templates: With Templates:
+                                  
+addInt() add&lt;T&gt;()                 
+addDouble() ───▶ (one definition) 
+addFloat()                        </pre>
+            
+
+            
+            <div class="sentence-grid">
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> Templates eliminate repeated code by allowing a single reusable definition.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> This keeps programs cleaner and easier to manage.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+
+            
+
+            
+
+            
+
+            
+            <ul class="bullet-list">
+                
+                <li>
+                       <img src="/clipart/module_10/assets/One-piece swimsuit/Color/one-piece_swimsuit_color.svg"
+                        alt="one piece swimsuit color">
+                        
+                         
+                        
+                        
+                        <span>One implementation instead of many</span>
+                </li>
+                
+                <li>
+                      
+                          <img src="/clipart/module_15/svgs/regular/copy.svg"
+                        alt="copy">
+                        
+                        
+                        
+                        <span>Reduces copy-paste functions</span>
+                </li>
+                
+                <li>
+                      
+                         
+                        
+                        
+                        <span>Easier updates and maintenance</span>
+                </li>
+                
+            </ul>
+            
+        </div>
+        
+        <div class="section-block">
+            
+
+            
+            <div class="section-header">
+                
+                
+                <img src="/icons/openmoji/1F6E1.png"
+                    alt="safety">
+                
+                
+                
+                <img src="/icons/openmoji/1F527.png"
+                    alt="wrench">
+                
+                
+                
+                <h2>Safety + Specialization</h2>
+                
+            </div>
+            
+
+            
+            <pre class="ascii-box">┌──────────────────┐ 
+│ Template&lt;T&gt; │      
+└─────────┬────────┘ 
+│                    
+┌─────────▼─────────┐
+│ Specialized&lt;T&gt; │   
+│ (Custom Behavior) │
+└───────────────────┘</pre>
+            
+
+            
+            <div class="sentence-grid">
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> Templates are type-safe and checked at compile time.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> They can also be specialized for specific data types.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+
+            
+
+            
+
+            
+
+            
+            <ul class="bullet-list">
+                
+                <li>
+                      
+                          <img src="/icons/openmoji/1F554.png"
+                        alt="time">
+                        
+                        
+                        
+                        <span>Compile-time type checking</span>
+                </li>
+                
+                <li>
+                      
+                         
+                        
+                        
+                        <span>Safer than void* and macros</span>
+                </li>
+                
+                <li>
+                      
+                          <img src="/clipart/module_1/openclipart/svg/signs_and_symbols/for_sale_sign_template_01.svg"
+                        alt="for sale sign template 01">
+                        
+                        
+                        
+                        <span>Supports template specialization</span>
+                </li>
+                
+            </ul>
+            
+        </div>
+        
+        <div class="section-block">
+            
+
+            
+            <div class="section-header">
+                
+                
+                <img src="/icons/openmoji/1F6A7.png"
+                    alt="construction">
+                
+                
+                
+                
+                
+                <h2>Foundation of the STL</h2>
+                
+            </div>
+            
+
+            
+            <pre class="ascii-box">┌───────────────────────────┐
+│ STL CORE │                 
+├────────────┬──────────────┤
+│ Containers │ Algorithms │  
+├────────────┼──────────────┤
+│ vector │ sort │            
+│ map │ find │               
+└────────────┴──────────────┘</pre>
+            
+
+            
+            <div class="sentence-grid">
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> Templates form the backbone of the Standard Template Library (STL).</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="sentence-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            
+                            <p class="sentence-text"> They power flexible containers and reusable algorithms.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+
+            
+
+            
+
+            
+
+            
+            <ul class="bullet-list">
+                
+                <li>
+                      
+                          <img src="/clipart/module_1/openclipart/svg/computer/icons/gnome-mime-vector.svg"
+                        alt="gnome mime vector">
+                        
+                        
+                        
+                        <span>Containers: vector, map</span>
+                </li>
+                
+                <li>
+                      
+                          <img src="/clipart/module_1/openclipart/svg/computer/icons/flat-theme/action/sort_decrease.svg"
+                        alt="sort decrease">
+                        
+                        
+                        
+                        <span>Algorithms: sort, find</span>
+                </li>
+                
+                <li>
+                       <img src="/clipart/module_10/assets/High-heeled shoe/Color/high-heeled_shoe_color.svg"
+                        alt="high heeled shoe color">
+                        
+                         
+                        
+                        
+                        <span>High-performance reusable components</span>
+                </li>
+                
+            </ul>
+            
+        </div>
+        
+
+        <div class="footer-note">
+            Generated by TextPrism — Visual Lexicon for Semantic Text Annotation
+        </div>
+    </div>
+
+    <div class="action-buttons no-print">
+        <a href="/" class="btn-premium btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            Home
+        </a>
+    </div>
+
+</body>
+
+</html>

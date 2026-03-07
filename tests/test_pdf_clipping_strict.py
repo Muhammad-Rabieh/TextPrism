@@ -49,7 +49,7 @@ for w in words:
     x0, y0, x1, y1, word_text = w[:5]
     height = y1 - y0
     print(f"Word: '{word_text}', Height: {height:.2f}pt, Width: {(x1-x0):.2f}pt, Bbox: {x0:.1f},{y0:.1f} -> {x1:.1f},{y1:.1f}")
-    if height < 17.0: # Arbitrary strict threshold for a 16px Arial/Helvetica box
+    if height < 13.0: # Healthy height for 16px (~12pt) font is ~14pt. Threshold at 13pt to catch real clipping.
         print(f"SUSPICIOUS CLIPPING on '{word_text}' (height: {height:.2f}pt) bbox: {x0:.1f},{y0:.1f} -> {x1:.1f},{y1:.1f}")
         clipping_suspected = True
 
