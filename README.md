@@ -1,135 +1,103 @@
-# 💎 TextPrism — Visual Lexicon for Expressive Text
+# TextPrism - Visual Lexicon for Expressive Text
 
-**"Turn any text into a premium, icon-rich visual explanation — no LLM required."**
+**"Turn any text into a premium, icon-rich visual explanation - with server-side high-fidelity PDF export."**
 
-TextPrism is a **Visual Mapping Engine** that transforms dense text into rich, iconographically annotated documents. It pairs a massive **90,000+ asset Visual Lexicon** (1.3 GB of offline icons, clipart, and illustrations) with LLM-generated ASCII art to produce stunning visual explanations.
-
----
-
-## ✨ Features
-
-- 🎭 **LLM-Driven Artistic Freedom** — Prompt any LLM to use the **"shape-it ascii art style"**. It handles structure, boxes, and flows. TextPrism provides the premium visual assets.
-- 🗺️ **Granular Sentence-Level Mapping** — Every sentence is paired with a vibrant, semantically relevant icon via the **Vibrancy Ranking Engine**.
-- 📚 **90k+ Offline Asset Lexicon** — OpenMoji, OpenClipArt, Lucide, Heroicons, Noto Emoji, and 15+ more icon libraries — all local, all offline.
-- 🔓 **Universal AI Compatibility** — Works with web LLMs (ChatGPT/Gemini/Claude), local models (Ollama), or API-based mapping (Gemini API).
-- 📥 **High-Fidelity PDF Export** — Export visual explanations to pixel-perfect, multi-page PDFs with layout preservation.
-- 🧪 **Master Verification Suite** — Consolidated test runner ensures 100% stability across all core rendering and export pipelines.
+TextPrism is a Visual Mapping Engine that transforms dense text into rich, iconographically annotated documents. It pairs a massive 90,000+ asset Visual Lexicon (1.3 GB of offline icons, clipart, and illustrations) with LLM-generated ASCII art to produce stunning visual explanations.
 
 ---
 
-## 🚀 Quick Start
+## Features
 
+- Server-Side PDF Generation - Built on Playwright, generating pixel-perfect multi-page PDFs with layout preservation and robust text-clipping protection.
+- LLM-Driven Artistic Freedom - Prompt any LLM to use the "shape-it ascii art style". It handles structure, boxes, and flows.
+- Granular Sentence-Level Mapping - Every sentence is paired with a vibrant icon via the Vibrancy Ranking Engine.
+- Universal Tag Stripping - Automatically cleans up semantic tags like [keyword] from all output text, titles, and bullets for a professional look.
+- 90k+ Offline Asset Lexicon - OpenMoji, OpenClipArt, Lucide, Heroicons, Noto Emoji, and 15+ more icon libraries - all local, all offline.
+- Universal AI Compatibility - Works with web LLMs (ChatGPT/Gemini/Claude), local models (Ollama), or Gemini API.
+- Comprehensive Verification Suite - Strict test runner ensuring stability across rendering and export pipelines.
+
+---
+
+## Quick Start
+
+### 1. Setup Environment
 ```bash
-# 1. Clone & Setup
-git clone https://github.com/yourusername/TextPrism.git
+# Clone and Setup
+git clone https://github.com/Muhammad-Rabieh/TextPrism.git
 cd TextPrism
 python -m venv venv
 source venv/bin/activate
 
-# 2. Install Dependencies
+# Install Dependencies
 pip install -r requirements.txt
 
-# 3. Launch the Server
+# Setup PDF engine (Required for PDF Export)
+playwright install chromium
+```
+
+### 2. Launch the Server
+```bash
 python app.py
 # Open http://localhost:8000
 ```
 
-### Offline Test (No API Key Needed)
-
+### 3. Running Tests
 ```bash
 # Run the Master Verification Suite
 python tests/run_all_tests.py
-
-# Generate a C++ Templates visual tutorial
-python test_cpp_templates.py
 ```
 
 ---
 
-## 🏗️ Architecture
+## Architecture and Reorganized Structure
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│                  TextPrism Pipeline                            │
-│                                                                │
-│  1. INPUT: User pastes document text OR uses Magic Prompt      │
-│  2. DISTILL: LLM summarizes text into structured sections      │
-│  3. MAP: LLM maps concepts into a Hybrid Format (JSON + Text)  │
-│  4. RENDER: TextPrism parses JSON rules and attaches raw ASCII │
-│     • Vibrancy Ranking Engine scores icon quality              │
-│     • ASCII art normalized for pixel-perfect alignment         │
-│  5. OUTPUT: Visual Reports in PDF, HTML, or Markdown           │
-└────────────────────────────────────────────────────────────────┘
-```
+TextPrism uses a clean, categorized directory structure to maintain scalability:
 
-### Two-Phase Manual Workflow
-
-| Phase | Action | Input | Output |
-|-------|--------|-------|--------|
-| **Phase 1: Distill** | LLM structures raw text into sections with ASCII art | Raw document text | Structured explanation |
-| **Phase 2: Map** | LLM maps structure to visual keywords and raw ASCII art | Phase 1 output | Hybrid format: JSON map + Raw Text ASCII blocks |
+- app.py: FastAPI server and main rendering engine.
+- data/: The 1.3 GB Visual Lexicon (icons, clipart, indexes).
+- docs/: System documentation and implementation plans.
+- examples/: Sample output tutorials and rendered HTML examples.
+- scripts/: Internal utility scripts for lexicon maintenance and optimization.
+- static/: Frontend assets (Vibrant theme CSS, logic JS).
+- templates/: Jinja2 templates for UI and document rendering.
+- tests/: Extensive test suite and verification artifacts.
 
 ---
 
-## 🧠 Core Components
+## Core Components
 
-| File | Purpose | Lines |
-|------|---------|-------|
-| `app.py` | FastAPI backend — routes, AI integration, rendering | 718 |
-| `emoji_engine.py` | Visual Lexicon Engine — Vibrancy Ranking, 4-layer lookup | 407 |
-| `shape_it.py` | SHAPE_IT ASCII art engine — 16+ shape functions | 635 |
-| `utils.py` | Shared utilities — `normalize_ascii()` | 41 |
-| `templates/index.html` | Frontend UI — Magic Prompt workflow | — |
-| `templates/explanation.html` | Output HTML template — section grid, icons, ASCII | — |
-| `static/style.css` | Premium theme — vibrant palette, glassmorphism | — |
-| `static/script.js` | Frontend logic — form handling, render flow | — |
-
-### Test & Scripts
-
-| File | Purpose |
-|------|---------|
-| `test_cpp_templates.py` | Offline C++ Templates tutorial (no API needed) |
-| `test_render.py` | Generic standalone render test |
-| `tests/run_all_tests.py` | Master Test Runner — unified health check |
-| `tests/test_pdf_integrity.py` | PDF Layout Test — multi-page pagination check |
-| `scripts/build_index.py` | Build unified Visual Lexicon index |
-| `scripts/download_clipart.py` | Batch download 20 clipart modules |
-| `scripts/optimize_images.py` | Compress PNG/SVG assets |
-| `scripts/flatten_clipart.py` | Flatten nested clipart directories |
+| Component | File | Purpose | Lines |
+|------|---------|-------|-------|
+| Rendering Engine | app.py | FastAPI backend - routes, AI integration, rendering logic. | ~950 |
+| Lexicon Engine | emoji_engine.py | Visual Lexicon Engine - 4-layer lookup for 90k assets. | ~500 |
+| ASCII Engine | shape_it.py | SHAPE_IT ASCII art engine - 16+ programmatic shape functions. | ~630 |
+| Utility Layer | utils.py | Shared utilities like normalize_ascii(). | ~40 |
 
 ---
 
-## 📦 Visual Lexicon (Offline Assets)
+## Visual Lexicon (90,000+ Assets)
 
-| Asset | Location | Format | Count | Size |
-|-------|----------|--------|-------|------|
-| OpenMoji | `data/icons/openmoji/` | PNG 72×72 | 4,292 | ~30 MB |
-| Heroicons | `data/icons/heroicons/` | SVG 24×24 | 324 | ~2 MB |
-| OpenClipArt (Debian) | `data/clipart/module_1/` | SVG | ~26,000 | ~24 MB |
-| Lucide | `data/clipart/module_2/` | SVG | ~5,300 | ~43 MB |
-| Google Noto Emoji | `data/clipart/module_3/` | SVG | ~3,500 | ~150 MB |
-| UN OCHA | `data/clipart/module_4/` | SVG | ~700 | ~4 MB |
-| + 15 more modules | `data/clipart/module_5-20/` | SVG/PNG | ~50,000+ | ~1 GB |
-| **Total** | | | **~90,000+** | **~1.3 GB** |
+The Lexicon is ranked by Vibrancy, prioritizing multi-colored, highly detailed assets over simple icons.
 
----
-
-## 🤖 AI Strategy (Multi-Tier)
-
-| Tier | Method | Cost | Setup |
-|------|--------|------|-------|
-| **1. Manual AI** (Default) | Copy-paste prompts to ChatGPT/Gemini/Claude | Free | None |
-| **2. Free API** | Gemini 1.5 Flash via API | Free | Add `GEMINI_API_KEY` to `.env` |
-| **3. Local AI** | Ollama (Mistral, Llama3, etc.) | Free | Install Ollama locally |
-| **4. Paid API** | GPT-4, Claude 3.5, etc. | Paid | Add respective API keys |
+| Library | Format | Count | Primary Use |
+|-------|--------|-------|------|
+| OpenMoji | PNG 72x72 | 4,292 | General concepts/emojis |
+| Heroicons | SVG | 324 | Clean UI elements |
+| OpenClipArt | SVG | ~26,000 | Rich illustrations |
+| Lucide/Noto | SVG | ~9,000 | Functional iconography |
+| Misc Modules | SVG/PNG | ~50,000+ | Deep niche keyword coverage |
 
 ---
 
-## 📋 Prerequisites
+## AI Workflow (Multi-Tier)
 
-- Python 3.10+
-- ~2 GB Disk Space (for the full Visual Lexicon)
+1. Manual AI (Default): Use our "Magic Prompt" workflow with any web-based LLM.
+2. Free API: Built-in support for Gemini 1.5 Flash (Tier 2).
+3. Local AI: Full support for Ollama (Mistral/Llama3) for total privacy.
+4. Premium API: Works with GPT-4, Claude 3.5, etc.
 
-## ⚖️ License
+---
 
-Released under the **GPL v3** License.
+## License
+
+Released under the GPL v3 License.
