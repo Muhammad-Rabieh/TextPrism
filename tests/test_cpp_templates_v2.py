@@ -1,8 +1,8 @@
 import json
 import re
 from fastapi.testclient import TestClient
-from app import app
-from emoji_engine import EmojiEngine
+from src.app import app
+from src.emoji_engine import EmojiEngine
 
 client = TestClient(app)
 engine = EmojiEngine()

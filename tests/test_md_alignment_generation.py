@@ -7,11 +7,13 @@ from pathlib import Path
 import re
 import sys
 
-project_root = "/home/muhammad/Desktop/expressive text/TextPrism"
+# Resolve script location and project root dynamically
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-from app import parse_hybrid_to_visual_data, draw_banner, DATA_DIR
+from src.app import parse_hybrid_to_visual_data, draw_banner, DATA_DIR
 
 def run_fixed_md_generator(visual_data):
     """Run the exact layout logic patched in app.export_markdown on a mock dictionary."""

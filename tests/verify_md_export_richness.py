@@ -8,11 +8,13 @@ import re
 
 # Mocking parts of app.py to test the logic in isolation
 import sys
-project_root = "/home/muhammad/Desktop/expressive text/TextPrism"
+# Resolve script location and project root dynamically
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-from app import parse_hybrid_to_visual_data, draw_box, draw_banner, DATA_DIR
+from src.app import parse_hybrid_to_visual_data, draw_box, draw_banner, DATA_DIR
 
 def simulate_export_markdown(raw_text):
     """Simplified version of app.export_markdown for testing."""

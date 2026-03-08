@@ -1,7 +1,7 @@
 import re
 
-def normalize_ascii(text):
-    """Clean up and pad ASCII art blocks to maintain structural integrity."""
+def normalize_ascii(text, pad=True):
+    """Clean up and optionally pad ASCII art blocks to maintain structural integrity."""
     if not text:
         return ""
     
@@ -31,9 +31,12 @@ def normalize_ascii(text):
         if common_indent > 0:
             lines = [l[common_indent:] if len(l) >= common_indent else l.lstrip() for l in lines]
     
-    # Pad all lines to the same length (fixes broken box borders if LLM trimmed spaces)
-    # We pad with a bit of extra space to ensure borders aren't at the very edge
-    max_len = max(len(l) for l in lines)
-    lines = [l.ljust(max_len) for l in lines]
+    if pad:
+        # Pad all lines to the same length (fixes broken box borders if LLM trimmed spaces)
+        max_len = max(len(l) for l in lines)
+        lines = [l.ljust(max_len) for l in lines]
+    else:
+        # Just strip trailing whitespace for charts/code
+        lines = [l.rstrip() for l in lines]
     
     return "\n".join(lines)

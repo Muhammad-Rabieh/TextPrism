@@ -24,8 +24,10 @@ import mimetypes
 # Paths
 # ─────────────────────────────────────────────────────────────
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, 'data')
+# emoji_engine.py is now in src/
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SRC_DIR)
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
 EMOJI_INDEX_PATH = os.path.join(DATA_DIR, 'emoji_index.json')
 HEROICON_INDEX_PATH = os.path.join(DATA_DIR, 'heroicon_index.json')
 CLIPART_INDEX_PATH = os.path.join(DATA_DIR, 'clipart_index.json')

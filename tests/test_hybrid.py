@@ -1,7 +1,7 @@
 import requests
 import re
 from fastapi.testclient import TestClient
-from app import app
+from src.app import app
 import builtins
 
 client = TestClient(app)

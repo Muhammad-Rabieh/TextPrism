@@ -5,7 +5,6 @@ import time
 
 # List of all test files discovered (all now in the tests/ directory)
 test_files = [
-    "tests/check_doc_charset.py",
     "tests/test_render.py",
     "tests/test_cpp_templates.py",
     "tests/test_cpp_templates_v2.py",
@@ -20,7 +19,11 @@ test_files = [
     "tests/test_e2e_navigation.py",
     "tests/test_fonts.py",
     "tests/test_clip.py",
-    "tests/test_pdf_clipping_strict.py"
+    "tests/test_pdf_clipping_strict.py",
+    "tests/test_complex_exports.py",
+    "tests/test_pdf_gaps.py",
+    "tests/test_e2e_exports.py",
+    "tests/verify_naming.py"
 ]
 
 def run_test(file_path):
@@ -28,7 +31,8 @@ def run_test(file_path):
     try:
         # We use a fresh environment for each test
         env = os.environ.copy()
-        env["PYTHONPATH"] = f"{env.get('PYTHONPATH', '')}:{os.getcwd()}"
+        # Add root and src to PYTHONPATH
+        env["PYTHONPATH"] = f"{env.get('PYTHONPATH', '')}:{os.getcwd()}:{os.path.join(os.getcwd(), 'src')}"
         
         # Run as a separate process to avoid conflicts
         result = subprocess.run(

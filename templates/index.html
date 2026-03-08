@@ -13,6 +13,20 @@
         rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css?v=1.3">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof mermaid !== 'undefined') {
+                mermaid.initialize({ startOnLoad: true });
+            }
+            // Dynamic refresh listener
+            document.addEventListener('mermaid-refresh', () => {
+                if (typeof mermaid !== 'undefined') {
+                    mermaid.run();
+                }
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -50,7 +64,22 @@
                     <textarea id="text-input" name="text" class="glass-textarea"
                         placeholder="Paste your document text here...&#10;&#10;TextPrism empowers your LLM using:&#10;• Structural ASCII Commands (Banners, Boxes, Flows)&#10;• Mapping to 90,000+ local Clipart & Illustrations&#10;• 4,200+ OpenMoji & 700+ Heroicons&#10;&#10;The LLM creates the 'Expressive Text', and we provide the graphics and the map."
                         rows="12"></textarea>
-                    <div class="form-actions">
+                    <div class="form-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div class="chart-format-selector" id="chart-format-selector">
+                            <div class="format-indicator" id="format-indicator"></div>
+                            <div class="format-option active" data-value="ascii" title="ASCII Art (Default)">
+                                <img src="/icons/heroicons/command-line.svg" alt="ASCII" class="format-icon">
+                                <span>ASCII</span>
+                            </div>
+                            <div class="format-option" data-value="mermaid" title="Mermaid.js Diagram">
+                                <img src="/icons/heroicons/share.svg" alt="Mermaid" class="format-icon">
+                                <span>Mermaid</span>
+                            </div>
+                            <div class="format-option" data-value="svg" title="Scalable Vector Graphics">
+                                <img src="/icons/heroicons/paint-brush.svg" alt="SVG" class="format-icon">
+                                <span>SVG</span>
+                            </div>
+                        </div>
                         <button type="button" id="magic-prompt-btn" class="btn btn-primary">
                             <img src="/icons/heroicons/sparkles.svg" alt="" class="btn-icon">
                             Explain &amp; Map with AI

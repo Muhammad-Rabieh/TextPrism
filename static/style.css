@@ -249,6 +249,139 @@ h3 {
     letter-spacing: 0.05em;
 }
 
+/* ── Chart Format Selector (Enhanced) ────────────────────── */
+.chart-format-selector {
+    display: flex;
+    position: relative;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 2px;
+    gap: 0;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.format-indicator {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: calc(100% - 4px);
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), inset 0 0 0 1px var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+}
+
+.format-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 1;
+    min-width: 100px;
+}
+
+.format-option:hover {
+    color: var(--text-primary);
+}
+
+.format-option.active {
+    color: var(--accent-primary);
+}
+
+/* Color coding for active states */
+.format-option.active[data-value="ascii"] {
+    color: var(--accent-secondary);
+}
+
+.format-option.active[data-value="mermaid"] {
+    color: #8b5cf6;
+}
+
+/* Purple */
+.format-option.active[data-value="svg"] {
+    color: #f59e0b;
+}
+
+/* Amber */
+
+.format-icon {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) opacity(0.4);
+    transition: all 0.3s ease;
+}
+
+.format-option:hover .format-icon {
+    filter: brightness(0) opacity(0.7);
+    transform: translateY(-1px);
+}
+
+.format-option.active .format-icon {
+    filter: brightness(0) opacity(1);
+    transform: scale(1.1);
+}
+
+/* Colorize icons when active */
+.format-option.active[data-value="ascii"] .format-icon {
+    filter: none;
+}
+
+.format-option.active[data-value="mermaid"] .format-icon {
+    filter: none;
+}
+
+.format-option.active[data-value="svg"] .format-icon {
+    filter: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    .chart-format-selector {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .format-indicator {
+        background: #2d333b;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .format-icon {
+        filter: invert(1) brightness(0.7) opacity(0.5);
+    }
+
+    .format-option.active .format-icon {
+        filter: invert(0) brightness(1) opacity(1);
+        /* Allow colored SVGs to shine if they have colors, but Heroicons are usually plain. */
+    }
+
+    /* Specific dark mode active icon filters to make them pop */
+    .format-option.active[data-value="ascii"] .format-icon {
+        filter: invert(34%) sepia(85%) saturate(1465%) hue-rotate(143deg) brightness(96%) contrast(101%);
+    }
+
+    /* accent-secondaryish */
+    .format-option.active[data-value="mermaid"] .format-icon {
+        filter: invert(47%) sepia(69%) saturate(2500%) hue-rotate(230deg) brightness(101%) contrast(101%);
+    }
+
+    /* purple */
+    .format-option.active[data-value="svg"] .format-icon {
+        filter: invert(72%) sepia(50%) saturate(3000%) hue-rotate(20deg) brightness(101%) contrast(101%);
+    }
+
+    /* amber */
+}
+
 .hero-icon-xs {
     width: 14px;
     height: 14px;

@@ -1,7 +1,7 @@
 import json
 import re
-from app import engine, normalize_ascii
-from shape_it import draw_box, draw_callout, draw_banner, draw_separator
+from src.app import engine, normalize_ascii
+from src.shape_it import draw_box, draw_callout, draw_banner, draw_separator
 
 def test_render_magic_logic(raw_content, raw_text=""):
     # 2. Extract ASCII Blocks

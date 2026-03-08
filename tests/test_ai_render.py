@@ -1,7 +1,12 @@
 import json
 import pytest
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/.."))
+
 from fastapi.testclient import TestClient
-from app import app
+from src.app import app
 
 client = TestClient(app)
 
@@ -77,12 +82,12 @@ def test_render_magic_endpoint():
         "sections": [
             {
                 "title": "The Wrapper Concept",
-                "content": "[gift] A decorator is a function that takes another function. [layer] It extends behavior while wrapping it.",
+                "content": "[gift] [shape: box] A decorator is a function that takes another function. [layer] It extends behavior while wrapping it.",
                 "bullets": ["Wraps existing functions", "Executed at definition time"]
             },
             {
                 "title": "Metaprogramming Power",
-                "content": "[magic] They allow developers to write 'code that writes code'. [brain] Automation of repetitive tasks.",
+                "content": "[magic] [shape: box] They allow developers to write 'code that writes code'. [brain] Automation of repetitive tasks.",
                 "bullets": ["Logging automation", "Authentication guards"]
             }
         ]
@@ -94,7 +99,7 @@ def test_render_magic_endpoint():
         "sections": [
             {
                 "title": "Ownership Rules",
-                "content": "[master] Each value has one owner. [safety] When the owner goes out of scope, the value is dropped.",
+                "content": "[master] [shape: box] Each value has one owner. [safety] When the owner goes out of scope, the value is dropped.",
                 "bullets": ["One owner at a time", "Scope-based cleanup"]
             },
             {

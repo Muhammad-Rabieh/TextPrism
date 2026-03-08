@@ -8,9 +8,9 @@ from fastapi.templating import Jinja2Templates
 # Add current dir to path
 sys.path.append(os.getcwd())
 
-from emoji_engine import EmojiEngine
-from utils import normalize_ascii
-from shape_it import draw_banner
+from src.emoji_engine import EmojiEngine
+from src.utils import normalize_ascii
+from src.shape_it import draw_banner
 
 class MockRequest:
     def __init__(self):

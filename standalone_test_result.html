@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Explanation — VIBRANT CORE</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+        // Enable manual trigger for dynamic content (v10+)
+        document.addEventListener('mermaid-refresh', () => {
+            if (typeof mermaid !== 'undefined') {
+                mermaid.run();
+                console.log('Mermaid: manual run triggered.');
+            }
+        });
+    </script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
@@ -53,8 +65,17 @@
             }
 
             .explanation-wrapper {
-                max-width: 100%;
-                margin: 0;
+                max-width: 100% !important;
+                margin: 0 !important;
+                /* Disable animations for print to prevent layout shifts */
+                animation: none !important;
+                transform: none !important;
+            }
+
+            * {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
             }
         }
 
@@ -64,6 +85,9 @@
             color: var(--text);
             padding: 32px;
             line-height: 1.7;
+            /* Relax line-splitting rules to prevent large gaps */
+            orphans: 1;
+            widows: 1;
         }
 
         .explanation-wrapper {
@@ -130,8 +154,9 @@
         .section-block {
             margin-bottom: 28px;
             animation: fadeIn 0.4s ease;
-            break-inside: avoid;
-            page-break-inside: avoid;
+            break-inside: auto;
+            /* Allow sections to span multiple pages */
+            page-break-inside: auto;
         }
 
         @keyframes fadeIn {
@@ -158,6 +183,8 @@
             overflow-x: auto;
             margin-bottom: 12px;
             border: 1px solid var(--border);
+            break-after: avoid;
+            page-break-after: avoid;
         }
 
         .section-header {
@@ -165,6 +192,9 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 12px;
+            break-after: avoid;
+            /* Don't leave header alone at page bottom */
+            page-break-after: avoid;
         }
 
         .section-header h2,
@@ -189,8 +219,9 @@
             font-size: 0.92rem;
             padding: 4px 0;
             margin-bottom: 8px;
-            break-inside: avoid;
-            page-break-inside: avoid;
+            break-inside: auto;
+            /* Allow text to span pages naturally */
+            page-break-inside: auto;
         }
 
         .sentence-grid {
@@ -385,6 +416,7 @@
     <div class="explanation-wrapper">
         <!-- Title Banner -->
         <div class="title-section">
+            
             <h1
                 style="margin-top: 12px; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text);">
                 VIBRANT CORE</h1>
@@ -435,17 +467,17 @@
                     alt="power">
                 
                 
-                
                 <h2>Structural Blueprint</h2>
-                
             </div>
             
 
+            
             
             <pre class="ascii-box">┌────────────────┐
 │   [ CORE ]     │
 │   VIBRANT art  │
 └────────────────┘</pre>
+            
             
 
             
@@ -501,12 +533,11 @@
                     alt="safety">
                 
                 
-                
                 <h2>Type Safety Shield</h2>
-                
             </div>
             
 
+            
             
             <pre class="ascii-box">  /----------\  
  /  [SAFE]    \ 
@@ -514,6 +545,7 @@
 |    [____]    |
 |    |____|    |
 |______________|</pre>
+            
             
 
             

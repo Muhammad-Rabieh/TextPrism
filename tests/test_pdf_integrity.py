@@ -113,7 +113,7 @@ def test_pdf_no_split():
 
     # Start server
     server_process = subprocess.Popen(
-        ["python3", "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", str(PORT)],
+        ["python3", "-m", "uvicorn", "src.src.app:app", "--host", "127.0.0.1", "--port", str(PORT)],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )

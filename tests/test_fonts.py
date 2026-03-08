@@ -1,4 +1,4 @@
-from shape_it import draw_banner
+from src.shape_it import draw_banner
 
 fonts_to_test = ['standard', 'block', 'banner3', 'big', 'doom', 'cybermedium', 'rectangles', 'speed', 'starwars', 'thick']
 text = "C++ TEMPLATES"

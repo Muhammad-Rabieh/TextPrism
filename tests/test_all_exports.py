@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import json
 import subprocess
@@ -7,12 +8,14 @@ from playwright.sync_api import sync_playwright
 def test_all_exports():
     print("\n🚀 Starting Comprehensive Export Test Suite...")
     
+    env = os.environ.copy()
+    env["PYTHONPATH"] = f"{env.get('PYTHONPATH', '')}:{os.getcwd()}:{os.path.join(os.getcwd(), 'src')}"
+    
     server_process = subprocess.Popen(
-        ["python3", "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8001"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
+        [sys.executable, "-m", "uvicorn", "src.app:app", "--host", "127.0.0.1", "--port", "8001"],
+        env=env
     )
-    time.sleep(5)
+    time.sleep(7) # Increased wait time
     
     try:
         with sync_playwright() as p:

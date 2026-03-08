@@ -36,6 +36,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* AI Tier Selection removed */
 
+    // Chart format selector logic
+    const formatOptions = document.querySelectorAll('.format-option');
+    const formatIndicator = document.getElementById('format-indicator');
+
+    function updateFormatIndicator() {
+        if (!formatIndicator) return;
+        const activeOpt = document.querySelector('.format-option.active');
+        if (activeOpt) {
+            formatIndicator.style.width = activeOpt.offsetWidth + 'px';
+            formatIndicator.style.left = activeOpt.offsetLeft + 'px';
+        }
+    }
+
+    formatOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+            formatOptions.forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            updateFormatIndicator();
+        });
+    });
+
+    // Initial position
+    updateFormatIndicator();
+    window.addEventListener('resize', updateFormatIndicator);
+
     // ── Magic Prompt Workflow (2-Phase) ──
     if (magicPromptBtn) {
         magicPromptBtn.addEventListener('click', async () => {
@@ -47,10 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             magicPromptBtn.disabled = true;
             try {
+                const chartFormatActive = document.querySelector('.format-option.active');
+                const chartFormat = chartFormatActive ? chartFormatActive.dataset.value : 'ascii';
                 const response = await fetch('/magic-prompt/unified', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text })
+                    body: JSON.stringify({ text: text, chart_format: chartFormat })
                 });
                 const data = await response.json();
 
@@ -261,6 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 outputContent.innerHTML = html;
             }
 
+            // Trigger Mermaid if present
+            document.dispatchEvent(new CustomEvent('mermaid-refresh'));
+
             lastGeneratedHTML = html;
             lastVisualSourceText = json; // Preserve for high-quality export
             downloadBtn.disabled = false;
@@ -350,7 +380,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .slice(0, 3);
 
         const baseName = words.length > 0 ? words.join('_') : 'TextPrism_Export';
-        return `${baseName}.${extension}`;
+
+        // Suffix with active chart type
+        const chartFormatActive = document.querySelector('.format-option.active');
+        const chartFormat = chartFormatActive ? chartFormatActive.dataset.value.toUpperCase() : 'ASCII';
+
+        return `${baseName}_${chartFormat}.${extension}`;
     }
 
     // ── Helper: Download Data ──

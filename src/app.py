@@ -12,6 +12,7 @@ Part of TextPrism.
 """
 
 import os
+import sys
 import json
 import re
 import traceback
@@ -27,6 +28,11 @@ import shutil
 import zipfile
 from pathlib import Path
 
+# Add src to sys.path to allow sibling imports after reorganization
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
+
 from shape_it import (
     draw_box, draw_titled_box, draw_pyramid, draw_diamond,
     draw_flowchart, draw_vertical_flow, draw_separator,
@@ -41,8 +47,10 @@ from utils import normalize_ascii
 # ─────────────────────────────────────────────────────────────
 
 load_dotenv()
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, 'data')
+# app.py is now in src/
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SRC_DIR)
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
 # GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") # Removed
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
@@ -68,13 +76,13 @@ app = FastAPI(
 )
 
 # Mount static asset directories
-app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
-app.mount("/icons/openmoji", StaticFiles(directory=os.path.join(BASE_DIR, "data", "icons", "openmoji")), name="openmoji")
-app.mount("/icons/heroicons", StaticFiles(directory=os.path.join(BASE_DIR, "data", "icons", "heroicons")), name="heroicons")
-app.mount("/clipart", StaticFiles(directory=os.path.join(BASE_DIR, "data", "clipart")), name="clipart")
-app.mount("/output", StaticFiles(directory=os.path.join(BASE_DIR, "output")), name="output")
+app.mount("/static", StaticFiles(directory=os.path.join(PROJECT_ROOT, "static")), name="static")
+app.mount("/icons/openmoji", StaticFiles(directory=os.path.join(DATA_DIR, "icons", "openmoji")), name="openmoji")
+app.mount("/icons/heroicons", StaticFiles(directory=os.path.join(DATA_DIR, "icons", "heroicons")), name="heroicons")
+app.mount("/clipart", StaticFiles(directory=os.path.join(DATA_DIR, "clipart")), name="clipart")
+app.mount("/output", StaticFiles(directory=os.path.join(PROJECT_ROOT, "output")), name="output")
 
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+templates = Jinja2Templates(directory=os.path.join(PROJECT_ROOT, "templates"))
 
 # Initialize the Visual Lexicon Engine
 engine = EmojiEngine()
@@ -186,12 +194,46 @@ async def get_magic_prompt_unified(request: Request):
     """Unified Phase: Generate a prompt to both structure text and map icons in one go."""
     data = await request.json()
     text = data.get("text", "")
+    chart_format = data.get("chart_format", "ascii")
+    
+    chart_rules = ""
+    chart_marker = "CHART"
+    
+    if chart_format == "mermaid":
+        chart_rules = r"""
+RULES FOR THE CHARTS:
+8. Use your creative judgment to create a highly detailed **Mermaid.js** diagram for each section.
+9. **VARIETY: Choose the most suitable Mermaid type (flowchart, sequenceDiagram, pie, classDiagram, stateDiagram, gantt, erDiagram, journey, gitGraph, mindmap, timeline, etc.) depend on the content.**
+10. **CRITICAL: DO NOT put the Mermaid code inside the JSON.**
+11. Instead, AFTER the JSON block, output each section's Mermaid code wrapped in ```mermaid ... ``` code fences.
+12. Separate them by `=== CHART SECTION X ===` markers.
+"""
+    elif chart_format == "svg":
+        chart_rules = r"""
+RULES FOR THE CHARTS:
+8. Use your creative judgment to draw a highly detailed **SVG** diagram for each section.
+9. **VARIETY: You are free to choose any SVG chart type or infographic style that best illustrates the concepts.**
+10. **CRITICAL: DO NOT put the SVG code inside the JSON.**
+11. Instead, AFTER the JSON block, output each section's SVG code wrapped in ```xml ... ``` or ```svg ... ``` code fences.
+12. Separate them by `=== CHART SECTION X ===` markers.
+"""
+    else:
+        chart_marker = "ASCII"
+        chart_rules = r"""
+RULES FOR THE ASCII ART: 
+8. Use your creative judgment to 'draw' a layout for each section using the shape-it ASCII style. 
+9. **CRITICAL: DO NOT put the ASCII art inside the JSON.** 
+10. Instead, AFTER the JSON block, output each section's ASCII art wrapped in ```text ... ``` code fences. 
+11. Separate them by `=== ASCII SECTION X ===` markers.
+"""
+
     prompt = fr"""
 I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact **Visual Explanation** in a **Single Phase**. 
 **CRITICAL: Your goal is an in-depth EXPLANATION, not a summary. Provide a detailed narrative for each part so the reader truly learns the material.**
 
-I want you to output a **Hybrid Format**: a single JSON object followed by raw text ASCII blocks. 
+I want you to output a **Hybrid Format**: a single JSON object followed by raw coded chart blocks. 
 Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence using an inline tag. 
+
 
 RULES FOR THE EXPLANATION: 
 1. Organize the material into 3-5 key sections. 
@@ -201,12 +243,7 @@ RULES FOR THE EXPLANATION:
 5. **GENERAL KEYWORDS: Use high-level English nouns like [rocket], [shield], [engine]. NO implementation details like 'doodle_'.** 
 6. **SECTION PARITY: EVERY section title MUST have its own [keyword] tag at the start.** 
 7. Separate section details into bullet points. 
-
-RULES FOR THE ASCII ART: 
-7. Use your creative judgment to 'draw' a layout for each section using the shape-it ASCII style. 
-8. **CRITICAL: DO NOT put the ASCII art inside the JSON.** 
-9. Instead, AFTER the JSON block, output each section's ASCII art wrapped in ```text ... ``` code fences. 
-10. Separate them by `=== ASCII SECTION X ===` markers. 
+{chart_rules}
 
 REQUIRED JSON STRUCTURE:
 ```json
@@ -257,11 +294,12 @@ RULES FOR JSON:
 2. For EVERY sentence, insert exactly ONE [keyword] tag at the start.
 3. Keep the JSON structure valid and began with ```json ... ``` markers.
 
-RULES FOR ASCII ART:
-4. For each section, provided a custom high-quality ASCII art block using the shape-it style.
-5. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
-6. Instead, AFTER the JSON block, output each section's ASCII art. You MUST wrap EVERY ASCII block in ```text ... ``` code fences.
-7. Separate them clearly: `=== ASCII SECTION X ===`.
+RULES FOR THE CHARTS:
+4. For each section, provide a custom chart/diagram based on the requested format.
+5. **VARIETY: If using Mermaid, choose the best type (Sequence, Pie, Gantt, etc.). If SVG, choose the best infographic/chart style.**
+6. **CRITICAL: DO NOT put the chart code inside the JSON.**
+7. Instead, AFTER the JSON block, output each section's chart logic. You MUST wrap EVERY block in code fences (`mermaid`, `xml`, or `text`).
+8. Separate them clearly: `=== CHART SECTION X ===`.
 
 HYBRID STRUCTURE TO FOLLOW:
 
@@ -289,9 +327,9 @@ HYBRID STRUCTURE TO FOLLOW:
 }}
 ```
 
-=== ASCII SECTION 1 ===
+=== CHART SECTION 1 ===
 ```text
-THE ASCII ART DRAWING FOR THIS SECTION
+THE DRAWING/CHART FOR THIS SECTION
 ```
 
 TEXT TO MAP:
@@ -384,9 +422,57 @@ async def get_lexicon():
     """Return Visual Lexicon stats."""
     return engine.stats()
 
+def detect_chart_type(content):
+    """Auto-detect if a text block is SVG, Mermaid.js, or text/ASCII art."""
+    if not content:
+        return 'ascii'
+    
+    # Strip everything for detection purposes
+    c = content.strip()
+    
+    # If it starts with markdown code fence, look inside it
+    # This handles LLMs that wrap Mermaid in fences inside our CHART SECTION tags
+    if c.startswith('```'):
+        # Remove the first line (the fence) and the last line (the fence)
+        lines = c.splitlines()
+        if len(lines) > 2:
+            c = "\n".join(lines[1:-1]).strip()
+        else:
+            c = ""
+
+    if not c:
+        return 'ascii'
+
+    if c.startswith('<svg') or c.startswith('<?xml'):
+        return 'svg'
+    
+    # Improved Mermaid detection: skip leading empty lines and comments
+    lines = c.splitlines()
+    first_meaningful_line = ""
+    for line in lines:
+        stripped = line.strip()
+        if stripped and not stripped.startswith('%%'):
+            first_meaningful_line = stripped.lower()
+            break
+            
+    # Expanded keyword list for modern Mermaid
+    mermaid_kws = {
+        'graph', 'flowchart', 'sequencediagram', 'pie', 'classdiagram', 
+        'statediagram', 'statediagram-v2', 'gantt', 'erdiagram', 'journey', 
+        'gitgraph', 'mindmap', 'timeline', 'quadrantchart', 'sankey', 'xychart',
+        'mermaid' # Added as fallback
+    }
+    
+    first_word = first_meaningful_line.split()[0].replace(':', '') if first_meaningful_line.split() else ""
+    if first_word in mermaid_kws:
+        return 'mermaid'
+        
+    return 'ascii'
+
+
 def parse_hybrid_to_visual_data(raw_text):
     """
-    Parses TextPrism Hybrid format (JSON + ASCII + Tags) into a structured dictionary
+    Parses TextPrism Hybrid format (JSON + ASCII/Charts + Tags) into a structured dictionary
     suitable for both HTML and Markdown rendering.
     """
     # 1. Extract JSON block using brace balancing
@@ -443,9 +529,9 @@ def parse_hybrid_to_visual_data(raw_text):
             snippet = json_str[:150] + "..." if len(json_str) > 150 else json_str
             raise ValueError(f"Invalid JSON format. Check for unescaped characters or trailing commas. Snippet: {snippet}")
     
-    # Extract ASCII Blocks
+    # Extract ASCII/Chart Blocks
     ascii_blocks = {}
-    pattern = re.compile(r'(?:=+|-+|#+|\*\*)\s*ASCII (?:SECTION|FOR SENTENCE|FOR CONCEPT)\s+([\d\.]+)\s*(?:=+|-+|#+|\*\*)', flags=re.IGNORECASE)
+    pattern = re.compile(r'(?:=+|-+|#+|\*\*)\s*(?:ASCII|CHART)\s+(?:SECTION|FOR SENTENCE|FOR CONCEPT)\s+([\d\.]+)\s*(?:=+|-+|#+|\*\*)', flags=re.IGNORECASE)
     parts = pattern.split(raw_text)
     for i in range(1, len(parts) - 1, 2):
         try:
@@ -505,7 +591,17 @@ def parse_hybrid_to_visual_data(raw_text):
         reconstructed_content = " ".join([s.get('text', '') for s in processed_sentences]) or raw_content
         sec_key = str(idx + 1)
         raw_ai_ascii = ascii_blocks.get(sec_key, section.get('raw_ascii', ''))
-        ascii_box = normalize_ascii(raw_ai_ascii) if raw_ai_ascii else ""
+        # Strip block completely before detection to avoid fence interference
+        stripped_raw = raw_ai_ascii.strip() if raw_ai_ascii else ""
+        chart_type = detect_chart_type(stripped_raw)
+        # Skip normalize_ascii entirely for charts to prevent any byte-level corruption/padding
+        if chart_type in ('mermaid', 'svg'):
+            # Just do basic fence stripping if present, then a clean strip
+            clean_chart = re.sub(r'^```[\w]*\s*\n', '', stripped_raw)
+            clean_chart = re.sub(r'\n```\s*$', '', clean_chart)
+            ascii_box = clean_chart.strip()
+        else:
+            ascii_box = normalize_ascii(raw_ai_ascii, pad=True) if raw_ai_ascii else ""
 
         if not sec_title_kws and sec_title:
             sec_title_kws = extract_keywords(sec_title, 2)
@@ -521,6 +617,7 @@ def parse_hybrid_to_visual_data(raw_text):
         visual_sections.append({
             'title': sec_title, 'content': reconstructed_content, 'sentences': processed_sentences,
             'bullets': clean_bullets, 'type': 'h2', 'ascii_separator': '', 'ascii_box': ascii_box,
+            'chart_type': chart_type,
             'ascii_flow': '', 'ascii_callout': '',
             'title_icons': engine.lookup_many(sec_title_kws, embed=True) if sec_title_kws else engine.lookup_many(all_sec_keywords[:2], embed=True),
             'bullet_icons': bullet_icons_list
@@ -547,9 +644,11 @@ def parse_hybrid_to_visual_data(raw_text):
     if exp_shapes:
         shape = exp_shapes[0]
         try:
-            if shape == 'banner': explanation_ascii = normalize_ascii(draw_banner(explanation_text[:30]))
-            elif shape == 'box': explanation_ascii = normalize_ascii(draw_box(explanation_text[:100]))
-            elif shape == 'callout': explanation_ascii = normalize_ascii(draw_callout(explanation_text[:80]))
+            if shape != 'none' and explanation_text:
+                # Shapes like box/banner are always ASCII
+                if shape == 'banner': explanation_ascii = normalize_ascii(draw_banner(explanation_text[:30]), pad=True)
+                elif shape == 'box': explanation_ascii = normalize_ascii(draw_box(explanation_text[:100]), pad=True)
+                elif shape == 'callout': explanation_ascii = normalize_ascii(draw_callout(explanation_text[:80]), pad=True)
         except: pass
         
     return {
@@ -668,7 +767,21 @@ async def export_markdown(background_tasks: BackgroundTasks, text: str = Form(..
 
             # 3c. ascii_box AFTER header (main diagram)
             if visual.get('ascii_box'):
-                md.append("```\n" + visual['ascii_box'] + "\n```")
+                md.append("") # Blank line before code block
+                chart_type = visual.get('chart_type', 'ascii')
+                if chart_type == 'mermaid':
+                    md.append("```mermaid")
+                    md.append(visual['ascii_box'].strip())
+                    md.append("```")
+                elif chart_type == 'svg':
+                    md.append("```xml")
+                    md.append(visual['ascii_box'].strip())
+                    md.append("```")
+                else:
+                    md.append("```")
+                    md.append(visual['ascii_box'])
+                    md.append("```")
+                md.append("") # Blank line after code block
 
             # 3d. Sentences with granular icon mapping
             if visual.get('sentences'):

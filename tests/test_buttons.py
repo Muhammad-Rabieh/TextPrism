@@ -8,7 +8,7 @@ def test_buttons_functionality():
     
     # 1. Start Server
     server_process = subprocess.Popen(
-        ["python3", "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8006"],
+        ["python3", "-m", "uvicorn", "src.src.app:app", "--host", "127.0.0.1", "--port", "8006"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )

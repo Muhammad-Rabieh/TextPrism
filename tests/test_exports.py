@@ -14,12 +14,10 @@ def test_markdown_export():
     try:
         response = requests.post(url, data={"text": payload})
         assert response.status_code == 200, f"Markdown export failed with status {response.status_code}"
-        data = response.json()
-        assert "markdown" in data, "No markdown found in response"
         
-        output_file = "test_output.md"
-        with open(output_file, "w") as f:
-            f.write(data["markdown"])
+        output_file = "test_output.zip"
+        with open(output_file, "wb") as f:
+            f.write(response.content)
         
         assert os.path.exists(output_file), f"{output_file} was not created"
         assert os.path.getsize(output_file) > 10, f"{output_file} is too small"
@@ -102,7 +100,7 @@ if __name__ == "__main__":
     print("🚀 Starting export test suite (Home Page focus)...")
     
     server_process = subprocess.Popen(
-        ["python3", "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8000"],
+        ["python3", "-m", "uvicorn", "src.src.app:app", "--host", "127.0.0.1", "--port", "8000"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
@@ -119,5 +117,5 @@ if __name__ == "__main__":
         print("Cleaning up...")
         server_process.terminate()
         server_process.wait()
-        if os.path.exists("test_output.md"): os.remove("test_output.md")
+        if os.path.exists("test_output.zip"): os.remove("test_output.zip")
         if os.path.exists("home_test_output.pdf"): os.remove("home_test_output.pdf")

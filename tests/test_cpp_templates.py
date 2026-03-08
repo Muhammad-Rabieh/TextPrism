@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 sys.path.append(os.getcwd())
 
 # Import our FastAPI app
-from app import app
+from src.app import app
 
 client = TestClient(app)
 

@@ -1,4 +1,4 @@
-from emoji_engine import EmojiEngine
+from src.emoji_engine import EmojiEngine
 import os
 
 def debug():

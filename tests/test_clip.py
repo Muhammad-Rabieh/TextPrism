@@ -30,7 +30,13 @@ html = """
 </html>
 """
 
-r = requests.post("http://127.0.0.1:8000/export-pdf", json={"html": html})
-with open("test_clip.pdf", "wb") as f:
-    f.write(r.content)
-print("Saved PDF of size:", len(r.content))
+def test_clip():
+    try:
+        r = requests.post("http://127.0.0.1:8000/export-pdf", json={"html": html})
+        if r.status_code == 200:
+            with open("test_clip.pdf", "wb") as f:
+                f.write(r.content)
+            print("Saved PDF of size:", len(r.content))
+    except requests.exceptions.ConnectionError:
+        print("Server not running. Skipping.")
+
