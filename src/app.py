@@ -228,21 +228,21 @@ RULES FOR THE ASCII ART:
 """
 
     prompt = fr"""
-I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact **Visual Explanation** in a **Single Phase**. 
+I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact **Visual Explanation** in a **Single Phase**.
 **CRITICAL: Your goal is an in-depth EXPLANATION, not a summary. Provide a detailed narrative for each part so the reader truly learns the material.**
 
-I want you to output a **Hybrid Format**: a single JSON object followed by raw coded chart blocks. 
-Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence using an inline tag. 
+I want you to output a **Hybrid Format**: a single JSON object followed by raw coded chart blocks.
+Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence using an inline tag.
 
 
-RULES FOR THE EXPLANATION: 
-1. Organize the material into 3-5 key sections. 
-2. For each section, provide a short title. 
-3. For the content of each section, write 3-5 sentences of **in-depth explanation**. Ensure you cover nuances and details.
-4. **STRICT VISUAL PARITY: At the start of EVERY sentence, insert exactly ONE general keyword in square brackets [keyword].** 
-5. **GENERAL KEYWORDS: Use high-level English nouns like [rocket], [shield], [engine]. NO implementation details like 'doodle_'.** 
-6. **SECTION PARITY: EVERY section title MUST have its own [keyword] tag at the start.** 
-7. Separate section details into bullet points. 
+RULES FOR THE EXPLANATION:
+1. Identify every distinct **idea or concept** present in the text. Create one section per idea — there is NO minimum or maximum number of sections; let the content decide. A short text may yield 2 ideas; a rich article may yield 10 or more.
+2. For each idea, provide a short, descriptive title that names the idea.
+3. For the content of each idea, write 3-6 sentences of **in-depth explanation**. Ensure you cover nuances, causes, and effects.
+4. **STRICT VISUAL PARITY: At the start of EVERY sentence, insert exactly ONE general keyword in square brackets [keyword].**
+5. **GENERAL KEYWORDS: Use high-level English nouns like [rocket], [shield], [engine]. NO implementation details like 'doodle_'.**
+6. **IDEA PARITY: EVERY idea title MUST have its own [keyword] tag at the start.**
+7. Separate supporting details into bullet points.
 {chart_rules}
 
 REQUIRED JSON STRUCTURE:
@@ -253,9 +253,9 @@ REQUIRED JSON STRUCTURE:
   "explanation_keywords": ["keyword1", "keyword2"],
   "sections": [
     {{
-      "title": "[keyword] Section Title",
+      "title": "[keyword] Idea Title",
       "content": "[keyword] Detailed sentence providing explanation. [keyword] Further detail expanding on the point.",
-      "bullets": ["Technical detail 1", "Technical detail 2"]
+      "bullets": ["Supporting detail 1", "Supporting detail 2"]
     }}
   ]
 }}
@@ -284,22 +284,45 @@ async def magic_prompt_fallback(request: Request):
 async def get_magic_prompt_map(request: Request):
     """Phase 2: Generate a prompt to map distilled text to our Visual Lexicon JSON."""
     data = await request.json()
-    distilled_text = data.get("distilled_text", "")
-    prompt = fr"""
-I want you to map the document structure below into a Hybrid Format: a single JSON object followed by raw text ASCII blocks.
-**CRITICAL: Your goal is an in-depth EXPLANATION, not a summary. Expand on the ideas to ensure clarity.**
-
-RULES FOR JSON:
-1. Provide a comprehensive explanation for each section.
-2. For EVERY sentence, insert exactly ONE [keyword] tag at the start.
-3. Keep the JSON structure valid and began with ```json ... ``` markers.
-
-RULES FOR THE CHARTS:
-4. For each section, provide a custom chart/diagram based on the requested format.
-5. **VARIETY: If using Mermaid, choose the best type (Sequence, Pie, Gantt, etc.). If SVG, choose the best infographic/chart style.**
+    distilled_text = data.get("text", "")
+    chart_format = data.get("chart_format", "ascii")
+    
+    chart_rules = ""
+    if chart_format == "mermaid":
+        chart_rules = r"""
+GRAPH RULES:
+4. For each idea, provide a custom Mermaid.js diagram.
+5. **VARIETY: Choose the best Mermaid type (Sequence, Pie, Gantt, Mindmap, etc.) for each idea.**
 6. **CRITICAL: DO NOT put the chart code inside the JSON.**
-7. Instead, AFTER the JSON block, output each section's chart logic. You MUST wrap EVERY block in code fences (`mermaid`, `xml`, or `text`).
-8. Separate them clearly: `=== CHART SECTION X ===`.
+7. Instead, AFTER the JSON block, output each idea's chart. You MUST wrap EVERY block in code fences (`mermaid`).
+8. Separate them clearly: `=== IDEA SECTION X ===`.
+"""
+    elif chart_format == "svg":
+        chart_rules = r"""
+GRAPH RULES:
+4. For each idea, provide a custom SVG diagram.
+5. **VARIETY: Choose any SVG chart type or infographic style that best illustrates this specific idea.**
+6. **CRITICAL: DO NOT put the SVG code inside the JSON.**
+7. Instead, AFTER the JSON block, output each idea's SVG code wrapped in ```xml ... ``` code fences.
+8. Separate them clearly: `=== IDEA SECTION X ===`.
+"""
+    else:
+        chart_rules = r"""
+GRAPH RULES:
+4. For each idea, provide a custom ASCII art drawing in the shape-it style.
+5. **CRITICAL: DO NOT put the ASCII art inside the JSON.**
+6. Instead, AFTER the JSON block, output each idea's ASCII art wrapped in ```text ... ``` code fences.
+7. Separate them clearly: `=== IDEA SECTION X ===`.
+"""
+
+    prompt = f"""
+You are a Visual Document Architect. Map the following text to our Visual Lexicon JSON format.
+
+RULES:
+1. Identify every distinct **idea or concept** present in the text. Create one section per idea — there is NO minimum or maximum; let the content decide.
+2. For each idea, provide a short, descriptive title that names the idea.
+3. For each idea, write 3-5 explanation sentences providing full depth.
+{chart_rules}
 
 HYBRID STRUCTURE TO FOLLOW:
 
@@ -310,7 +333,7 @@ HYBRID STRUCTURE TO FOLLOW:
   "explanation_keywords": ["vibrant1", "vibrant2"],
   "sections": [
     {{
-      "title": "[keyword] Section Title",
+      "title": "[keyword] Idea Title",
       "sentences": [
         {{
           "text": "The primary insight explained thoroughly.",
@@ -321,15 +344,15 @@ HYBRID STRUCTURE TO FOLLOW:
           "keyword": "depth"
         }}
       ],
-      "bullets": ["Technical detail.", "Key nuance."]
+      "bullets": ["Supporting detail.", "Key nuance."]
     }}
   ]
 }}
 ```
 
-=== CHART SECTION 1 ===
+=== IDEA SECTION 1 ===
 ```text
-THE DRAWING/CHART FOR THIS SECTION
+THE DRAWING/CHART FOR THIS IDEA
 ```
 
 TEXT TO MAP:
@@ -588,9 +611,9 @@ def parse_hybrid_to_visual_data(raw_text):
             snippet = json_str[:150] + "..." if len(json_str) > 150 else json_str
             raise ValueError(f"Invalid JSON format. Check for unescaped characters or trailing commas. Snippet: {snippet}")
     
-    # Extract ASCII/Chart Blocks
+    # Extract ASCII/Chart Blocks (supports IDEA SECTION X, CHART SECTION X, ASCII SECTION X, etc.)
     ascii_blocks = {}
-    pattern = re.compile(r'(?:=+|-+|#+|\*\*)\s*(?:ASCII|CHART)\s+(?:SECTION|FOR SENTENCE|FOR CONCEPT)\s+([\d\.]+)\s*(?:=+|-+|#+|\*\*)', flags=re.IGNORECASE)
+    pattern = re.compile(r'(?:=+|-+|#+|\*\*)\s*(?:IDEA\s+)?(?:ASCII|CHART)?\s*(?:IDEA\s+)?(?:SECTION|FOR SENTENCE|FOR CONCEPT)\s+([\d\.]+)\s*(?:=+|-+|#+|\*\*)', flags=re.IGNORECASE)
     parts = pattern.split(raw_text)
     for i in range(1, len(parts) - 1, 2):
         try:

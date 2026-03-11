@@ -25,6 +25,7 @@
 | 8 | Multi-Tier AI Support| Done | app.py | Gemini + Ollama + Manual |
 | 9 | Vibrancy Ranking | Done | emoji_engine.py | Priority-based asset selection |
 | 10| Tag Refinement | Done | app.py | Universal stripping of [keyword] tags |
+| 11| Idea-Based Sections | Done | app.py / explanation.html | Removed fixed 3-5 section limit; LLM now creates one section per distinct idea, unlimited |
 
 ## Phase 4: Export and Stability (COMPLETE)
 | # | Task | Status | File | Notes |

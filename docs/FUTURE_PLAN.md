@@ -24,12 +24,12 @@ The current monolithic structure (large files like `app.py`) will be decomposed 
 
 ## 🚀 Feature Roadmap
 
-- **Enhanced ASCII Precision**: Integration of specialized character-sets for higher-density diagrams.
-- **Client-Side Mermaid Customization**: Allow users to toggle Mermaid themes (Dark/Forest/Neutral) before export.
-- **Asynchronous Processing Queue**: For very large documents, offload export tasks to background workers with progress tracking.
+- **Arabic Language Support**: Enable RTL (Right-to-Left) layout support in templates and update prompts to support high-fidelity explanations in **Arabic only**, **English (Default)**, or **Bilingual** formats. → See strict plan: [STYLE_ARABIC_PLAN.md](STYLE_ARABIC_PLAN.md)
 - **API Versioning**: Transition to `/v1/` prefixed routes for future-proofing.
 
 ## ✨ Explanation Style Variety
+
+> Strict step-by-step implementation plan: [STYLE_ARABIC_PLAN.md](STYLE_ARABIC_PLAN.md)
 
 We aim to expand beyond the default "Visual Hybrid" style to offer customized output formats based on user preference or content type.
 
