@@ -14,7 +14,13 @@ A quick-reference guide to the components of the TextPrism Visual Mapping Engine
 ## 📁 Directory Structure
 
 -   `data/`: The Visual Lexicon (1.3 GB). Includes `clipart/`, `icons/`, and `clipart_index.json`.
--   `docs/`: Persistent documentation (`PROGRESS.md`, `WORKFLOW.md`, `CODE_MAP.md`).
+-   `docs/`:
+    | File | Responsibility |
+    | :--- | :--- |
+    | `PROGRESS.md` | Phase tracking and completion percentages. |
+    | `FUTURE_PLAN.md` | Roadmap for modular refactoring and upcoming features. |
+    | `WORKFLOW.md` | Development standards, Git hooks, and PR guidelines. |
+    | `CODE_MAP.md` | This document. |
 -   `static/`: Frontend assets (`style.css`, `script.js`).
 -   `templates/`: Jinja2 templates for UI (`index.html`) and documents (`explanation.html`).
 -   `tests/`: Verification suite. Includes `test_e2e_exports.py` for full pipeline checks.

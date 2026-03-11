@@ -60,3 +60,5 @@
 | Chromium Bounding Box | Design | PDF word selection bounds remain tight |
 | Dark Mode Toggle | Future | Native dark mode for output PDFs |
 | google.genai migrate | Future | Upgrade from deprecated library |
+| Modular Refactor | Future | Decompose monolithic files into sub-modules (See [docs/FUTURE_PLAN.md](FUTURE_PLAN.md)) |
+| Style Variety | Future | Expand to Narrative, Frame-Based, Interactive, and Q&A styles |

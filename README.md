@@ -40,7 +40,12 @@ python3 -m playwright install chromium
 
 ### 2. Launch the Server
 ```bash
-python3 app.py
+# Recommended: If venv is activated
+python3 src/app.py
+
+# Alternatively: Run directly using the venv path
+./venv/bin/python3 src/app.py
+
 # Open http://localhost:8000
 ```
 
@@ -56,14 +61,13 @@ python3 tests/run_all_tests.py
 
 TextPrism uses a clean, categorized directory structure to maintain scalability:
 
-- app.py: FastAPI server and main rendering engine.
+- src/: Core application logic (app.py, emoji_engine.py, shape_it.py, utils.py).
 - data/: The 1.3 GB Visual Lexicon (icons, clipart, indexes).
-- docs/: System documentation and implementation plans.
-- examples/: Sample output tutorials and rendered HTML examples.
-- scripts/: Internal utility scripts for lexicon maintenance and optimization.
+- docs/: System documentation, roadmap, and implementation plans.
+- tests/: Extensive test suite and verification artifacts.
 - static/: Frontend assets (Vibrant theme CSS, logic JS).
 - templates/: Jinja2 templates for UI and document rendering.
-- tests/: Extensive test suite and verification artifacts.
+- scripts/: Internal utility scripts for lexicon maintenance.
 
 ---
 
@@ -71,10 +75,10 @@ TextPrism uses a clean, categorized directory structure to maintain scalability:
 
 | Component | File | Purpose | Lines |
 |------|---------|-------|-------|
-| Rendering Engine | app.py | FastAPI backend - routes, AI integration, rendering logic. | ~950 |
-| Lexicon Engine | emoji_engine.py | Visual Lexicon Engine - 4-layer lookup for 90k assets. | ~500 |
-| ASCII Engine | shape_it.py | SHAPE_IT ASCII art engine - 16+ programmatic shape functions. | ~630 |
-| Utility Layer | utils.py | Shared utilities like normalize_ascii(). | ~40 |
+| Rendering Engine | src/app.py | FastAPI backend - routes, AI integration, rendering logic. | ~1000 |
+| Lexicon Engine | src/emoji_engine.py | Visual Lexicon Engine - 4-layer lookup for 90k assets. | ~500 |
+| ASCII Engine | src/shape_it.py | SHAPE_IT ASCII art engine - 16+ programmatic shape functions. | ~630 |
+| Utility Layer | src/utils.py | Shared utilities like normalize_ascii(). | ~40 |
 
 ---
 

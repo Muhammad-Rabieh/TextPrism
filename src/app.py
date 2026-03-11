@@ -422,6 +422,65 @@ async def get_lexicon():
     """Return Visual Lexicon stats."""
     return engine.stats()
 
+def normalize_mermaid(content):
+    """
+    Ensure Mermaid graphs have a newline after the diagram type (e.g. flowchart TD).
+    This fixes parse errors when LLMs put the first node on the same line.
+    """
+    if not content:
+        return content
+    
+    # Strip fences if they somehow got through
+    c = content.strip()
+    if c.startswith('```'):
+        lines = c.splitlines()
+        if len(lines) > 2:
+            c = "\n".join(lines[1:-1]).strip()
+        else:
+            c = ""
+    
+    if not c:
+        return content
+
+    first_line = c.splitlines()[0].strip()
+    mermaid_types = [
+        'graph', 'flowchart', 'sequencediagram', 'pie', 'classdiagram', 
+        'statediagram', 'statediagram-v2', 'gantt', 'erdiagram', 'journey', 
+        'gitgraph', 'mindmap', 'timeline', 'quadrantchart', 'sankey', 'xychart'
+    ]
+    
+    # Check if the first line starts with a mermaid type but contains more text
+    lower_first = first_line.lower()
+    for mtype in mermaid_types:
+        if lower_first.startswith(mtype):
+            # If there's content after the type on the same line, insert a newline
+            type_len = len(mtype)
+            # Handle cases like "graph TD" vs "graphTD"
+            remainder = first_line[type_len:].strip()
+            
+            # Special case for "flowchart TD" etc. where TD is part of the type
+            # but if there is MORE after that, we need a newline.
+            # Most common graph intro is "graph [DIR]" or "flowchart [DIR]"
+            words = lower_first.split()
+            if len(words) > 1:
+                # If there are more than 2 words, or if the 2nd word doesn't look like an orientation
+                # (TD, LR, etc.), it's likely node data.
+                orientations = {'td', 'lr', 'bt', 'rl', 'tb'}
+                if words[1] in orientations:
+                    if len(words) > 2:
+                        # "flowchart TD A[Start]" -> "flowchart TD\nA[Start]"
+                        # Reconstruct the line accurately
+                        potential_type = first_line[:first_line.lower().find(words[1]) + len(words[1])]
+                        actual_data = first_line[len(potential_type):].strip()
+                        if actual_data:
+                            return potential_type + "\n" + actual_data + "\n" + "\n".join(c.splitlines()[1:])
+                else:
+                    # "graph A-->B" -> "graph\nA-->B"
+                    return words[0] + "\n" + first_line[len(words[0]):].strip() + "\n" + "\n".join(c.splitlines()[1:])
+            break
+            
+    return c
+
 def detect_chart_type(content):
     """Auto-detect if a text block is SVG, Mermaid.js, or text/ASCII art."""
     if not content:
@@ -599,7 +658,7 @@ def parse_hybrid_to_visual_data(raw_text):
             # Just do basic fence stripping if present, then a clean strip
             clean_chart = re.sub(r'^```[\w]*\s*\n', '', stripped_raw)
             clean_chart = re.sub(r'\n```\s*$', '', clean_chart)
-            ascii_box = clean_chart.strip()
+            ascii_box = normalize_mermaid(clean_chart.strip())
         else:
             ascii_box = normalize_ascii(raw_ai_ascii, pad=True) if raw_ai_ascii else ""
 
