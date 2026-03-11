@@ -195,6 +195,8 @@ async def get_magic_prompt_unified(request: Request):
     data = await request.json()
     text = data.get("text", "")
     chart_format = data.get("chart_format", "ascii")
+    style = data.get("style", "visual")   # visual | narrative | frame | qa
+    language = data.get("language", "english")  # english | arabic
     
     chart_rules = ""
     chart_marker = "CHART"
@@ -227,6 +229,56 @@ RULES FOR THE ASCII ART:
 11. Separate them by `=== ASCII SECTION X ===` markers.
 """
 
+    style_rules = ""
+    if style == "narrative":
+        style_rules = """
+STYLE: NARRATIVE (Storytelling-Driven)
+- Write the explanation as a flowing story. Use first-person or third-person narrative voice.
+- Each idea section should feel like a chapter with a beginning, middle, and end.
+- Use vivid transitions between sentences: "This leads to...", "As a result...", "The story unfolds with..."
+- Bullets should read as story facts, not technical specs.
+"""
+    elif style == "frame":
+        style_rules = """
+STYLE: FRAME-BASED (Sequential Panels)
+- Structure each idea section as a PANEL or SCENE in a sequence.
+- Title each section as a panel header: "[icon] Panel 1: The Setup", "[icon] Panel 2: The Conflict", etc.
+- Each sentence is a caption for that panel. Keep sentences short and punchy (max 20 words each).
+- Bullets are scene notes or stage directions.
+"""
+    elif style == "qa":
+        style_rules = """
+STYLE: Q&A (Socratic Dialogue)
+- For every idea, start the section title as a Question: "[icon] What is X?", "[icon] Why does Y matter?"
+- Answer the question across 3-5 sentences in a direct, conversational tone.
+- Each bullet is a follow-up "Did you know?" fact.
+- Use "You" to address the reader directly.
+"""
+    else:  # default: visual
+        style_rules = """
+STYLE: VISUAL (Default — Icon-Annotated Explanation)
+- Write clear, informative explanations for each idea.
+- Every sentence starts with a [keyword] tag for icon mapping.
+- Bullets are concise supporting details.
+"""
+
+    language_rules = ""
+    if language == "arabic":
+        language_rules = """
+LANGUAGE: ARABIC OUTPUT (مخرجات عربية)
+- Write the ENTIRE explanation in Modern Standard Arabic (MSM / الفصحى).
+- This includes: the document title, all section titles, all sentence content, and all bullet points.
+- The JSON `title`, `explanation`, all `content` fields, and all `bullets` MUST be in Arabic.
+- Keep [keyword] tags in English (e.g., [rocket], [shield]) because they are used for icon lookup only.
+- Do NOT mix Arabic and English sentences. Each sentence must be fully in one language.
+- CRITICAL: Write Arabic text right-to-left naturally. Do not add any RTL markers manually.
+"""
+    else:
+        language_rules = """
+LANGUAGE: ENGLISH OUTPUT (Default)
+- Write the entire explanation in clear, professional English.
+"""
+
     prompt = fr"""
 I want you to act as a Document Architect. Your job is to take the text below and transform it into a vibrant, high-impact **Visual Explanation** in a **Single Phase**.
 **CRITICAL: Your goal is an in-depth EXPLANATION, not a summary. Provide a detailed narrative for each part so the reader truly learns the material.**
@@ -235,7 +287,10 @@ I want you to output a **Hybrid Format**: a single JSON object followed by raw c
 Crucially, I want you to perform **Granular Semantic Mapping** — identifying a visual keyword for EVERY sentence using an inline tag.
 
 
-RULES FOR THE EXPLANATION:
+RULES FOR THE EXPLANATION: 
+{style_rules}
+{language_rules}
+
 1. Identify every distinct **idea or concept** present in the text. Create one section per idea — there is NO minimum or maximum number of sections; let the content decide. A short text may yield 2 ideas; a rich article may yield 10 or more.
 2. For each idea, provide a short, descriptive title that names the idea.
 3. For the content of each idea, write 3-6 sentences of **in-depth explanation**. Ensure you cover nuances, causes, and effects.
@@ -286,6 +341,8 @@ async def get_magic_prompt_map(request: Request):
     data = await request.json()
     distilled_text = data.get("text", "")
     chart_format = data.get("chart_format", "ascii")
+    style = data.get("style", "visual")
+    language = data.get("language", "english")
     
     chart_rules = ""
     if chart_format == "mermaid":
@@ -315,10 +372,41 @@ GRAPH RULES:
 7. Separate them clearly: `=== IDEA SECTION X ===`.
 """
 
+    style_rules = ""
+    if style == "narrative":
+        style_rules = """
+STYLE: NARRATIVE (Storytelling-Driven)
+- Use a storytelling voice.
+- Each idea section is as a narrative chapter.
+"""
+    elif style == "frame":
+        style_rules = """
+STYLE: FRAME-BASED (Sequential Panels)
+- Each idea is a visual panel/scene.
+"""
+    elif style == "qa":
+        style_rules = """
+STYLE: Q&A (Socratic Dialogue)
+- Each section starts with a Question title.
+"""
+    else:
+        style_rules = "STYLE: VISUAL (Standard icon-rich explanation)"
+
+    language_rules = ""
+    if language == "arabic":
+        language_rules = """
+LANGUAGE: ARABIC OUTPUT (مخرجات عربية)
+- Write the ENTIRE script in Arabic.
+"""
+    else:
+        language_rules = "LANGUAGE: ENGLISH OUTPUT"
+
     prompt = f"""
 You are a Visual Document Architect. Map the following text to our Visual Lexicon JSON format.
 
 RULES:
+{style_rules}
+{language_rules}
 1. Identify every distinct **idea or concept** present in the text. Create one section per idea — there is NO minimum or maximum; let the content decide.
 2. For each idea, provide a short, descriptive title that names the idea.
 3. For each idea, write 3-5 explanation sentences providing full depth.
@@ -744,7 +832,7 @@ def parse_hybrid_to_visual_data(raw_text):
     }
 
 @app.post("/render-magic", response_class=HTMLResponse)
-async def render_magic(request: Request, data: str = Form(...)):
+async def render_magic(request: Request, data: str = Form(...), language: str = Form("english")):
     """Render a visual explanation from AI-generated Hybrid format."""
     try:
         raw_text = data.strip()
@@ -757,7 +845,8 @@ async def render_magic(request: Request, data: str = Form(...)):
             "explanation_text": visual_data["explanation_text"],
             "explanation_icons": visual_data["explanation_icons"],
             "sections": visual_data["sections"],
-            "original_text": "Manual AI Input"
+            "original_text": "Manual AI Input",
+            "language": language
         })
     except Exception as e:
         print(f"❌ Render Magic Error: {e}")

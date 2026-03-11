@@ -36,30 +36,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* AI Tier Selection removed */
 
-    // Chart format selector logic
-    const formatOptions = document.querySelectorAll('.format-option');
-    const formatIndicator = document.getElementById('format-indicator');
-
-    function updateFormatIndicator() {
-        if (!formatIndicator) return;
-        const activeOpt = document.querySelector('.format-option.active');
+    // Generic Indicator Update function
+    function updateIndicator(selectorId, indicatorId) {
+        const indicator = document.getElementById(indicatorId);
+        if (!indicator) return;
+        const activeOpt = document.querySelector(`#${selectorId} .format-option.active`);
         if (activeOpt) {
-            formatIndicator.style.width = activeOpt.offsetWidth + 'px';
-            formatIndicator.style.left = activeOpt.offsetLeft + 'px';
+            indicator.style.width = activeOpt.offsetWidth + 'px';
+            indicator.style.left = activeOpt.offsetLeft + 'px';
         }
     }
 
-    formatOptions.forEach(opt => {
+    // Chart format selector logic
+    const chartFormatOptions = document.querySelectorAll('#chart-format-selector .format-option');
+    chartFormatOptions.forEach(opt => {
         opt.addEventListener('click', () => {
-            formatOptions.forEach(o => o.classList.remove('active'));
+            chartFormatOptions.forEach(o => o.classList.remove('active'));
             opt.classList.add('active');
-            updateFormatIndicator();
+            updateIndicator('chart-format-selector', 'format-indicator');
         });
     });
 
-    // Initial position
-    updateFormatIndicator();
-    window.addEventListener('resize', updateFormatIndicator);
+    // Style selector logic
+    const styleOptions = document.querySelectorAll('#style-selector .format-option');
+    styleOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+            styleOptions.forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            updateIndicator('style-selector', 'style-indicator');
+        });
+    });
+
+    // Language selector logic
+    let currentLanguage = 'english';
+    const languageOptions = document.querySelectorAll('#language-selector .format-option');
+    languageOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+            languageOptions.forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            currentLanguage = opt.dataset.value;
+            updateIndicator('language-selector', 'language-indicator');
+        });
+    });
+
+    // Initial position & Resize handling
+    const refreshIndicators = () => {
+        updateIndicator('chart-format-selector', 'format-indicator');
+        updateIndicator('style-selector', 'style-indicator');
+        updateIndicator('language-selector', 'language-indicator');
+    };
+
+    window.addEventListener('load', refreshIndicators);
+    window.addEventListener('resize', refreshIndicators);
+    // Trigger multiple times to catch layout settled state
+    refreshIndicators();
+    setTimeout(refreshIndicators, 50);
+    setTimeout(refreshIndicators, 300);
 
     // ── Magic Prompt Workflow (2-Phase) ──
     if (magicPromptBtn) {
@@ -72,12 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             magicPromptBtn.disabled = true;
             try {
-                const chartFormatActive = document.querySelector('.format-option.active');
+                const chartFormatActive = document.querySelector('#chart-format-selector .format-option.active');
                 const chartFormat = chartFormatActive ? chartFormatActive.dataset.value : 'ascii';
+                const styleActive = document.querySelector('#style-selector .format-option.active');
+                const style = styleActive ? styleActive.dataset.value : 'visual';
+                const langActive = document.querySelector('#language-selector .format-option.active');
+                const language = langActive ? langActive.dataset.value : 'english';
+
                 const response = await fetch('/magic-prompt/unified', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text, chart_format: chartFormat })
+                    body: JSON.stringify({ text: text, chart_format: chartFormat, style: style, language: language })
                 });
                 const data = await response.json();
 
@@ -274,6 +311,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const formData = new FormData();
             formData.append('data', json);
+            const langActive = document.querySelector('#language-selector .format-option.active');
+            const language = langActive ? langActive.dataset.value : 'english';
+            formData.append('language', language);
 
             const response = await fetch('/render-magic', { method: 'POST', body: formData });
             const html = await response.text();
@@ -381,8 +421,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const baseName = words.length > 0 ? words.join('_') : 'TextPrism_Export';
 
-        // Suffix with active chart type
-        const chartFormatActive = document.querySelector('.format-option.active');
+        // Suffix with active chart type — SCOPED to chart format selector
+        const chartFormatActive = document.querySelector('#chart-format-selector .format-option.active');
         const chartFormat = chartFormatActive ? chartFormatActive.dataset.value.toUpperCase() : 'ASCII';
 
         return `${baseName}_${chartFormat}.${extension}`;

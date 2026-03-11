@@ -65,6 +65,40 @@
                         placeholder="Paste your document text here...&#10;&#10;TextPrism empowers your LLM using:&#10;• Structural ASCII Commands (Banners, Boxes, Flows)&#10;• Mapping to 90,000+ local Clipart & Illustrations&#10;• 4,200+ OpenMoji & 700+ Heroicons&#10;&#10;The LLM creates the 'Expressive Text', and we provide the graphics and the map."
                         rows="12"></textarea>
                     <div class="form-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <!-- Language Selector -->
+                        <div class="chart-format-selector" id="language-selector" style="margin-right: 8px;">
+                            <div class="format-indicator" id="language-indicator"></div>
+                            <div class="format-option active" data-value="english" title="English (Default)">
+                                <span style="font-size:1.1em;">🇬🇧</span>
+                                <span>EN</span>
+                            </div>
+                            <div class="format-option" data-value="arabic" title="Arabic / عربي">
+                                <span style="font-size:1.1em;">🇸🇦</span>
+                                <span>AR</span>
+                            </div>
+                        </div>
+
+                        <!-- Style Selector -->
+                        <div class="chart-format-selector" id="style-selector" style="margin-right: 8px;">
+                            <div class="format-indicator" id="style-indicator"></div>
+                            <div class="format-option active" data-value="visual" title="Visual (Default)">
+                                <img src="/icons/heroicons/photo.svg" alt="Visual" class="format-icon">
+                                <span>Visual</span>
+                            </div>
+                            <div class="format-option" data-value="narrative" title="Narrative Storytelling">
+                                <img src="/icons/heroicons/book-open.svg" alt="Narrative" class="format-icon">
+                                <span>Story</span>
+                            </div>
+                            <div class="format-option" data-value="frame" title="Frame/Panel Based">
+                                <img src="/icons/heroicons/squares-2x2.svg" alt="Frame" class="format-icon">
+                                <span>Frame</span>
+                            </div>
+                            <div class="format-option" data-value="qa" title="Q&amp;A Style">
+                                <img src="/icons/heroicons/chat-bubble-left-right.svg" alt="Q&A" class="format-icon">
+                                <span>Q&amp;A</span>
+                            </div>
+                        </div>
+
                         <div class="chart-format-selector" id="chart-format-selector">
                             <div class="format-indicator" id="format-indicator"></div>
                             <div class="format-option active" data-value="ascii" title="ASCII Art (Default)">

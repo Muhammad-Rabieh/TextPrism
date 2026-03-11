@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ 'ar' if language == 'arabic' else 'en' }}" dir="{{ 'rtl' if language == 'arabic' else 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -18,7 +18,7 @@
         });
     </script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Arabic:wght@400;600;700&display=swap"
         rel="stylesheet">
     <style>
         :root {
@@ -409,6 +409,36 @@
             background: var(--bg);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
+
+        /* RTL Support for Arabic */
+        [dir="rtl"] body {
+            font-family: 'Inter', 'Noto Sans Arabic', 'Tahoma', sans-serif;
+            text-align: right;
+        }
+
+        [dir="rtl"] .sentence-item {
+            border-left: none;
+            border-right: 4px solid var(--accent);
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .sentence-item:hover {
+            transform: translateX(-8px);
+        }
+
+        [dir="rtl"] .section-header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .bullet-list li {
+            border-left: none;
+            border-right: 3px solid var(--accent2);
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .summary-icons {
+            flex-direction: row-reverse;
+        }
     </style>
 </head>
 
@@ -460,7 +490,9 @@
 
             {% if section.title %}
             <div class="section-header">
-                <span style="font-size:0.72rem; font-weight:700; letter-spacing:0.05em; padding:2px 8px; background:rgba(124,58,237,0.1); color:var(--accent-vibrant); border-radius:99px; white-space:nowrap; flex-shrink:0;">💡 Idea {{ loop.index }}</span>
+                <span
+                    style="font-size:0.72rem; font-weight:700; letter-spacing:0.05em; padding:2px 8px; background:rgba(124,58,237,0.1); color:var(--accent-vibrant); border-radius:99px; white-space:nowrap; flex-shrink:0;">💡
+                    Idea {{ loop.index }}</span>
                 {% for icon in section.title_icons %}
                 {% if icon.type != 'none' %}
                 <img src="{% if icon.src %}{{ icon.src }}{% else %}/{{ icon.path }}{% endif %}"
