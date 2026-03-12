@@ -8,13 +8,14 @@ TextPrism is a Visual Mapping Engine that transforms dense text into rich, icono
 
 ## Features
 
+- 13 Distinct Explanation Styles - Choose from Visual, Narrative, Frame-Based, Q&A, Semantic, and more to tailor the content to your audience.
+- Full Arabic & RTL Support - Modern Standard Arabic (MSA) translation with high-fidelity Right-to-Left layout rendering.
 - Server-Side PDF Generation - Built on Playwright, generating pixel-perfect multi-page PDFs with layout preservation and robust text-clipping protection.
 - LLM-Driven Artistic Freedom - Prompt any LLM to use the "shape-it ascii art style". It handles structure, boxes, and flows.
 - Granular Sentence-Level Mapping - Every sentence is paired with a vibrant icon via the Vibrancy Ranking Engine.
-- Universal Tag Stripping - Automatically cleans up semantic tags like [keyword] from all output text, titles, and bullets for a professional look.
-- 90k+ Offline Asset Lexicon - OpenMoji, OpenClipArt, Lucide, Heroicons, Noto Emoji, and 15+ more icon libraries - all local, all offline.
-- Universal AI Compatibility - Works with web LLMs (ChatGPT/Gemini/Claude), local models (Ollama), or Gemini API.
-- Comprehensive Verification Suite - Strict test runner ensuring stability across rendering and export pipelines.
+- Universal Tag Stripping - Automatically cleans up semantic tags like [keyword] from all output text, titles, and bullets.
+- 90k+ Offline Asset Lexicon - OpenMoji, OpenClipArt, Lucide, Heroicons, and 15+ more - all local, all offline.
+- AI-First Workflow & Developer Rules - Integrated with Repomix and project-level `GEMINI.md` rules for optimized, token-efficient AI-assisted coding.
 
 ---
 
@@ -54,6 +55,20 @@ python3 src/app.py
 # Run the Master Verification Suite
 python3 tests/run_all_tests.py
 ```
+
+---
+
+## Agent-First Developer Setup
+
+TextPrism is optimized for AI-assisted development (e.g., Cursor, Gemini, Claude). We use **Repomix** and a project-level `GEMINI.md` policy to ensure the AI has perfect context while minimizing token usage.
+
+1. **Install Repomix**: `npx -y repomix`
+2. **Follow `GEMINI.md` Rules**:
+   - Always use **Targeted Context** (`--include`) to focus only on relevant source files.
+   - Ignore `data/` and `tests/` asset folders to save 95%+ tokens.
+   - Update the `docs/CODE_MAP.md` after significant architectural changes.
+
+This setup allows AI agents to "self-trigger" context gathering only when needed, ensuring a fast and clean developer experience.
 
 ---
 

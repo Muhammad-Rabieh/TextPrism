@@ -55,11 +55,37 @@
 
 ---
 
+## Phase 5: Localization & Style Variety (COMPLETE)
+| # | Task | Status | File | Notes |
+|---|------|--------|------|-------|
+| 15| 13 Style Selectors | Done | app.py / index.html | Comprehensive visual/narrative styles |
+| 16| Arabic Language Support| Done | app.py / explanation.html| Full MSA and RTL rendering |
+| 17| Refined 2-Row UI | Done | index.html / style.css | Non-clipping, accessible layout |
+
+## Phase 6: AI-First Developer Experience (COMPLETE)
+| # | Task | Status | File | Notes |
+|---|------|--------|------|-------|
+| 18| Repomix Integration | Done | repomix.config.json | Optimized context packing |
+| 19| Agent Rules (GEMINI.md)| Done | GEMINI.md | Behavioral policy for token safety |
+| 20| Project Organization | Done | tests/debug_assets/ | Clean root, organized test artifacts |
+
+---
+
+## File Manifest (Updated)
+
+| Category | File | Purpose |
+|----------|------|---------|
+| Core | app.py | Main server, Prompt Logic, PDF Export |
+| | emoji_engine.py | Visual Lexicon lookup (90k assets) |
+| | shape_it.py | ASCII art structural engine |
+| AI Rules | GEMINI.md | Agent-First behavioral & token rules |
+| Config | repomix.config.json| Codebase context optimization |
+
+---
+
 ## Known Issues / Future
 | Issue | Status | Notes |
 |-------|--------|-------|
 | Chromium Bounding Box | Design | PDF word selection bounds remain tight |
 | Dark Mode Toggle | Future | Native dark mode for output PDFs |
-| google.genai migrate | Future | Upgrade from deprecated library |
-| Modular Refactor | Future | Decompose monolithic files into sub-modules (See [docs/FUTURE_PLAN.md](FUTURE_PLAN.md)) |
-| Style Variety | Future | Expand to Narrative, Frame-Based, Interactive, and Q&A styles |
+| Modular Refactor | Future | Decompose monolithic files (See [docs/FUTURE_PLAN.md](FUTURE_PLAN.md)) |
