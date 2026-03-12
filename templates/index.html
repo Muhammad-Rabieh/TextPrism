@@ -64,69 +64,116 @@
                     <textarea id="text-input" name="text" class="glass-textarea"
                         placeholder="Paste your document text here...&#10;&#10;TextPrism empowers your LLM using:&#10;• Structural ASCII Commands (Banners, Boxes, Flows)&#10;• Mapping to 90,000+ local Clipart & Illustrations&#10;• 4,200+ OpenMoji & 700+ Heroicons&#10;&#10;The LLM creates the 'Expressive Text', and we provide the graphics and the map."
                         rows="12"></textarea>
-                    <div class="form-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <!-- Language Selector -->
-                        <div class="chart-format-selector" id="language-selector" style="margin-right: 8px;">
-                            <div class="format-indicator" id="language-indicator"></div>
-                            <div class="format-option active" data-value="english" title="English (Default)">
-                                <span style="font-size:1.1em;">🇬🇧</span>
-                                <span>EN</span>
+                    <div class="form-actions"
+                        style="display: flex; flex-direction: column; gap: 12px; align-items: stretch;">
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <!-- Language Selector -->
+                            <div class="chart-format-selector" id="language-selector" style="margin-right: 0;">
+                                <div class="format-indicator" id="language-indicator"></div>
+                                <div class="format-option active" data-value="english" title="English (Default)">
+                                    <span style="font-size:1.1em;">🇬🇧</span>
+                                    <span>EN</span>
+                                </div>
+                                <div class="format-option" data-value="arabic" title="Arabic / عربي">
+                                    <span style="font-size:1.1em;">🇸🇦</span>
+                                    <span>AR</span>
+                                </div>
                             </div>
-                            <div class="format-option" data-value="arabic" title="Arabic / عربي">
-                                <span style="font-size:1.1em;">🇸🇦</span>
-                                <span>AR</span>
+
+                            <!-- Style Selector -->
+                            <div class="chart-format-selector scrollable-selector" id="style-selector"
+                                style="margin-right: 8px; flex: 1; min-width: 200px;">
+                                <div class="format-indicator" id="style-indicator"></div>
+                                <div class="format-option active" data-value="visual"
+                                    title="Visual / Illustrative Text (Default)">
+                                    <img src="/icons/heroicons/photo.svg" alt="Visual" class="format-icon">
+                                    <span>Visual</span>
+                                </div>
+                                <div class="format-option" data-value="typography" title="Typography-Based">
+                                    <img src="/icons/heroicons/document-text.svg" alt="Typography" class="format-icon">
+                                    <span>Typography</span>
+                                </div>
+                                <div class="format-option" data-value="layout" title="Layout &amp; Spatial Arrangement">
+                                    <img src="/icons/heroicons/rectangle-group.svg" alt="Layout" class="format-icon">
+                                    <span>Layout</span>
+                                </div>
+                                <div class="format-option" data-value="frame" title="Frame-Based / Panel Text">
+                                    <img src="/icons/heroicons/squares-2x2.svg" alt="Frame" class="format-icon">
+                                    <span>Frame</span>
+                                </div>
+                                <div class="format-option" data-value="scene" title="Scene-Based / Illustrative Text">
+                                    <img src="/icons/heroicons/sparkles.svg" alt="Scene" class="format-icon">
+                                    <span>Scene</span>
+                                </div>
+                                <div class="format-option" data-value="symbolic" title="Symbolic / Iconic Text">
+                                    <img src="/icons/heroicons/face-smile.svg" alt="Symbolic" class="format-icon">
+                                    <span>Symbolic</span>
+                                </div>
+                                <div class="format-option" data-value="emotive"
+                                    title="Emotive / Stylistic Enhancements">
+                                    <img src="/icons/heroicons/fire.svg" alt="Emotive" class="format-icon">
+                                    <span>Emotive</span>
+                                </div>
+                                <div class="format-option" data-value="semantic" title="Semantic / Conceptual Text">
+                                    <img src="/icons/heroicons/globe-alt.svg" alt="Semantic" class="format-icon">
+                                    <span>Semantic</span>
+                                </div>
+                                <div class="format-option" data-value="narrative" title="Narrative / Storytelling">
+                                    <img src="/icons/heroicons/book-open.svg" alt="Narrative" class="format-icon">
+                                    <span>Narrative</span>
+                                </div>
+                                <div class="format-option" data-value="qa" title="Question &amp; Answer (Dialogic)">
+                                    <img src="/icons/heroicons/chat-bubble-left-right.svg" alt="Q&A"
+                                        class="format-icon">
+                                    <span>Q&amp;A</span>
+                                </div>
+                                <div class="format-option" data-value="dynamic" title="Interactive / Dynamic Text">
+                                    <img src="/icons/heroicons/play.svg" alt="Dynamic" class="format-icon">
+                                    <span>Dynamic</span>
+                                </div>
+                                <div class="format-option" data-value="hybrid" title="Interactive / Hybrid Text">
+                                    <img src="/icons/heroicons/map.svg" alt="Hybrid" class="format-icon">
+                                    <span>Hybrid</span>
+                                </div>
+                                <div class="format-option" data-value="multimodal"
+                                    title="Multimodal Pedagogical Mapping">
+                                    <img src="/icons/heroicons/puzzle-piece.svg" alt="Multimodal" class="format-icon">
+                                    <span>Multimodal</span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Style Selector -->
-                        <div class="chart-format-selector" id="style-selector" style="margin-right: 8px;">
-                            <div class="format-indicator" id="style-indicator"></div>
-                            <div class="format-option active" data-value="visual" title="Visual (Default)">
-                                <img src="/icons/heroicons/photo.svg" alt="Visual" class="format-icon">
-                                <span>Visual</span>
+                        <!-- Row 2: Charts & Actions -->
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <div class="chart-format-selector" id="chart-format-selector">
+                                <div class="format-indicator" id="format-indicator"></div>
+                                <div class="format-option active" data-value="ascii" title="ASCII Art (Default)">
+                                    <img src="/icons/heroicons/command-line.svg" alt="ASCII" class="format-icon">
+                                    <span>ASCII</span>
+                                </div>
+                                <div class="format-option" data-value="mermaid" title="Mermaid.js Diagram">
+                                    <img src="/icons/heroicons/share.svg" alt="Mermaid" class="format-icon">
+                                    <span>Mermaid</span>
+                                </div>
+                                <div class="format-option" data-value="svg" title="Scalable Vector Graphics">
+                                    <img src="/icons/heroicons/paint-brush.svg" alt="SVG" class="format-icon">
+                                    <span>SVG</span>
+                                </div>
                             </div>
-                            <div class="format-option" data-value="narrative" title="Narrative Storytelling">
-                                <img src="/icons/heroicons/book-open.svg" alt="Narrative" class="format-icon">
-                                <span>Story</span>
-                            </div>
-                            <div class="format-option" data-value="frame" title="Frame/Panel Based">
-                                <img src="/icons/heroicons/squares-2x2.svg" alt="Frame" class="format-icon">
-                                <span>Frame</span>
-                            </div>
-                            <div class="format-option" data-value="qa" title="Q&amp;A Style">
-                                <img src="/icons/heroicons/chat-bubble-left-right.svg" alt="Q&A" class="format-icon">
-                                <span>Q&amp;A</span>
-                            </div>
+                            <button type="button" id="magic-prompt-btn" class="btn btn-primary">
+                                <img src="/icons/heroicons/sparkles.svg" alt="" class="btn-icon">
+                                Explain &amp; Map with AI
+                            </button>
+                            <button type="button" id="paste-main-btn" class="btn btn-ghost">
+                                <img src="/icons/heroicons/clipboard.svg" alt="" class="btn-icon"
+                                    style="filter: brightness(0) opacity(0.6); width: 14px; height: 14px; margin-right: 4px;">
+                                Paste
+                            </button>
+                            <button type="button" id="clear-btn" class="btn btn-ghost">
+                                <img src="/icons/heroicons/trash.svg" alt="" class="btn-icon">
+                                Clear
+                            </button>
                         </div>
-
-                        <div class="chart-format-selector" id="chart-format-selector">
-                            <div class="format-indicator" id="format-indicator"></div>
-                            <div class="format-option active" data-value="ascii" title="ASCII Art (Default)">
-                                <img src="/icons/heroicons/command-line.svg" alt="ASCII" class="format-icon">
-                                <span>ASCII</span>
-                            </div>
-                            <div class="format-option" data-value="mermaid" title="Mermaid.js Diagram">
-                                <img src="/icons/heroicons/share.svg" alt="Mermaid" class="format-icon">
-                                <span>Mermaid</span>
-                            </div>
-                            <div class="format-option" data-value="svg" title="Scalable Vector Graphics">
-                                <img src="/icons/heroicons/paint-brush.svg" alt="SVG" class="format-icon">
-                                <span>SVG</span>
-                            </div>
-                        </div>
-                        <button type="button" id="magic-prompt-btn" class="btn btn-primary">
-                            <img src="/icons/heroicons/sparkles.svg" alt="" class="btn-icon">
-                            Explain &amp; Map with AI
-                        </button>
-                        <button type="button" id="paste-main-btn" class="btn btn-ghost">
-                            <img src="/icons/heroicons/clipboard.svg" alt="" class="btn-icon"
-                                style="filter: brightness(0) opacity(0.6); width: 14px; height: 14px; margin-right: 4px;">
-                            Paste
-                        </button>
-                        <button type="button" id="clear-btn" class="btn btn-ghost">
-                            <img src="/icons/heroicons/trash.svg" alt="" class="btn-icon">
-                            Clear
-                        </button>
                     </div>
                 </form>
             </div>

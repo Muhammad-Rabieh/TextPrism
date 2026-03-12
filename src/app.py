@@ -80,6 +80,8 @@ app.mount("/static", StaticFiles(directory=os.path.join(PROJECT_ROOT, "static"))
 app.mount("/icons/openmoji", StaticFiles(directory=os.path.join(DATA_DIR, "icons", "openmoji")), name="openmoji")
 app.mount("/icons/heroicons", StaticFiles(directory=os.path.join(DATA_DIR, "icons", "heroicons")), name="heroicons")
 app.mount("/clipart", StaticFiles(directory=os.path.join(DATA_DIR, "clipart")), name="clipart")
+# Ensure output directory exists before mounting
+os.makedirs(os.path.join(PROJECT_ROOT, "output"), exist_ok=True)
 app.mount("/output", StaticFiles(directory=os.path.join(PROJECT_ROOT, "output")), name="output")
 
 templates = Jinja2Templates(directory=os.path.join(PROJECT_ROOT, "templates"))
@@ -230,13 +232,18 @@ RULES FOR THE ASCII ART:
 """
 
     style_rules = ""
-    if style == "narrative":
+    if style == "typography":
         style_rules = """
-STYLE: NARRATIVE (Storytelling-Driven)
-- Write the explanation as a flowing story. Use first-person or third-person narrative voice.
-- Each idea section should feel like a chapter with a beginning, middle, and end.
-- Use vivid transitions between sentences: "This leads to...", "As a result...", "The story unfolds with..."
-- Bullets should read as story facts, not technical specs.
+STYLE: TYPOGRAPHY-BASED
+- Focus heavily on titles, headings, and aesthetic emphasis.
+- Use bolding, italics, and varied heading levels to structure the explanation.
+- Keep the text structural and deeply organized.
+"""
+    elif style == "layout":
+        style_rules = """
+STYLE: LAYOUT & SPATIAL ARRANGEMENT
+- Focus on structure, hierarchy, and patterns (like organizational charts).
+- Use indentation, bulleted trees, and clear spatial separation to explain concepts.
 """
     elif style == "frame":
         style_rules = """
@@ -246,6 +253,42 @@ STYLE: FRAME-BASED (Sequential Panels)
 - Each sentence is a caption for that panel. Keep sentences short and punchy (max 20 words each).
 - Bullets are scene notes or stage directions.
 """
+    elif style == "scene":
+        style_rules = """
+STYLE: SCENE-BASED / ILLUSTRATIVE
+- Best for storytelling and visual metaphors.
+- Describe the environment, the characters (even abstract ones), and the setting for each concept.
+- Make the reader visualize a specific scenario taking place.
+"""
+    elif style == "symbolic":
+        style_rules = """
+STYLE: SYMBOLIC / ICONIC
+- Use emojis or shorthand for quick representation of emotions or objects.
+- Integrate relevant emojis directly into the sentences to reinforce the meaning.
+- Keep the text highly visual and icon-heavy.
+"""
+    elif style == "emotive":
+        style_rules = """
+STYLE: EMOTIVE / STYLISTIC ENHANCEMENTS
+- Focus on tone, intensity, and emotional resonance.
+- Use exclamation points, capitalization for emphasis, and passionate vocabulary.
+- The explanation should feel urgent, exciting, and deeply engaging.
+"""
+    elif style == "semantic":
+        style_rules = """
+STYLE: SEMANTIC / CONCEPTUAL
+- Conveys logical relationships, like a mind map or an infographic.
+- Explicitly state relationships (e.g., "A causes B", "X is a subset of Y").
+- Use highly structured, tightly coupled definitions and logical derivations.
+"""
+    elif style == "narrative":
+        style_rules = """
+STYLE: NARRATIVE (Storytelling-Driven)
+- Write the explanation as a flowing story. Use first-person or third-person narrative voice.
+- Each idea section should feel like a chapter with a beginning, middle, and end.
+- Use vivid transitions between sentences: "This leads to...", "As a result...", "The story unfolds with..."
+- Bullets should read as story facts, not technical specs.
+"""
     elif style == "qa":
         style_rules = """
 STYLE: Q&A (Socratic Dialogue)
@@ -254,9 +297,32 @@ STYLE: Q&A (Socratic Dialogue)
 - Each bullet is a follow-up "Did you know?" fact.
 - Use "You" to address the reader directly.
 """
+    elif style == "dynamic":
+        style_rules = """
+STYLE: INTERACTIVE / DYNAMIC
+- Write as if the text is actively changing or responding to the user.
+- Use phrasing like "Imagine if you clicked this...", "Watch as this transforms...", "Hover over this concept to reveal...".
+- Make the explanation feel like a living, digital interface.
+"""
+    elif style == "hybrid":
+        style_rules = """
+STYLE: INTERACTIVE / HYBRID (Text Adventure)
+- Write the explanation as a branching story, map, or text adventure.
+- "You enter the room of Concept X. To your left, you see..."
+- Describe paths, choices, and exploratory mapping.
+"""
+    elif style == "multimodal":
+        style_rules = """
+STYLE: MULTIMODAL PEDAGOGICAL MAPPING
+- This is a specialized, integrated combination of three distinct layers.
+- Layer 1: Technical source code snippets or strict pseudo-code.
+- Layer 2: Concrete numerical data or specific metrics.
+- Layer 3: Visual state descriptions (how the system looks at this exact moment).
+- Ensure every section hits all three layers comprehensively.
+"""
     else:  # default: visual
         style_rules = """
-STYLE: VISUAL (Default — Icon-Annotated Explanation)
+STYLE: VISUAL / ILLUSTRATIVE (Default — Icon-Annotated Explanation)
 - Write clear, informative explanations for each idea.
 - Every sentence starts with a [keyword] tag for icon mapping.
 - Bullets are concise supporting details.

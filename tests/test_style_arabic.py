@@ -15,7 +15,22 @@ client = TestClient(app)
 
 def test_all_styles_generate_prompt():
     """Each style must return a 200 with the style keyword in the prompt."""
-    for style, keyword in [('visual', 'VISUAL'), ('narrative', 'NARRATIVE'), ('frame', 'FRAME-BASED'), ('qa', 'Q&A')]:
+    styles_to_test = [
+        ('visual', 'VISUAL / ILLUSTRATIVE'),
+        ('typography', 'TYPOGRAPHY-BASED'),
+        ('layout', 'LAYOUT & SPATIAL ARRANGEMENT'),
+        ('frame', 'FRAME-BASED'),
+        ('scene', 'SCENE-BASED'),
+        ('symbolic', 'SYMBOLIC / ICONIC'),
+        ('emotive', 'EMOTIVE / STYLISTIC'),
+        ('semantic', 'SEMANTIC / CONCEPTUAL'),
+        ('narrative', 'NARRATIVE'),
+        ('qa', 'Q&A'),
+        ('dynamic', 'INTERACTIVE / DYNAMIC'),
+        ('hybrid', 'INTERACTIVE / HYBRID'),
+        ('multimodal', 'MULTIMODAL PEDAGOGICAL MAPPING')
+    ]
+    for style, keyword in styles_to_test:
         r = client.post('/magic-prompt/unified', json={'text': 'Test text.', 'chart_format': 'ascii', 'style': style})
         assert r.status_code == 200, f"Style [{style}] failed with {r.status_code}"
         assert keyword in r.json()['prompt'], f"Style keyword [{keyword}] not found for style [{style}]"

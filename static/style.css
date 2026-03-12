@@ -262,6 +262,27 @@ h3 {
     overflow: hidden;
 }
 
+.scrollable-selector {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    /* Show a thin scrollbar */
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+    padding-bottom: 4px;
+    /* Space for scrollbar */
+}
+
+.scrollable-selector::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+}
+
+.scrollable-selector::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
 .format-indicator {
     position: absolute;
     top: 2px;
@@ -290,6 +311,8 @@ h3 {
     z-index: 1;
     min-width: 60px;
     /* Reduced from 100px to avoid overlap in EN/AR */
+    flex-shrink: 0;
+    /* Prevent squashing in scrollable containers */
 }
 
 #chart-format-selector .format-option {

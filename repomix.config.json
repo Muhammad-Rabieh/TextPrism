@@ -1,0 +1,31 @@
+{
+    "output": {
+        "filePath": "repomix-output.xml",
+        "style": "xml",
+        "headerText": "TextPrism Codebase Context - Optimized for Token Usage",
+        "removeComments": true,
+        "removeEmptyLines": true,
+        "topFilesLength": 20,
+        "showLineNumbers": false
+    },
+    "include": [
+        "**/*"
+    ],
+    "ignore": {
+        "customPatterns": [
+            "venv/**",
+            "node_modules/**",
+            "data/**",
+            "tests/**/*.html",
+            "tests/**/*.pdf",
+            "tests/**/*.png",
+            "tests/**/*.svg",
+            "**/*.zip",
+            "**/__pycache__/**",
+            ".pytest_cache/**",
+            ".git/**"
+        ],
+        "useGitignore": true,
+        "useDefaultPatterns": true
+    }
+}
