@@ -2,20 +2,37 @@
 
 ## ✨ Visual Showcase
 
-### 🎨 The Landing Page: Simple & Powerful
+### The Landing Page: Simple & Powerful
 ![TextPrism Landing Page](assets/readme/landing_page.png)
 *A clean, modern interface designed for rapid experimentation and expressive AI output.*
 
-### 🚀 SVG Vector Infographics
+### SVG Vector Infographics
 ![SVG Diagram Showcase](assets/readme/svg_diagram_example.svg)
 *Deeper than just icons. TextPrism can render complex, scalable vector infographics and architectural diagrams directly from your text.*
 
 ### 🛠️ Icon Mapping & ASCII Frames
-![Icon and ASCII Showcase](assets/readme/svg_ascii_showcase.png)
+![Icon and ASCII Showcase](assets/readme/ascii_showcase.png)
 *Behold the power of hybrid explanations. Every sentence is mapped to a vibrant icon from the 90k+ lexicon, while concepts are framed in pixel-perfect ASCII art via the **SHAPE_IT** engine.*
 
 ### 📊 Professional Diagramming (Mermaid.js)
-![Mermaid Showcase](assets/readme/mermaid_showcase.png)
+```mermaid
+graph TD;
+A[Transversal Line] --> B[Two Straight Lines];
+B --> C[Interior Angles on Same Side];
+C --> D{Is the sum of the angles less than 180};
+D -- Yes --> E[Lines Intersect When Extended];
+D -- No --> F[Intersection Not Guaranteed];
+E --> G[Prediction of Convergence];
+```
+
+```mermaid
+sequenceDiagram
+loop every day
+    Alice->>John: Hello John, how are you?
+    John-->>Alice: Great!
+end
+```
+
 *Generate sophisticated flowcharts, sequence diagrams, and architecture maps directly from your LLM prompts.*
 ---                       
 ## 📋 Summary
