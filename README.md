@@ -438,15 +438,6 @@ The Lexicon is ranked by Vibrancy, prioritizing multi-colored, highly detailed a
 
 ---
 
-## AI Workflow (Multi-Tier)
-
-1. Manual AI (Default): Use our "Magic Prompt" workflow with any web-based LLM.
-2. Free API: Built-in support for Gemini 1.5 Flash (Tier 2).
-3. Local AI: Full support for Ollama (Mistral/Llama3) for total privacy.
-4. Premium API: Works with GPT-4, Claude 3.5, etc.
-
----
-
 ## License
 
 Released under the GPL v3 License.
