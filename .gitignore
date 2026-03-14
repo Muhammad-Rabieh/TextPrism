@@ -5,3 +5,21 @@ __pycache__/
 output/
 data/emoji_index.json
 data/heroicon_index.json
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project-specific Artifacts
+repomix-output.xml
+repomix-output.md
