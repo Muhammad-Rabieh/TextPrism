@@ -15,6 +15,7 @@
 *Behold the power of hybrid explanations. Every sentence is mapped to a vibrant icon from the 90k+ lexicon, while concepts are framed in pixel-perfect ASCII art via the **SHAPE_IT** engine.*
 
 ### 📊 Professional Diagramming (Mermaid.js)
+
 ```mermaid
 graph TD;
 A[Transversal Line] --> B[Two Straight Lines];
