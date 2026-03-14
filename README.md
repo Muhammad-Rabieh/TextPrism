@@ -1,5 +1,23 @@
 # TextPrism — Visual Lexicon Engine for Expressive Documents
-                             
+
+## ✨ Visual Showcase
+
+### 🎨 The Landing Page: Simple & Powerful
+![TextPrism Landing Page](assets/readme/landing_page.png)
+*A clean, modern interface designed for rapid experimentation and expressive AI output.*
+
+### 🚀 SVG Vector Infographics
+![SVG Diagram Showcase](assets/readme/svg_diagram_example.svg)
+*Deeper than just icons. TextPrism can render complex, scalable vector infographics and architectural diagrams directly from your text.*
+
+### 🛠️ Icon Mapping & ASCII Frames
+![Icon and ASCII Showcase](assets/readme/svg_ascii_showcase.png)
+*Behold the power of hybrid explanations. Every sentence is mapped to a vibrant icon from the 90k+ lexicon, while concepts are framed in pixel-perfect ASCII art via the **SHAPE_IT** engine.*
+
+### 📊 Professional Diagramming (Mermaid.js)
+![Mermaid Showcase](assets/readme/mermaid_showcase.png)
+*Generate sophisticated flowcharts, sequence diagrams, and architecture maps directly from your LLM prompts.*
+---                       
 ## 📋 Summary
 TextPrism is a system designed to convert ordinary written information into visually structured explanations that are easier to explore and understand. Instead of relying only on paragraphs, the platform maps sentences to visual signals such as icons, diagrams, and structured layouts. By combining artificial intelligence, massive icon libraries, and automated document rendering, the system bridges the gap between dense information and intuitive visual storytelling.
 
@@ -307,20 +325,6 @@ Project-level GEMINI.md rules guide AI behavior so that generated code follows t
 
 
 TextPrism empowers your LLM to become a visual communicator. It takes raw text and transforms it into a multi-modal explanation using a vast offline lexicon of 90,000+ icons, structured ASCII frames, and dynamic Mermaid.js diagrams.
-
-## ✨ Visual Showcase
-
-### 🎨 The Landing Page: Simple & Powerful
-![TextPrism Landing Page](assets/readme/landing_page.png)
-*A clean, modern interface designed for rapid experimentation and expressive AI output.*
-
-### 🛠️ Rich Multi-Modal Outputs (SVG & ASCII)
-![SVG and ASCII Showcase](assets/readme/svg_ascii_showcase.png)
-*Behold the power of hybrid explanations. Every sentence is mapped to a vibrant SVG icon, while complex concepts are framed in pixel-perfect ASCII art.*
-
-### 📊 Professional Diagramming (Mermaid.js)
-![Mermaid Showcase](assets/readme/mermaid_showcase.png)
-*Generate sophisticated flowcharts, sequence diagrams, and architecture maps directly from your LLM prompts.*
 
 ---
 
